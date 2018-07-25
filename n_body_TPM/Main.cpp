@@ -4,5 +4,6 @@
 
 void main()
 {
-	
+	const size_t N = 100;
+
 }

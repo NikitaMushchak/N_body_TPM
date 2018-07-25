@@ -1,10 +1,9 @@
 
 
 #include "a3r.h"
-#include "vect3d.h"
-#include "util.h"
+#include <cstring>
 #include <stdio.h>
-#include "timelog.h"
+
 
 //-------------------------------------------------------------------------------------------
 
