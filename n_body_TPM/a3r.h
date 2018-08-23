@@ -13,15 +13,17 @@
 
 //#define __USE_STD_IOSTREAM
 
-#include "vect3d.h"
-#include "util.h"
+//#include "vect3d.h"
+#include "uitil.h"
 #include "a3r.h"
+#include "ai.hh"
+#include "particle_class.h"
 
 //-----------------------------------------------------------------------------------
 
 struct A3R_HEADER
 {
-	A3R_HEADER();		// Initialization of the structure members
+A3R_HEADER:() {}		// Initialization of the structure members
 
 	char file_type[4];	// "a3r"
 	int count;			// number of particles
@@ -33,11 +35,14 @@ struct A3R_HEADER
 
 //-------------------------------------------------------------------------------------------
 
-int Save_A3R(const char* file_name, Vect3D* start, float* colors, int n, double r);
+inline bool savea3R(const std::string filename,
+	std::vector< std::vector<T> > positions,
+	const double radius);
 
-Vect3D* Load_A3R(const char* file_name, int& n, double& r);	
+
+vector* Load_A3R(const char* file_name, int& n, double& r);	
 
 //-------------------------------------------------------------------------------------------
-
+/**/
 #endif //___a3r_h___
 

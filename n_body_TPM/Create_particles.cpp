@@ -1,11 +1,14 @@
 #include <random>
-#include "particle_class.h"
+#include "particle_struct.h"
 #include "Create_particles.h"
 
-
-void ñreateParticles(size_t N)
+//template <typename T>
+void ñreateParticles(size_t N ,Particle* particles)
 {
-	
+	for (size_t i = 0; i < N; ++i)
+	{
+		
+	}
 	
 }
 

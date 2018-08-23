@@ -1,0 +1,14 @@
+﻿  a3r.cc
+  Create_particles.cpp
+  Main.cpp
+g:\n_body_tpm\n_body_tpm\ai.hh(503): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  particles_ut.cpp
+g:\n_body_tpm\n_body_tpm\ai.hh(503): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  particles_ut.h
+  particle_class.cpp
+  util.cpp
+Release\particles_ut.obj : warning LNK4042: object specified more than once; extras ignored
+  Generating code
+  All 458 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  n_body_TPM.vcxproj -> G:\n_body_TPM\n_body_TPM\Release\n_body_TPM.exe
