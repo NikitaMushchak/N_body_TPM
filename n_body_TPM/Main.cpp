@@ -27,7 +27,7 @@ int main() {
 
 	for (size_t i = 0; i < number_particles; ++i) {
 		Particle part; //create Particle 
-		std::vector<double> a = { (double)i, 5. - i, 1.7 * i };
+		std::vector<double> a = { (double)i, 4.1 - i, 1.4 * i };
 		part.r = a;
 		particles.push_back(part);
 	}
@@ -65,19 +65,33 @@ int main() {
 			}
 		//now density dimXdimXdim
 		//auto NewStart = ai::time();
-		double shift = 0.49995; //
+		 
+		size_t x, y, z = 0;
+		double dx, dy, dz, tx, ty, tz;
 		for (size_t i = 0; i < Particles.size(); ++i)
 		{
 			//calculating indexes
-			size_t x, y, z = 0;
-			if (std::floor((Particles[i][0] / H) + shift) < dim &&
-				std::floor((Particles[i][1] / H) + shift) < dim &&
-				std::floor((Particles[i][2] / H) + shift) < dim) {
-				x = std::floor((Particles[i][0] / H) + shift);
-				y = std::floor((Particles[i][1] / H) + shift);
-				z = std::floor((Particles[i][2] / H) + shift);
+			dx = Particles[i][0] - std::floor(Particles[i][0] / H);
+			dy = Particles[i][1] - std::floor(Particles[i][1] / H);
+			dz = Particles[i][2] - std::floor(Particles[i][2] / H);
+			tx = 1. - dx;
+			ty = 1. - dy;
+			tz = 1. - dz;
+			if (std::floor(Particles[i][0] / H) < dim &&
+				std::floor(Particles[i][1] / H)  < dim &&
+				std::floor(Particles[i][2] / H)  < dim) {
+				x = std::floor(Particles[i][0] / H);
+				y = std::floor(Particles[i][1] / H);
+				z = std::floor(Particles[i][2] / H);
 
-				density[x][y][z] += mass / (H * H * H);
+				density[x][y][z] += mass * tx *ty*tz;
+
+				if (y + 1 < dim) { density[x][y+1][z] += mass * tx *dy*tz; }
+				if (z + 1 < dim) { density[x][y][z+1] += mass * tx *ty*dz; }
+				if (y+1<dim && z + 1 < dim) { density[x][y+1][z+1] += mass * tx *dy*dz; }
+				if (x+1<dim ) { density[x+1][y][z] += mass * dx *ty*tz; }
+				if (x+1<dim && y+1<dim) { density[x+1][y+1][z] += mass * dx *dy*tz; }
+				if (x+1<dim && y+1<dim && z+1 <dim) { density[x+1][y+1][z+1] += mass * dx * dy * dz; }
 			}
 
 		}
