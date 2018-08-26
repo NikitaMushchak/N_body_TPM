@@ -121,6 +121,7 @@
     <ClCompile Include="particles_ut.cpp" />
     <ClCompile Include="particles_ut.h" />
     <ClCompile Include="particle_class.cpp" />
+    <ClCompile Include="print.cpp" />
     <ClCompile Include="util.cpp" />
   </ItemGroup>
   <ItemGroup>
