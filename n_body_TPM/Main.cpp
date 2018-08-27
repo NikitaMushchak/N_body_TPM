@@ -14,7 +14,7 @@ int main() {
 	double H = 1.0; //dimention of the cubic BOX
 	//number of boxes and particle must be N^3, where N=2^n
 	size_t dim = 5; //number of BOXes  
-	size_t number_particles = 5;
+	size_t number_particles = 1;
 	double mass = 1;
 	for (size_t i = 0 ; i < dim; ++i)
 		for (size_t j = 0 ; j < dim ;++j)
@@ -25,9 +25,9 @@ int main() {
 				boxes.push_back(box);
 				}
 
-	for (size_t i = 0; i < number_particles; ++i) {
+	for (size_t i = 1; i < number_particles+1; ++i) {
 		Particle part; //create Particle 
-		std::vector<double> a = { (double)i, 4.1 - i, 1.4 * i };
+		std::vector<double> a = { (double)i, 1.9 - i, 1.1*i };
 		part.r = a;
 		particles.push_back(part);
 	}
@@ -85,13 +85,22 @@ int main() {
 				z = std::floor(Particles[i][2] / H);
 
 				density[x][y][z] += mass * tx *ty*tz;
-
-				if (y + 1 < dim) { density[x][y+1][z] += mass * tx *dy*tz; }
-				if (z + 1 < dim) { density[x][y][z+1] += mass * tx *ty*dz; }
-				if (y+1<dim && z + 1 < dim) { density[x][y+1][z+1] += mass * tx *dy*dz; }
-				if (x+1<dim ) { density[x+1][y][z] += mass * dx *ty*tz; }
-				if (x+1<dim && y+1<dim) { density[x+1][y+1][z] += mass * dx *dy*tz; }
-				if (x+1<dim && y+1<dim && z+1 <dim) { density[x+1][y+1][z+1] += mass * dx * dy * dz; }
+				
+				if (y + 1 >= dim) { y = y % (dim-1); density[x][y][z] += mass * tx *dy*tz; }
+				else { density[x][y+1][z] += mass * tx *dy*tz; }
+				if (z + 1 >= dim) { z = z % (dim-1); density[x][y][z] += mass * tx *ty*dz; }
+				else { density[x][y][z+1] += mass * tx *ty*dz; }
+				if (y+1>=dim && z + 1 >= dim) { z = z % (dim-1); y = y % (dim-1); density[x][y][z] += mass * tx *dy*dz; }
+				else{ density[x][y + 1][z + 1] += mass * tx *dy*dz; }
+				if (x + 1 >= dim) { x = x % (dim - 1); density[x][y][z] += mass * dx *ty*tz; }
+				else {density[x + 1][y][z] += mass * dx *ty*tz; }
+				if (x+1>=dim && y+1>=dim) { x = x % (dim - 1); y = y % (dim - 1); density[x][y][z] += mass * dx *dy*tz; }
+				else { density[x + 1][y + 1][z] += mass * dx *dy*tz; }
+				if (x+1>=dim && z+1>=dim) { x = x % (dim - 1); z = z % (dim - 1); density[x][y][z] += mass * dx *ty*dz; }
+				else{ density[x + 1][y][z + 1] += mass * dx *ty*dz; }
+				if (x+1>=dim && y+1>=dim && z+1>=dim) { x = x % (dim - 1); y =y % (dim - 1); z = z % (dim - 1); density[x][y][z] += mass * dx * dy * dz; }
+				else { density[x + 1][y + 1][z + 1] += mass * dx * dy * dz; }
+			
 			}
 
 		}
