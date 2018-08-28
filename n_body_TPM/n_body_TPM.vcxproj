@@ -130,6 +130,7 @@
     <ClInclude Include="box_struct.h" />
     <ClInclude Include="Create_particles.h" />
     <ClInclude Include="dirent.h" />
+    <ClInclude Include="Fourier_tools.hh" />
     <ClInclude Include="particle_struct.h" />
     <ClInclude Include="uitil.h" />
     <ClInclude Include="vect.h" />

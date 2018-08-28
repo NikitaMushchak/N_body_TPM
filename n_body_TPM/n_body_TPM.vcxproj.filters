@@ -65,5 +65,8 @@
     <ClInclude Include="box_struct.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Fourier_tools.hh">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

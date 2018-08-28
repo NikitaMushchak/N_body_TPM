@@ -4,6 +4,7 @@
 #include "ai.hh"
 #include "particles_ut.h"
 #include "box_struct.h"
+#include "Fourier_tools.hh"
 
 
 
@@ -13,7 +14,7 @@ int main() {
 	std::vector<BOX> boxes;
 	double H = 1.0; //dimention of the cubic BOX
 	//number of boxes and particle must be N^3, where N=2^n
-	size_t dim = 5; //number of BOXes  
+	size_t dim = 4; //number of BOXes power of 2 
 	size_t number_particles = 1;
 	double mass = 1;
 	for (size_t i = 0 ; i < dim; ++i)
@@ -53,16 +54,21 @@ int main() {
 		//ai::saveMatrix("./output/Mesh.txt", Boxes);
 		//ai::saveMatrix("./output/Particles.txt", Particles);
 		
-		std::vector <
-			std::vector<
-				std::vector<double>>> density;
+		std::vector<
+			std::vector <
+				std::vector<
+					std::vector<double>>>> density;
 		//resize 3D matrix
 		density.resize(dim);
-		for (size_t i = 0; i < dim; ++i){
+		for (size_t i = 0; i < dim; ++i) {
 			density[i].resize(dim);
-			for (size_t j = 0; j < dim; ++j)
+			for (size_t j = 0; j < dim; ++j) {
 				density[i][j].resize(dim);
+				for (size_t k = 0; k < dim; ++k) {
+					density[i][j][k].resize(2);
+				}
 			}
+		}
 		//now density dimXdimXdim
 		//auto NewStart = ai::time();
 		 
@@ -84,22 +90,22 @@ int main() {
 				y = std::floor(Particles[i][1] / H);
 				z = std::floor(Particles[i][2] / H);
 
-				density[x][y][z] += mass * tx *ty*tz;
+				density[x][y][z][0] += mass * tx *ty*tz;
 				
-				if (y + 1 >= dim) { y = y % (dim-1); density[x][y][z] += mass * tx *dy*tz; }
-				else { density[x][y+1][z] += mass * tx *dy*tz; }
-				if (z + 1 >= dim) { z = z % (dim-1); density[x][y][z] += mass * tx *ty*dz; }
-				else { density[x][y][z+1] += mass * tx *ty*dz; }
-				if (y+1>=dim && z + 1 >= dim) { z = z % (dim-1); y = y % (dim-1); density[x][y][z] += mass * tx *dy*dz; }
-				else{ density[x][y + 1][z + 1] += mass * tx *dy*dz; }
-				if (x + 1 >= dim) { x = x % (dim - 1); density[x][y][z] += mass * dx *ty*tz; }
-				else {density[x + 1][y][z] += mass * dx *ty*tz; }
-				if (x+1>=dim && y+1>=dim) { x = x % (dim - 1); y = y % (dim - 1); density[x][y][z] += mass * dx *dy*tz; }
-				else { density[x + 1][y + 1][z] += mass * dx *dy*tz; }
-				if (x+1>=dim && z+1>=dim) { x = x % (dim - 1); z = z % (dim - 1); density[x][y][z] += mass * dx *ty*dz; }
-				else{ density[x + 1][y][z + 1] += mass * dx *ty*dz; }
-				if (x+1>=dim && y+1>=dim && z+1>=dim) { x = x % (dim - 1); y =y % (dim - 1); z = z % (dim - 1); density[x][y][z] += mass * dx * dy * dz; }
-				else { density[x + 1][y + 1][z + 1] += mass * dx * dy * dz; }
+				if (y + 1 >= dim) { y = y % (dim-1); density[x][y][z][0] += mass * tx *dy*tz; }
+				else { density[x][y+1][z][0] += mass * tx *dy*tz; }
+				if (z + 1 >= dim) { z = z % (dim-1); density[x][y][z][0] += mass * tx *ty*dz; }
+				else { density[x][y][z+1][0] += mass * tx *ty*dz; }
+				if (y+1>=dim && z + 1 >= dim) { z = z % (dim-1); y = y % (dim-1); density[x][y][z][0] += mass * tx *dy*dz; }
+				else{ density[x][y + 1][z + 1][0] += mass * tx *dy*dz; }
+				if (x + 1 >= dim) { x = x % (dim - 1); density[x][y][z][0] += mass * dx *ty*tz; }
+				else {density[x + 1][y][z][0] += mass * dx *ty*tz; }
+				if (x+1>=dim && y+1>=dim) { x = x % (dim - 1); y = y % (dim - 1); density[x][y][z][0] += mass * dx *dy*tz; }
+				else { density[x + 1][y + 1][z][0] += mass * dx *dy*tz; }
+				if (x+1>=dim && z+1>=dim) { x = x % (dim - 1); z = z % (dim - 1); density[x][y][z][0] += mass * dx *ty*dz; }
+				else{ density[x + 1][y][z + 1][0] += mass * dx *ty*dz; }
+				if (x+1>=dim && y+1>=dim && z+1>=dim) { x = x % (dim - 1); y =y % (dim - 1); z = z % (dim - 1); density[x][y][z][0] += mass * dx * dy * dz; }
+				else { density[x + 1][y + 1][z + 1][0] += mass * dx * dy * dz; }
 			
 			}
 
@@ -111,9 +117,86 @@ int main() {
 			for (size_t j = 0; j < dim; ++j)
 				for (size_t k = 0; k < dim; ++k)
 				{
-					std::cout <<"("<<i<<" , "<<j<<" , "<<k<<" )"<<" dens="<<density[i][j][k]<<std::endl;
+					std::cout <<"("<<i<<" , "<<j<<" , "<<k<<" )"<< " dens = " << " ( " << density[i][j][k][0] << " , "
+						<< density[i][j][k][1] << " )" <<std::endl;
 				}
+		//module with Fourier
 		
+
+		std::cout << "dens dim" << density.size() << std::endl;
+
+		//FFT for slices i - number of slices
+		for (size_t i = 0; i < dim; ++i)
+		{
+			std::vector <
+				std::vector<double>> f(dim); //for rows and colomns
+			for (size_t k = 0; k < dim; ++k) { f[k].resize(2); } //resize f as complex
+			//std::fill(f.begin(), f.end(), 0);
+			
+			//FFT rows of density
+			for (size_t j = 0; j < dim; ++j) {
+				for (size_t k = 0; k < dim; ++k) {
+					f[k][0] = density[i][j][k][0];
+					f[k][1] = density[i][j][k][1];
+				}
+				fft(f , dim);
+				for (size_t k = 0; k < dim; ++k) {
+					density[i][j][k][0] = f[k][0];
+					density[i][j][k][1] = f[k][1];
+				}
+			}
+			//FFT coloumns of density
+			for (size_t k = 0; k < dim; ++k) {
+				for (size_t j = 0; j < dim; ++j) {
+					f[j][0] = density[i][j][k][0];
+					f[j][1] = density[i][j][k][1];
+				}
+				fft(f, dim);
+				for (size_t j = 0; j < dim; ++j) {
+					density[i][j][k][0] = f[j][0];
+					density[i][j][k][1] = f[j][1];
+				}
+			}
+		//Solve  equation in Fourier space
 		
+
+
+		//IFFT rows
+			for (size_t j = 0; j < dim; ++j) {
+				for (size_t k = 0; k < dim; ++k) {
+					f[k][0] = density[i][j][k][0];
+					f[k][1] = density[i][j][k][1];
+				}
+				ifft(f, dim);
+				for (size_t k = 0; k < dim; ++k)
+				{
+					density[i][j][k][0] = f[k][0];
+					density[i][j][k][1] = f[k][1];					
+				}
+			}
+
+			//IFFT coloums
+			for (size_t k = 0; k < dim; ++k) {
+				for (size_t j = 0; j < dim; ++j) {
+					f[j][0] = density[i][j][k][0];
+					f[j][1] = density[i][j][k][1];
+				}
+				ifft(f, dim);
+				for (size_t j = 0; j < dim; ++j) {
+					density[i][j][k][0] = f[j][0];
+					density[i][j][k][1] = f[j][1];
+				}
+			}
+		}// cicle for slices
+
+		//output
+		std::cout << "FFT and IFFT density  =" << std::endl;
+		for (size_t i = 0; i < dim; ++i)
+			for (size_t j = 0; j < dim; ++j)
+				for (size_t k = 0; k < dim; ++k)
+				{
+					std::cout << "(" << i << " , " << j << " , " << k << " )" << " dens = " <<" ( " <<density[i][j][k][0]<<" , "
+						<<density[i][j][k][1]<<" )"<< std::endl;
+				}
 		return 0;
 }
