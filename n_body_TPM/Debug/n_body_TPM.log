@@ -1,0 +1,16 @@
+﻿  a3r.cc
+  Create_particles.cpp
+  Main.cpp
+g:\n_body_tpm\n_body_tpm\ai.hh(503): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+g:\n_body_tpm\n_body_tpm\main.cpp(89): warning C4244: '=': conversion from 'double' to 'size_t', possible loss of data
+g:\n_body_tpm\n_body_tpm\main.cpp(90): warning C4244: '=': conversion from 'double' to 'size_t', possible loss of data
+g:\n_body_tpm\n_body_tpm\main.cpp(91): warning C4244: '=': conversion from 'double' to 'size_t', possible loss of data
+  particles_ut.cpp
+g:\n_body_tpm\n_body_tpm\ai.hh(503): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  particles_ut.h
+  particle_class.cpp
+  print.cpp
+  util.cpp
+  Generating Code...
+Debug\particles_ut.obj : warning LNK4042: object specified more than once; extras ignored
+  n_body_TPM.vcxproj -> G:\n_body_TPM\n_body_TPM\Debug\n_body_TPM.exe

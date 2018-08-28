@@ -18,10 +18,25 @@
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="a3r.cpp">
+    <ClCompile Include="Create_particles.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Create_particles.cpp">
+    <ClCompile Include="a3r.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="util.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="particle_class.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="particles_ut.h">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="particles_ut.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="print.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -29,10 +44,28 @@
     <ClInclude Include="a3r.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="particle_class.h">
+    <ClInclude Include="Create_particles.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Create_particles.h">
+    <ClInclude Include="ai.hh">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dirent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="uitil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="particle_struct.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="box_struct.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Fourier_tools.hh">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

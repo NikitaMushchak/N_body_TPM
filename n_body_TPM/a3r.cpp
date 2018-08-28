@@ -1,6 +1,7 @@
 
 
 #include "a3r.h"
+#include "ai.hh"
 #include <cstring>
 #include <stdio.h>
 
