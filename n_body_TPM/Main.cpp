@@ -17,6 +17,7 @@ int main() {
 	size_t dim = 4; //number of BOXes power of 2 
 	size_t number_particles = 1;
 	double mass = 1;
+	double h = 1. / double(dim - 1);
 	for (size_t i = 0 ; i < dim; ++i)
 		for (size_t j = 0 ; j < dim ;++j)
 			for (size_t k = 0; k < dim ;++k){
@@ -28,7 +29,7 @@ int main() {
 
 	for (size_t i = 1; i < number_particles+1; ++i) {
 		Particle part; //create Particle 
-		std::vector<double> a = { (double)i, 1.9 - i, 1.1*i };
+		std::vector<double> a = { (double)2.1*i,  2.46* i, 3.1*i };
 		part.r = a;
 		particles.push_back(part);
 	}
@@ -48,9 +49,9 @@ int main() {
 		}
 		//auto Oldfinish = ai::time();
 		//std::cout << "time duration Old = " << ai::duration(Oldstart, Oldfinish, "ms") << " ms" << std::endl;
-		std::cout << "Particles= " << std::endl;
+		//std::cout << "Particles= " << std::endl;
 		ai::printMatrix(Particles);
-		ai::printMatrix(Boxes); //output 
+		//ai::printMatrix(Boxes); //output 
 		//ai::saveMatrix("./output/Mesh.txt", Boxes);
 		//ai::saveMatrix("./output/Particles.txt", Particles);
 		
@@ -126,20 +127,20 @@ int main() {
 		std::cout << "dens dim = " << density.size() << std::endl;
 		auto start = ai::time();
 		//FFT for slices i - number of slices
+		#pragma loop(hint_parallel(8))  
 		for (size_t i = 0; i < dim; ++i)
 		{
 			std::vector <
 				std::vector<double>> f(dim); //for rows and colomns
 			for (size_t k = 0; k < dim; ++k) { f[k].resize(2); } //resize f as complex
-			//std::fill(f.begin(), f.end(), 0);
-			
+
 			//FFT rows of density
 			for (size_t j = 0; j < dim; ++j) {
 				for (size_t k = 0; k < dim; ++k) {
 					f[k][0] = density[i][j][k][0];
 					f[k][1] = density[i][j][k][1];
 				}
-				fft(f , dim);
+				fft(f, dim);
 				for (size_t k = 0; k < dim; ++k) {
 					density[i][j][k][0] = f[k][0];
 					density[i][j][k][1] = f[k][1];
@@ -157,66 +158,97 @@ int main() {
 					density[i][j][k][1] = f[j][1];
 				}
 			}
-		//Solve  equation in Fourier space
-				std::vector<double> cz = { 0. , 0. };
-				double pi = 4 * std::atan(1.0);
+			
+		}
+				////Solve  equation in Fourier space
+				double pi = 3.14159265358979;
 				std::vector<double> W = {0. , std::exp(2.0 * pi / double(dim)) };
 				std::vector<double> Wl = { 1. , 0. };
 				std::vector<double> Wn = { 1. , 0. };
 				std::vector<double> Wm = { 1. , 0. };
-				for (size_t l = 0; l < dim; ++l) {
+				for (size_t l = 0; l < 0; ++l) {
 					for (size_t m = 0; m < dim; ++m) {
 						for (size_t n = 0; n < dim; ++n) {
 							std::vector<double> d = { 6., 0. };
-							d[0] -= Wl[0] + 1. / Wl[0] + Wn[0] + 1. / Wn[0] + Wm[0] + 1. / Wm[0];
-							d[1] -= Wl[1] + 1. / Wl[1] + Wn[1] + 1. / Wn[1] + Wm[1] + 1. / Wm[1];
-							if (d != cz) {
-								density[l][n][m][0] *= (H*H*H) / d[0];
-								density[l][n][m][1] *= (H*H*H) / d[1];
+							//d[0] -= Wl[0] + 1. / Wl[0] + Wn[0] + 1. / Wn[0] + Wm[0] + 1. / Wm[0];
+							
+							d[0] =d[0] -( Wl[0] + (Wl[0]/(Wl[0]* Wl[0] + Wl[1]* Wl[1])) + Wn[0] + (Wn[0]/(Wn[0] * Wn[0] + Wn[1] * Wn[1])) + 
+								Wm[0] + (Wm[0] / (Wm[0] * Wm[0] + Wm[1] * Wm[1])));
+							
+							d[1] =d[0] - (Wl[1] - (Wl[1] / (Wl[0] * Wl[0] + Wl[1] * Wl[1])) + Wn[1] -(Wn[1] / (Wn[0] * Wn[0] + Wn[1] * Wn[1])) + 
+								Wm[1] - (Wm[1] / (Wm[0] * Wm[0] + Wm[1] * Wm[1])));
+							if (d[0] != 0. && d[1] != 0.) {
+								double q = density[l][m][n][0];
+								//density[l][n][m][0] = density[l][n][m][0]*((h*h*h) / d[0]) - density[l][n][m][1] * ((h*h*h) / d[1]);
+								density[l][m][n][0] = density[l][m][n][0] * ((h*h*h)*d[0]/(d[0]*d[0]+d[1]*d[1])) - 
+									density[l][m][n][1] * ((h*h*h)* d[1]/ (d[0] * d[0] + d[1] * d[1]));
+								
+								density[l][m][n][1] = -q*((h*h*h) * d[1] / (d[0] * d[0] + d[1] * d[1])) + 
+									density[l][m][n][1] *((h*h*h) * d[0]/ (d[0] * d[0] + d[1] * d[1]));
+								
 							}
-							Wn[0] *= W[0];
-							Wn[1] *= W[1];
+							double s = Wn[0];
+							Wn[0] = Wn[0]*W[0] - Wn[1] * W[1];
+							Wn[1] = s*W[1] + Wn[1] * W[0];
 						}
-						Wm[0] *= W[0];
-						Wm[1] *= W[1];
+						double b = Wm[0];
+						Wm[0] = Wm[0] * W[0] - Wm[1] * W[1];
+						Wm[1] = b * W[1] + Wm[1] * W[0];
 					}
-					Wl[0] *= W[0];
-					Wl[1] *= W[1];
+					double u = Wl[0];
+					Wl[0] = Wl[0]* W[0] - Wl[1] * W[1];
+					Wl[1] = u* W[1] + Wl[1] * W[0];
 				}
-
-
-		//IFFT rows
-			for (size_t j = 0; j < dim; ++j) {
-				for (size_t k = 0; k < dim; ++k) {
-					f[k][0] = density[i][j][k][0];
-					f[k][1] = density[i][j][k][1];
-				}
-				ifft(f, dim);
-				for (size_t k = 0; k < dim; ++k)
+				std::cout << "Potential field in fourier =" << std::endl;
+				for (size_t i = 0; i < dim; ++i)
+					for (size_t j = 0; j < dim; ++j)
+						for (size_t k = 0; k < dim; ++k)
+						{
+							std::cout << "(" << i << " , " << j << " , " << k << " )" << " dens = " << " ( " << density[i][j][k][0] << " , "
+								<< density[i][j][k][1] << " )" << std::endl;
+						}
+				//for slices
+				#pragma loop(hint_parallel(8)) 
+				for (size_t i = 0; i < dim; ++i)
 				{
-					density[i][j][k][0] = f[k][0];
-					density[i][j][k][1] = f[k][1];					
-				}
-			}
+					//IFFT rows
+					std::vector <
+						std::vector<double>> f(dim); //for rows and colomns
+					for (size_t k = 0; k < dim; ++k) { f[k].resize(2); } //resize f as complex
 
-			//IFFT coloums
-			for (size_t k = 0; k < dim; ++k) {
-				for (size_t j = 0; j < dim; ++j) {
-					f[j][0] = density[i][j][k][0];
-					f[j][1] = density[i][j][k][1];
+
+
+					for (size_t j = 0; j < dim; ++j) {
+						for (size_t k = 0; k < dim; ++k) {
+							f[k][0] = density[i][j][k][0];
+							f[k][1] = density[i][j][k][1];
+						}
+						ifft(f, dim);
+						for (size_t k = 0; k < dim; ++k)
+						{
+							density[i][j][k][0] = f[k][0];
+							density[i][j][k][1] = f[k][1];
+						}
+					}
+
+					//IFFT coloums
+					for (size_t k = 0; k < dim; ++k) {
+						for (size_t j = 0; j < dim; ++j) {
+							f[j][0] = density[i][j][k][0];
+							f[j][1] = density[i][j][k][1];
+						}
+						ifft(f, dim);
+						for (size_t j = 0; j < dim; ++j) {
+							density[i][j][k][0] = f[j][0];
+							density[i][j][k][1] = f[j][1];
+						}
+					}
 				}
-				ifft(f, dim);
-				for (size_t j = 0; j < dim; ++j) {
-					density[i][j][k][0] = f[j][0];
-					density[i][j][k][1] = f[j][1];
-				}
-			}
-		}// cicle for slices
 		auto finish = ai::time();
 
 		std::cout << "TIME =  " << ai::duration(start, finish, "ms") << "ms" << std::endl;
 		//output
-		std::cout << "FFT and IFFT density  =" << std::endl;
+		std::cout << "Potential field  =" << std::endl;
 		for (size_t i = 0; i < dim; ++i)
 			for (size_t j = 0; j < dim; ++j)
 				for (size_t k = 0; k < dim; ++k)
