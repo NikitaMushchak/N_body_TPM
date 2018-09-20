@@ -1,0 +1,7 @@
+﻿  main.cpp
+g:\n_body_tpm\poisson_2d\poisson2d\poisson2d\ai.hh(503): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  particles_ut.cpp
+g:\n_body_tpm\poisson_2d\poisson2d\poisson2d\ai.hh(503): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  Source.cpp
+  Generating Code...
+  Poisson2D.vcxproj -> G:\n_body_TPM\Poisson_2D\Poisson2D\Debug\Poisson2D.exe
