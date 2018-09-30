@@ -1,0 +1,55 @@
+﻿  a3r.cc
+  CalcModule.cpp
+g:\n_body_tpm\n_body_tpm\ai.hh(503): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+g:\n_body_tpm\n_body_tpm\calcmodule.cpp(37): warning C4244: '=': conversion from 'double' to 'size_t', possible loss of data
+g:\n_body_tpm\n_body_tpm\calcmodule.cpp(38): warning C4244: '=': conversion from 'double' to 'size_t', possible loss of data
+g:\n_body_tpm\n_body_tpm\calcmodule.cpp(39): warning C4244: '=': conversion from 'double' to 'size_t', possible loss of data
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.14.26428\include\xutility(2957): error C2679: binary '=': no operator found which takes a right-hand operand of type 'const double' (or there is no acceptable conversion)
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.14.26428\include\vector(1477): note: could be 'std::vector<std::vector<std::vector<double,std::allocator<_Ty>>,std::allocator<std::vector<_Ty,std::allocator<_Ty>>>>,std::allocator<std::vector<std::vector<_Ty,std::allocator<_Ty>>,std::allocator<std::vector<_Ty,std::allocator<_Ty>>>>>> &std::vector<std::vector<std::vector<_Ty,std::allocator<_Ty>>,std::allocator<std::vector<_Ty,std::allocator<_Ty>>>>,std::allocator<std::vector<std::vector<_Ty,std::allocator<_Ty>>,std::allocator<std::vector<_Ty,std::allocator<_Ty>>>>>>::operator =(std::initializer_list<std::vector<std::vector<_Ty,std::allocator<_Ty>>,std::allocator<std::vector<_Ty,std::allocator<_Ty>>>>>)'
+          with
+          [
+              _Ty=double
+          ]
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.14.26428\include\vector(1456): note: or       'std::vector<std::vector<std::vector<double,std::allocator<_Ty>>,std::allocator<std::vector<_Ty,std::allocator<_Ty>>>>,std::allocator<std::vector<std::vector<_Ty,std::allocator<_Ty>>,std::allocator<std::vector<_Ty,std::allocator<_Ty>>>>>> &std::vector<std::vector<std::vector<_Ty,std::allocator<_Ty>>,std::allocator<std::vector<_Ty,std::allocator<_Ty>>>>,std::allocator<std::vector<std::vector<_Ty,std::allocator<_Ty>>,std::allocator<std::vector<_Ty,std::allocator<_Ty>>>>>>::operator =(const std::vector<std::vector<std::vector<_Ty,std::allocator<_Ty>>,std::allocator<std::vector<_Ty,std::allocator<_Ty>>>>,std::allocator<std::vector<std::vector<_Ty,std::allocator<_Ty>>,std::allocator<std::vector<_Ty,std::allocator<_Ty>>>>>> &)'
+          with
+          [
+              _Ty=double
+          ]
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.14.26428\include\vector(922): note: or       'std::vector<std::vector<std::vector<double,std::allocator<_Ty>>,std::allocator<std::vector<_Ty,std::allocator<_Ty>>>>,std::allocator<std::vector<std::vector<_Ty,std::allocator<_Ty>>,std::allocator<std::vector<_Ty,std::allocator<_Ty>>>>>> &std::vector<std::vector<std::vector<_Ty,std::allocator<_Ty>>,std::allocator<std::vector<_Ty,std::allocator<_Ty>>>>,std::allocator<std::vector<std::vector<_Ty,std::allocator<_Ty>>,std::allocator<std::vector<_Ty,std::allocator<_Ty>>>>>>::operator =(std::vector<std::vector<std::vector<_Ty,std::allocator<_Ty>>,std::allocator<std::vector<_Ty,std::allocator<_Ty>>>>,std::allocator<std::vector<std::vector<_Ty,std::allocator<_Ty>>,std::allocator<std::vector<_Ty,std::allocator<_Ty>>>>>> &&) noexcept(<expr>)'
+          with
+          [
+              _Ty=double
+          ]
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.14.26428\include\xutility(2957): note: while trying to match the argument list '(std::vector<std::vector<std::vector<double,std::allocator<_Ty>>,std::allocator<std::vector<_Ty,std::allocator<_Ty>>>>,std::allocator<std::vector<std::vector<_Ty,std::allocator<_Ty>>,std::allocator<std::vector<_Ty,std::allocator<_Ty>>>>>>, const double)'
+          with
+          [
+              _Ty=double
+          ]
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.14.26428\include\xutility(2971): note: see reference to function template instantiation 'void std::_Fill_unchecked1<_FwdIt,_Ty>(_FwdIt,_FwdIt,const _Ty &,std::false_type)' being compiled
+          with
+          [
+              _FwdIt=std::vector<std::vector<std::vector<double,std::allocator<double>>,std::allocator<std::vector<double,std::allocator<double>>>>,std::allocator<std::vector<std::vector<double,std::allocator<double>>,std::allocator<std::vector<double,std::allocator<double>>>>>> *,
+              _Ty=double
+          ]
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.14.26428\include\xutility(2979): note: see reference to function template instantiation 'void std::_Fill_unchecked<std::vector<std::vector<std::vector<double,std::allocator<_Ty>>,std::allocator<std::vector<_Ty,std::allocator<_Ty>>>>,std::allocator<std::vector<std::vector<_Ty,std::allocator<_Ty>>,std::allocator<std::vector<_Ty,std::allocator<_Ty>>>>>>*,_Ty>(_FwdIt,_FwdIt,const _Ty &)' being compiled
+          with
+          [
+              _Ty=double,
+              _FwdIt=std::vector<std::vector<std::vector<double,std::allocator<double>>,std::allocator<std::vector<double,std::allocator<double>>>>,std::allocator<std::vector<std::vector<double,std::allocator<double>>,std::allocator<std::vector<double,std::allocator<double>>>>>> *
+          ]
+  g:\n_body_tpm\n_body_tpm\calcmodule.cpp(19): note: see reference to function template instantiation 'void std::fill<std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>,double>(_FwdIt,_FwdIt,const double &)' being compiled
+          with
+          [
+              _Ty=std::vector<std::vector<std::vector<double,std::allocator<double>>,std::allocator<std::vector<double,std::allocator<double>>>>,std::allocator<std::vector<std::vector<double,std::allocator<double>>,std::allocator<std::vector<double,std::allocator<double>>>>>>,
+              _FwdIt=std::_Vector_iterator<std::_Vector_val<std::_Simple_types<std::vector<std::vector<std::vector<double,std::allocator<double>>,std::allocator<std::vector<double,std::allocator<double>>>>,std::allocator<std::vector<std::vector<double,std::allocator<double>>,std::allocator<std::vector<double,std::allocator<double>>>>>>>>>
+          ]
+  Create_particles.cpp
+  Main.cpp
+g:\n_body_tpm\n_body_tpm\ai.hh(503): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  particles_ut.cpp
+g:\n_body_tpm\n_body_tpm\ai.hh(503): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  particles_ut.h
+  particle_class.cpp
+  print.cpp
+  util.cpp
+  Generating Code...
