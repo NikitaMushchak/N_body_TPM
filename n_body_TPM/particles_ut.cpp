@@ -3,7 +3,7 @@
 #include "box_struct.h"
 
 #include "ai.hh"
-#include "uitil.h"
+//#include "uitil.h"
 
 
 namespace particle_ut

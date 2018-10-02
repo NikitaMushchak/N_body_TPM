@@ -115,44 +115,40 @@ void CalcPotential(std::vector<
 	//std::complex<double> z(0.0, 1.0);
 	double pi = 3.14159265358979;
 	std::vector<double> NUL = { 0., 0. };
-	//std::complex<double> W = std::exp(2.0 * pi * z / double(dim));
 	std::vector<double> W = { cos(2.0 * pi / double(dim)) , sin(2.0 * pi / double(dim)) };
-	//std::complex<double> Wm = 1.0, Wn = 1.0 ,  Wk = 1.0;
 	std::vector<double> Wm = { 1.0, 0. }, Wn = { 1.0, 0. }, Wk = { 1.0, 0. };
 	for (size_t k = 0; k < dim; k++) {
 		for (size_t m = 0; m < dim; m++) {
 			for (size_t n = 0; n < dim; n++) {
-
-				//std::complex<double> denom = 6.0;
 				std::vector<double> denom = { 6.0 ,0. };
 
 				std::vector < double> i_Wk = { Wk[0] / (Wk[0] * Wk[0] + Wk[1] * Wk[1]), -(Wk[1] / (Wk[0] * Wk[0] + Wk[1] * Wk[1])) };
 				std::vector < double> i_Wm = { Wm[0] / (Wm[0] * Wm[0] + Wm[1] * Wm[1]), -(Wm[1] / (Wm[0] * Wm[0] + Wm[1] * Wm[1])) };
 				std::vector < double> i_Wn = { Wn[0] / (Wn[0] * Wn[0] + Wn[1] * Wn[1]), -(Wn[1] / (Wn[0] * Wn[0] + Wn[1] * Wn[1])) };
 
-				//denom -= Wk + 1.0 / Wk + Wm + 1.0 / Wm + Wn + 1.0 / Wn;
 				denom[0] -= (Wk[0] + i_Wk[0] + Wm[0] + i_Wm[0] + Wn[0] + i_Wn[0]);
 				denom[1] -= (Wk[1] + i_Wk[1] + Wm[1] + i_Wm[1] + Wn[1] + i_Wn[1]);
 				if (denom != NUL) {
 
-					//std::vector<double> hh_denom = { (h*h*denom[0]) / (denom[0] * denom[0] + denom[1] * denom[1]),-(h * h*denom[1]) / (denom[0] * denom[0] + denom[1] * denom[1]) };
+					
 
 					double q = rho[k][m][n][0];
-					rho[k][m][n][0] = h * h*(rho[k][m][n][0] * denom[0] + rho[k][m][n][1] * denom[1]) / (denom[0] * denom[0] + denom[1] * denom[1]);
-					rho[k][m][n][1] = h * h*(rho[k][m][n][1] * denom[0] - q * denom[1]) / (denom[0] * denom[0] + denom[1] * denom[1]);
-					//rho[k][m][n] = rho[k][m][n] * h * h / denom;
+					rho[k][m][n][0] = 
+						//h * h*
+						(rho[k][m][n][0] * denom[0] + rho[k][m][n][1] * denom[1]) / (denom[0] * denom[0] + denom[1] * denom[1]);
+					rho[k][m][n][1] =
+						//h * h*
+						(rho[k][m][n][1] * denom[0] - q * denom[1]) / (denom[0] * denom[0] + denom[1] * denom[1]);
+				
 				}
-				//Wn = Wn * W;
 				double b = Wn[0];
 				Wn[0] = Wn[0] * W[0] - Wn[1] * W[1];
 				Wn[1] = Wn[1] * W[0] + b * W[1];
 			}
-			//Wm = Wm * W;
 			double r = Wm[0];
 			Wm[0] = Wm[0] * W[0] - Wm[1] * W[1];
 			Wm[1] = Wm[1] * W[0] + r * W[1];
 		}
-		//Wk *= W;
 		double a = Wk[0];
 		Wk[0] = Wk[0] * W[0] - Wk[1] * W[1];
 		Wk[1] = Wk[1] * W[0] + a * W[1];

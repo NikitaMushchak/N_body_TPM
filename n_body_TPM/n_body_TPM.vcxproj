@@ -116,29 +116,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="a3r.cc" />
     <ClCompile Include="CalcModule.cpp" />
-    <ClCompile Include="Create_particles.cpp" />
     <ClCompile Include="Integrator.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="particles_ut.cpp" />
     <ClCompile Include="particles_ut.h" />
     <ClCompile Include="particle_class.cpp" />
     <ClCompile Include="print.cpp" />
-    <ClCompile Include="util.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="a3r.h" />
     <ClInclude Include="ai.hh" />
     <ClInclude Include="box_struct.h" />
     <ClInclude Include="CaclModule.h" />
-    <ClInclude Include="Create_particles.h" />
     <ClInclude Include="dirent.h" />
     <ClInclude Include="Fourier_tools.hh" />
     <ClInclude Include="Integrator.h" />
     <ClInclude Include="particle_struct.h" />
-    <ClInclude Include="uitil.h" />
-    <ClInclude Include="vect.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
