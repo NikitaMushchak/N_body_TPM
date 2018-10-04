@@ -1,6 +1,16 @@
-﻿  Main.cpp
-g:\n_body_tpm\n_body_tpm\ai.hh(503): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-g:\n_body_tpm\n_body_tpm\main.cpp(139): warning C4244: '=': conversion from 'double' to 'size_t', possible loss of data
-g:\n_body_tpm\n_body_tpm\main.cpp(140): warning C4244: '=': conversion from 'double' to 'size_t', possible loss of data
-g:\n_body_tpm\n_body_tpm\main.cpp(141): warning C4244: '=': conversion from 'double' to 'size_t', possible loss of data
+﻿  CalcModule.cpp
+g:\n_body_tpm\n_body_tpm\ai.hh(506): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+g:\n_body_tpm\n_body_tpm\calcmodule.cpp(37): warning C4244: '=': conversion from 'double' to 'size_t', possible loss of data
+g:\n_body_tpm\n_body_tpm\calcmodule.cpp(38): warning C4244: '=': conversion from 'double' to 'size_t', possible loss of data
+g:\n_body_tpm\n_body_tpm\calcmodule.cpp(39): warning C4244: '=': conversion from 'double' to 'size_t', possible loss of data
+  Main.cpp
+g:\n_body_tpm\n_body_tpm\ai.hh(506): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+g:\n_body_tpm\n_body_tpm\main.cpp(163): warning C4244: '=': conversion from 'double' to 'size_t', possible loss of data
+g:\n_body_tpm\n_body_tpm\main.cpp(164): warning C4244: '=': conversion from 'double' to 'size_t', possible loss of data
+g:\n_body_tpm\n_body_tpm\main.cpp(165): warning C4244: '=': conversion from 'double' to 'size_t', possible loss of data
+  particles_ut.cpp
+g:\n_body_tpm\n_body_tpm\ai.hh(506): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  particles_ut.h
+  Generating Code...
+Debug\particles_ut.obj : warning LNK4042: object specified more than once; extras ignored
   n_body_TPM.vcxproj -> G:\n_body_TPM\n_body_TPM\Debug\n_body_TPM.exe

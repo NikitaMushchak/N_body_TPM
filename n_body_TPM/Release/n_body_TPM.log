@@ -1,17 +1,17 @@
 ﻿  CalcModule.cpp
-g:\n_body_tpm\n_body_tpm\ai.hh(503): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+g:\n_body_tpm\n_body_tpm\ai.hh(506): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
 g:\n_body_tpm\n_body_tpm\calcmodule.cpp(37): warning C4244: '=': conversion from 'double' to 'size_t', possible loss of data
 g:\n_body_tpm\n_body_tpm\calcmodule.cpp(38): warning C4244: '=': conversion from 'double' to 'size_t', possible loss of data
 g:\n_body_tpm\n_body_tpm\calcmodule.cpp(39): warning C4244: '=': conversion from 'double' to 'size_t', possible loss of data
   Integrator.cpp
   Main.cpp
-g:\n_body_tpm\n_body_tpm\ai.hh(503): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+g:\n_body_tpm\n_body_tpm\ai.hh(506): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
 g:\n_body_tpm\n_body_tpm\main.cpp(77): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-g:\n_body_tpm\n_body_tpm\main.cpp(139): warning C4244: '=': conversion from 'double' to 'size_t', possible loss of data
-g:\n_body_tpm\n_body_tpm\main.cpp(140): warning C4244: '=': conversion from 'double' to 'size_t', possible loss of data
-g:\n_body_tpm\n_body_tpm\main.cpp(141): warning C4244: '=': conversion from 'double' to 'size_t', possible loss of data
+g:\n_body_tpm\n_body_tpm\main.cpp(166): warning C4244: '=': conversion from 'double' to 'size_t', possible loss of data
+g:\n_body_tpm\n_body_tpm\main.cpp(167): warning C4244: '=': conversion from 'double' to 'size_t', possible loss of data
+g:\n_body_tpm\n_body_tpm\main.cpp(168): warning C4244: '=': conversion from 'double' to 'size_t', possible loss of data
   particles_ut.cpp
-g:\n_body_tpm\n_body_tpm\ai.hh(503): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+g:\n_body_tpm\n_body_tpm\ai.hh(506): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
   particles_ut.h
   particle_class.cpp
   print.cpp

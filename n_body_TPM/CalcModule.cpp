@@ -108,37 +108,37 @@ void CalcPotential(std::vector<
 			}
 		}
 
-	}
-	std::cout << "FFT for layers ....DONE" << std::endl;
+	//}
+	//std::cout << "FFT for layers ....DONE" << std::endl;
 
 	// solve equation in Fourier space 
 	//std::complex<double> z(0.0, 1.0);
 	double pi = 3.14159265358979;
 	std::vector<double> NUL = { 0., 0. };
 	std::vector<double> W = { cos(2.0 * pi / double(dim)) , sin(2.0 * pi / double(dim)) };
-	std::vector<double> Wm = { 1.0, 0. }, Wn = { 1.0, 0. }, Wk = { 1.0, 0. };
-	for (size_t k = 0; k < dim; k++) {
+	std::vector<double> Wm = { 1.0, 0. }, Wn = { 1.0, 0. };//, Wk = { 1.0, 0. };
+	//for (size_t k = 0; k < dim; k++) {
 		for (size_t m = 0; m < dim; m++) {
 			for (size_t n = 0; n < dim; n++) {
-				std::vector<double> denom = { 6.0 ,0. };
+				std::vector<double> denom = { 4.0 ,0. };
 
-				std::vector < double> i_Wk = { Wk[0] / (Wk[0] * Wk[0] + Wk[1] * Wk[1]), -(Wk[1] / (Wk[0] * Wk[0] + Wk[1] * Wk[1])) };
+				//std::vector < double> i_Wk = { Wk[0] / (Wk[0] * Wk[0] + Wk[1] * Wk[1]), -(Wk[1] / (Wk[0] * Wk[0] + Wk[1] * Wk[1])) };
 				std::vector < double> i_Wm = { Wm[0] / (Wm[0] * Wm[0] + Wm[1] * Wm[1]), -(Wm[1] / (Wm[0] * Wm[0] + Wm[1] * Wm[1])) };
 				std::vector < double> i_Wn = { Wn[0] / (Wn[0] * Wn[0] + Wn[1] * Wn[1]), -(Wn[1] / (Wn[0] * Wn[0] + Wn[1] * Wn[1])) };
 
-				denom[0] -= (Wk[0] + i_Wk[0] + Wm[0] + i_Wm[0] + Wn[0] + i_Wn[0]);
-				denom[1] -= (Wk[1] + i_Wk[1] + Wm[1] + i_Wm[1] + Wn[1] + i_Wn[1]);
+				denom[0] -= (/*Wk[0] + i_Wk[0] +*/ Wm[0] + i_Wm[0] + Wn[0] + i_Wn[0]);
+				denom[1] -= (/*Wk[1] + i_Wk[1] +*/ Wm[1] + i_Wm[1] + Wn[1] + i_Wn[1]);
 				if (denom != NUL) {
 
 					
 
-					double q = rho[k][m][n][0];
-					rho[k][m][n][0] = 
+					double q = rho[i][m][n][0];
+					rho[i][m][n][0] = 
 						//h * h*
-						(rho[k][m][n][0] * denom[0] + rho[k][m][n][1] * denom[1]) / (denom[0] * denom[0] + denom[1] * denom[1]);
-					rho[k][m][n][1] =
+						(rho[i][m][n][0] * denom[0] + rho[i][m][n][1] * denom[1]) / (denom[0] * denom[0] + denom[1] * denom[1]);
+					rho[i][m][n][1] =
 						//h * h*
-						(rho[k][m][n][1] * denom[0] - q * denom[1]) / (denom[0] * denom[0] + denom[1] * denom[1]);
+						(rho[i][m][n][1] * denom[0] - q * denom[1]) / (denom[0] * denom[0] + denom[1] * denom[1]);
 				
 				}
 				double b = Wn[0];
@@ -149,15 +149,15 @@ void CalcPotential(std::vector<
 			Wm[0] = Wm[0] * W[0] - Wm[1] * W[1];
 			Wm[1] = Wm[1] * W[0] + r * W[1];
 		}
-		double a = Wk[0];
+	/*	double a = Wk[0];
 		Wk[0] = Wk[0] * W[0] - Wk[1] * W[1];
 		Wk[1] = Wk[1] * W[0] + a * W[1];
-	}
+	}*/
 	std::cout << "Solve Poisson eq. in Fourier space" << std::endl;
-	for (size_t i = 0; i < dim; i++)
-	{
-		std::vector<std::vector<double>> f;
-		f.resize(dim);
+	/*for (size_t i = 0; i < dim; i++)
+	{*/
+		//std::vector<std::vector<double>> f;
+		//f.resize(dim);
 		for (size_t y = 0; y < dim; y++)
 		{
 			f[y].resize(2);
