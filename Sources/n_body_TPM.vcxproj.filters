@@ -27,9 +27,6 @@
     <ClCompile Include="particles_ut.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="print.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="CalcModule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

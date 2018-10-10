@@ -47,7 +47,10 @@ inline double Step_PM(std::vector<std::vector<double>>& Particles , std::vector<
 	}
 	return dt;
 }
-inline void Step(std::vector<std::vector<double>>& Particles, std::vector<std::vector<double>>& vel, std::vector<std::vector<double>>& a, double mass, size_t dim, double H)
+inline void StepP(std::vector<std::vector<double>>& Particles,
+	std::vector<std::vector<double>>& vel,
+	std::vector<std::vector<double>>& a,
+	double mass, size_t dim, double H, double dt)
 {
 	std::vector<
 		std::vector<
@@ -85,7 +88,9 @@ inline void Step(std::vector<std::vector<double>>& Particles, std::vector<std::v
 	{
 		vel[i].resize(3);
 	}*/
-	double dt=Step_PM(Particles, vel, a, mass);
+	//double dt=0;
+	dt+= Step_PM(Particles, vel, a, mass);
+	//double t += dt;
 	char cbuf[256];
 	std::string suff = "p.a3r";
 	sprintf(cbuf, "%09d_", dt);
