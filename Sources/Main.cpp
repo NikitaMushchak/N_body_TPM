@@ -17,7 +17,7 @@ int main() {
 	double H = 1.0; //dimention of the cubic BOX
    //number of boxes and particle must be N^3, where N=2^n
 	size_t dim = 8; //number of BOXes power of 2 
-	size_t number_particles = 1;
+	size_t number_particles = 2;
 	double mass = 1.0;
 
 	/*for (size_t i = 0 ; i < dim; ++i)
@@ -28,15 +28,16 @@ int main() {
 				box.pos = r;
 				boxes.push_back(box);
 				}*/
-
+	std::vector<std::vector<double>> Particles;
 	for (size_t i = 1; i < number_particles + 1; ++i) {
-		Particle part; //create Particle 
+		//Particle part; //create Particle 
 		//std::vector<double> a = { (double) 1.*i,  1.* i, 1.*i };
-		std::vector<double> a = { (double) 3.,  3., 2.5 + i };
-		part.r = a;
-		particles.push_back(part);
+		std::vector<double> a = { (double) 3.+i,  3.+ i, 2.5 + i };
+		Particles.push_back(a);
+		//part.r = a;
+		//particles.push_back(part);
 	}
-	std::vector<std::vector<double>> Particles = particle_ut::Particles_to_coords(particles); //matrix of particles
+	//std::vector<std::vector<double>> Particles = particle_ut::Particles_to_coords(particles); //matrix of particles
 	//std::vector<std::vector<double>> Boxes = particle_ut::Mesh_to_coords(boxes); // matrix of grid points
 	//ai::saveA3R("./particles.a3r", Particles);
 	//ai::saveA3R("./boxes.a3r", Boxes);
@@ -59,6 +60,11 @@ int main() {
 	//ai::saveMatrix("./output/Particles.txt", Particles);
 	std::vector<
 		std::vector<double>> vel;
+	vel.resize(Particles.size());
+	for (size_t i = 0; i < Particles.size(); i++)
+	{
+		vel[i].resize(3);
+	}
 	std::vector<std::vector<double >>a;
 	a.resize(Particles.size());
 	for (size_t i = 0; i < Particles.size(); i++)
@@ -98,22 +104,22 @@ int main() {
 			//module with Fourier
 
 
-	std::cout << "dens dim = " << density.size() << std::endl;
-	auto start = ai::time();
-	//CalcPotential(density, dim);
-	auto finish = ai::time();
+	//std::cout << "dens dim = " << density.size() << std::endl;
+	//auto start = ai::time();
+	////CalcPotential(density, dim);
+	//auto finish = ai::time();
 
-	std::cout << "TIME =  " << ai::duration(start, finish, "ms") << "ms" << std::endl;
-	//output
-	std::cout << "Potential field  =" << std::endl;
-	for (size_t i = 0; i < dim; ++i)
-		for (size_t j = 0; j < dim; ++j)
-			for (size_t k = 0; k < dim; ++k)
-			{
-				//if (density[i][j][k][0] != 0.)
-				std::cout << "(" << i << " , " << j << " , " << k << " )" << " Pot = " << " ( " << density[i][j][k][0] << " , "
-					<< density[i][j][k][1] << " )" << std::endl;
-			}
+	//std::cout << "TIME =  " << ai::duration(start, finish, "ms") << "ms" << std::endl;
+	////output
+	//std::cout << "Potential field  =" << std::endl;
+	//for (size_t i = 0; i < dim; ++i)
+	//	for (size_t j = 0; j < dim; ++j)
+	//		for (size_t k = 0; k < dim; ++k)
+	//		{
+	//			//if (density[i][j][k][0] != 0.)
+	//			std::cout << "(" << i << " , " << j << " , " << k << " )" << " Pot = " << " ( " << density[i][j][k][0] << " , "
+	//				<< density[i][j][k][1] << " )" << std::endl;
+	//		}
 	//updating particle s velocities and position
 	// acceleraton
 
@@ -255,16 +261,81 @@ int main() {
 	//	std::cout << "g[i].z = " << g[i][2] << std::endl;
 	//}
 	//std::cout << "DONE!" << std::endl;
-	for (size_t i = 0; i < Particles.size(); i++)
+	/*for (size_t i = 0; i < Particles.size(); i++)
 	{
 		std::cout << "Acceleration particle  " << i + 1 << "= " << " ( " << a[i][0] << " , " << a[i][1] << " , " << a[i][2] << " )" << std::endl;
-	}
-	double time = 0;
+	}*/
+
+	double dt=0;
+	double time=0;
 	//integrator here
-	while (time > 0)
+	 for (size_t i = 0; i<100 ; ++i)
 	{
-		StepP(Particles,vel,a,mass,dim,H,time);
-		time += time;
+		
+		 std::vector<
+			 std::vector<
+			 std::vector<
+			 std::vector<double>>>> density;
+		 //resize 3D matrix
+		 density.resize(dim);
+		 for (size_t i = 0; i < dim; ++i) {
+			 density[i].resize(dim);
+			 for (size_t j = 0; j < dim; ++j) {
+				 density[i][j].resize(dim);
+				 for (size_t k = 0; k < dim; ++k) {
+					 density[i][j][k].resize(2);
+				 }
+			 }
+		 }
+		 //CIC assigment
+		 CaclDensity(Particles, density, mass, H, dim);
+		 //potetial field
+		 CalcPotential(density, dim);
+		 //Acceleration
+		 /*std::vector<std::vector<double >>a;
+		 a.resize(Particles.size());
+		 for (size_t i = 0; i < Particles.size(); i++)
+		 {
+		 a[i].resize(3);
+
+		 }*/
+		 GetAccel(Particles, density, a, H);
+		 density.clear();
+
+		 /*std::vector<std::vector<double >> vel;
+		 vel.resize(Particles.size());
+		 for (size_t i = 0; i < Particles.size(); i++)
+		 {
+		 vel[i].resize(3);
+		 }*/
+		  
+		 dt = Get_Step(a, mass);
+		 for (size_t i = 0; i < Particles.size(); ++i)
+		 {
+			 vel[i][0] += a[i][0] * dt;
+			 vel[i][1] += a[i][1] * dt;
+			 vel[i][2] += a[i][2] * dt;
+		 }
+
+		 for (size_t i = 0; i < Particles.size(); ++i)
+		 {
+			 Particles[i][0] += vel[i][0] * dt;
+			 Particles[i][1] += vel[i][1] * dt;
+			 Particles[i][2] += vel[i][2] * dt;
+		 }
+		 std::cout << "Get_Step" << dt << std::endl;
+		 //Step_PM(Particles, vel, a, mass, dt);
+		 time += dt;
+		 //double t += dt;
+		 std::cout << "Step_PM = " << dt << std::endl;
+		 char cbuf[256];
+		 std::string suff = "p.a3r";
+		 sprintf(cbuf, "./Results/%09d_", dt);
+		 std::string filename = cbuf + suff;
+
+		 //print results
+		 ai::saveA3R(filename, Particles);
+		 ai::saveMatrix(filename, Particles);
 	}
 		return 0;
 }

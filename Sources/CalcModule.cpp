@@ -153,7 +153,7 @@
 		Wk[0] = Wk[0] * W[0] - Wk[1] * W[1];
 		Wk[1] = Wk[1] * W[0] + a * W[1];
 	}*/
-	std::cout << "Solve Poisson eq. in Fourier space" << std::endl;
+	//std::cout << "Solve Poisson eq. in Fourier space" << std::endl;
 	/*for (size_t i = 0; i < dim; i++)
 	{*/
 		//std::vector<std::vector<double>> f;
@@ -191,7 +191,7 @@
 			}
 		}
 	}
-	std::cout << "Solving ... DONE" << std::endl;
+	//std::cout << "Solving ... DONE" << std::endl;
 }
 
  void GetAccel(std::vector<std::vector<double>>& Particles, 
@@ -216,7 +216,7 @@
 			}
 		}
 	}
-	std::cout << "making acceleretion fields ....";
+	//std::cout << "making acceleretion fields ....";
 	//acceleration field
 	for (size_t i = 1; i < dim - 1; ++i)
 	{
@@ -230,7 +230,7 @@
 			}
 		}
 	}
-	std::cout << "Done." << std::endl;
+	//std::cout << "Done." << std::endl;
 	//accleration of particles
 	/*std::vector<
 		std::vector<double>> a;*/
@@ -241,7 +241,7 @@
 	}
 	//particles cicle
 	//double dx, dy, dz, tx, ty, tz;
-	std::cout << "Interpolating forces into particles ";
+	//std::cout << "Interpolating forces into particles ";
 	size_t x, y, z = 0;
 	for (size_t i = 0; i < Particles.size(); ++i)
 	{
@@ -277,6 +277,6 @@
 
 	}
 	g.clear();
-	std::cout << " DONE." << std::endl;
+	//std::cout << " DONE." << std::endl;
 	
 }
