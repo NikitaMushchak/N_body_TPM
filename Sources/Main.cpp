@@ -17,26 +17,26 @@ int main() {
 
 	double H = 1.0; //dimention of the cubic BOX
    //number of boxes and particle must be N^3, where N=2^n
-	size_t dim = 8; //number of BOXes power of 2 
+	size_t dim = 8; //number of BOXes power of 2
 	size_t number_particles = 2;
 	double mass = 1.0;
 
-	
+
 	std::vector<std::vector<double>> Particles;
 	for (size_t i = 1; i < number_particles + 1; ++i) {
-		
+
 		//std::vector<double> a = { (double) 2.*i,  2.* i, 2.*i };
 		std::vector<double> a = { (double) 3.+i,  3.+i, 3.+i  };
 		Particles.push_back(a);
 		//part.r = a;
 		//particles.push_back(part);
 	}
-	
+
 	//auto Oldfinish = ai::time();
 	//std::cout << "time duration Old = " << ai::duration(Oldstart, Oldfinish, "ms") << " ms" << std::endl;
 	//std::cout << "Particles= " << std::endl;
 	//ai::printMatrix(Particles);
-	//ai::printMatrix(Boxes); //output 
+	//ai::printMatrix(Boxes); //output
 	//ai::saveMatrix("./output/Particles.txt", Particles);
 	std::vector<
 		std::vector<double>> vel;
@@ -87,7 +87,7 @@ int main() {
 	//std::cout << "dens dim = " << density.size() << std::endl;
 	//auto start = ai::time();
 	CalcPotential(density, dim);
-	
+
 	//auto finish = ai::time();
 
 	//std::cout << "TIME =  " << ai::duration(start, finish, "ms") << "ms" << std::endl;
@@ -203,7 +203,7 @@ int main() {
 	//		g[v][1] = 0.;
 	//		g[v][2] = 0.;
 	//	}
-	//	
+	//
 	//	//calculating indexes
 	//	dx = Particles[i][0] - std::floor(Particles[i][0]);/// H);
 	//	dy = Particles[i][1] - std::floor(Particles[i][1]);/// H);
@@ -220,7 +220,7 @@ int main() {
 
 	//		std::cout << "x , y , z = " << x << " " << y << " " << z << std::endl;
 	//	}
-	//	
+	//
 	//	// calculate g at particles
 	//	// x componet
 	//	g[i][0] = -0.5*(density[x + 1][y][z][0] - density[x - 1][y][z][0])*tx*ty*tz- 0.5*(density[x + 2][y][z][0] - density[x][y][z][0])*dx*ty*tz
@@ -246,13 +246,14 @@ int main() {
 	{
 		std::cout << "Acceleration particle  " << i + 1 << "= " << " ( " << a[i][0] << " , " << a[i][1] << " , " << a[i][2] << " )" << std::endl;
 	}*/
-	double T1 = 1.;
+	double T1 = 10.1;
 	double dt=0;
 	double time=0;
+	size_t it = 0 ;
 	//integrator here
-	 while (time <T1)
+while (time <T1)
 	{
-		
+		it++;
 		 std::vector<
 			 std::vector<
 			 std::vector<
@@ -273,25 +274,26 @@ int main() {
 		 //potetial field
 		 CalcPotential(density, dim);
 		 //Acceleration
-		 /*std::vector<std::vector<double >>a;
+		 std::vector<std::vector<double >>a;
 		 a.resize(Particles.size());
 		 for (size_t i = 0; i < Particles.size(); i++)
 		 {
 		 a[i].resize(3);
 
-		 }*/
+		 }
 		 GetAccel(Particles, density, a, H);
 		 //density.clear();
-		 ai::printMatrix(a);
-		 /*std::vector<std::vector<double >> vel;
+		 // std::cout<<"Acceleration"<<std::endl;
+		 // ai::printMatrix(a);
+		 std::vector<std::vector<double >> vel;
 		 vel.resize(Particles.size());
 		 for (size_t i = 0; i < Particles.size(); i++)
 		 {
 		 vel[i].resize(3);
-		 }*/
-		  
-		 dt = Get_Step(a, mass);
-		 std::cout << "dt = " << dt << std::endl;
+	   }/**/
+
+		 dt = 1000 * Get_Step(a, mass);
+		 //std::cout << "dt = " << dt << std::endl;
 		 // time += dt;
 		 for (size_t i = 0; i < Particles.size(); ++i)
 		 {
@@ -299,27 +301,29 @@ int main() {
 			 vel[i][1] += a[i][1] * dt;
 			 vel[i][2] += a[i][2] * dt;
 		 }
-		 std::cout << "Vel\n";
-		 ai::printMatrix(vel);
+		 // std::cout << "Vel\n";
+		 // ai::printMatrix(vel);
 		 for (size_t i = 0; i < Particles.size(); ++i)
 		 {
 			 Particles[i][0] += vel[i][0] * dt;
 			 Particles[i][1] += vel[i][1] * dt;
 			 Particles[i][2] += vel[i][2] * dt;
 		 }
-		 std::cout << "Get_Step" << dt << std::endl;
-		 Step_PM(Particles, vel, a, mass, dt);
+		 // std::cout << "Get_Step" << dt << std::endl;
+		 //Step_PM(Particles, vel, a, mass, dt);
 		 time += dt;
-		 
-		 std::cout << "Step_PM = " << dt << std::endl;
+
+		 std::cout << "Step_PM # = " << it <<"   time = "<<time  <<std::endl;
+		 // std::cout<<"Particles pos = "<<std::endl;
+		 // ai::printMatrix(Particles);
 		 char cbuf[256];
 		 std::string suff = "p.a3r";
 		 sprintf(cbuf, "./Results/%09d_", time);
 		 std::string filename = cbuf + suff;
 
 		 //print results
-		 //ai::saveA3R(filename, Particles);
-		 ai::saveMatrix(filename, Particles);
+		 ai::saveA3R(filename, Particles);
+		 //ai::saveMatrix(filename, Particles);
 	}
 		return 0;
 }
