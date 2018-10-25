@@ -12,24 +12,20 @@
 
 int main() {
 
-	std::vector< Particle > particles;
-	std::vector<BOX> boxes;
+	// std::vector< Particle > particles;
+	// std::vector<BOX> boxes;
 
 	double H = 1.0; //dimention of the cubic BOX
    //number of boxes and particle must be N^3, where N=2^n
-	size_t dim = 8; //number of BOXes power of 2
+	size_t dim = 16; //number of BOXes power of 2
 	size_t number_particles = 2;
 	double mass = 1.0;
 
 
 	std::vector<std::vector<double>> Particles;
-	for (size_t i = 1; i < number_particles + 1; ++i) {
-
-		//std::vector<double> a = { (double) 2.*i,  2.* i, 2.*i };
-		std::vector<double> a = { (double) 3.+i,  3.+i, 3.+i  };
+	for (size_t i = 0; i < number_particles ; ++i) {
+		std::vector<double> a = { (double) 1.+10.*i,  1.+10.*i, 1.+10*i  };
 		Particles.push_back(a);
-		//part.r = a;
-		//particles.push_back(part);
 	}
 
 	//auto Oldfinish = ai::time();
@@ -38,36 +34,36 @@ int main() {
 	//ai::printMatrix(Particles);
 	//ai::printMatrix(Boxes); //output
 	//ai::saveMatrix("./output/Particles.txt", Particles);
-	std::vector<
-		std::vector<double>> vel;
-	vel.resize(Particles.size());
-	for (size_t i = 0; i < Particles.size(); i++)
-	{
-		vel[i].resize(3);
-	}
-	std::vector<std::vector<double >>a;
-	a.resize(Particles.size());
-	for (size_t i = 0; i < Particles.size(); i++)
-	{
-		a[i].resize(3);
-	}
-
-
-	std::vector<
-		std::vector <
-		std::vector<
-		std::vector<double>>>> density;
-	//resize 3D matrix
-	density.resize(dim);
-	for (size_t i = 0; i < dim; ++i) {
-		density[i].resize(dim);
-		for (size_t j = 0; j < dim; ++j) {
-			density[i][j].resize(dim);
-			for (size_t k = 0; k < dim; ++k) {
-				density[i][j][k].resize(2);
-			}
-		}
-	}
+	// std::vector<
+	// 	std::vector<double>> vel;
+	// vel.resize(Particles.size());
+	// for (size_t i = 0; i < Particles.size(); i++)
+	// {
+	// 	vel[i].resize(3);
+	// }
+	// std::vector<std::vector<double >>a;
+	// a.resize(Particles.size());
+	// for (size_t i = 0; i < Particles.size(); i++)
+	// {
+	// 	a[i].resize(3);
+	// }
+	//
+	//
+	// std::vector<
+	// 	std::vector <
+	// 	std::vector<
+	// 	std::vector<double>>>> density;
+	// //resize 3D matrix
+	// density.resize(dim);
+	// for (size_t i = 0; i < dim; ++i) {
+	// 	density[i].resize(dim);
+	// 	for (size_t j = 0; j < dim; ++j) {
+	// 		density[i][j].resize(dim);
+	// 		for (size_t k = 0; k < dim; ++k) {
+	// 			density[i][j][k].resize(2);
+	// 		}
+	// 	}
+	// }
 	//now density dimXdimXdimX2
 
 	// CaclDensity(Particles, density, mass, H, dim);
@@ -246,7 +242,7 @@ int main() {
 	{
 		std::cout << "Acceleration particle  " << i + 1 << "= " << " ( " << a[i][0] << " , " << a[i][1] << " , " << a[i][2] << " )" << std::endl;
 	}*/
-	double T1 = 200.1;
+	double T1 = 1.1;
 	double dt=0;
 	double time=0;
 	size_t it = 0 ;
@@ -279,12 +275,21 @@ while (time <T1)
 		 for (size_t i = 0; i < Particles.size(); i++)
 		 {
 		 a[i].resize(3);
-
 		 }
 		 GetAccel(Particles, density, a, H);
+
+		 std::vector<std::vector<double >>dir;
+		 dir.resize(Particles.size());
+		 for (size_t i = 0; i < Particles.size(); i++)
+		 {
+		 dir[i].resize(3);
+		 }
+		 Direct(Particles, dir);
+		 std::cout<<"Dir Force "<<std::endl;
+		 ai::printMatrix(dir);
 		 density.clear();
-		 // std::cout<<"Acceleration"<<std::endl;
-		 // ai::printMatrix(a);
+		 std::cout<<"Acceleration"<<std::endl;
+		 ai::printMatrix(a);
 		 std::vector<std::vector<double >> vel;
 		 vel.resize(Particles.size());
 		 for (size_t i = 0; i < Particles.size(); i++)

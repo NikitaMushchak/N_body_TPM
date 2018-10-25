@@ -18,3 +18,6 @@
 							std::vector<std::vector<std::vector<std::vector<double >>>>& density,
 								std::vector<std::vector<double>>& a,
 									double H);
+
+void Direct(std::vector<std::vector<double>> & Particles, std::vector<std::vector<double>> & dir);
+double Signum(double  x);

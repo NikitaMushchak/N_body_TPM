@@ -8,21 +8,21 @@
 
 
  void CaclDensity(std::vector<
-					std::vector<double>>& Particles , 
+					std::vector<double>>& Particles ,
 				 std::vector<
 					std::vector <
 						std::vector<
 							std::vector<double>>>>& density,
 				 float mass,
-  			  	 double H, 
+  			  	 double H,
 				 size_t dim)
 {
 	//std::fill(density.begin(), density.end(), 0.);
 	//for ()
 	size_t x, y, z = 0;
 	double dx, dy, dz, tx, ty, tz;
-	
-	
+
+
 	for (size_t i = 0; i < Particles.size(); ++i)
 	{
 		//calculating indexes
@@ -38,7 +38,7 @@
 			x = std::floor(Particles[i][0] / H);
 			y = std::floor(Particles[i][1] / H);
 			z = std::floor(Particles[i][2] / H);
-			
+
 			density[x][y][z][0] += mass * tx *ty*tz;
 
 			if (y + 1 >= dim) { y = y % (dim - 1); density[x][y][z][0] += mass * tx *dy*tz; }
@@ -69,7 +69,7 @@
 							size_t dim )
 {
 	double h = 1 / double(dim - 1);
-	
+
 	//calculate FFT for each layer
 	for (size_t i = 0; i < dim; ++i)
 	{
@@ -124,13 +124,13 @@
 	//FFT in 3rd dimention
 	for (size_t k = 0; k < dim; ++k) {
 		std::vector <
-			std::vector<double>> f; 
+			std::vector<double>> f;
 		f.resize(dim);
 		for (size_t l = 0; l < dim; l++)
 		{
 			f[l].resize(2);
 		}
-	
+
 		for (size_t j = 0; j < dim; j++) {
 			for (size_t i = 0; i< dim; i++)
 			{
@@ -160,10 +160,10 @@
 	}*/
 		//std::cout << "FFT for layers ....DONE" << std::endl;
 
-		// solve equation in Fourier space 
-		
+		// solve equation in Fourier space
+
 		double pi = 3.14159265358979;
-		
+
 		//std::vector<double> W = { cos(2.0 * pi / double(dim)) , sin(2.0 * pi / double(dim)) };
 
 		double W0 = cos(2.0 * pi / double(dim));
@@ -179,7 +179,7 @@
 		for (size_t k = 0; k < dim; k++) {
 			for (size_t m = 0; m < dim; m++) {
 				for (size_t n = 0; n < dim; n++) {
-				
+
 				double denom0 = 6.;
 				double denom1 = 0.;
 				//std::vector < double> i_Wk = { Wk0 / (Wk0 * Wk0 + Wk1 * Wk1), -(Wk1 / (Wk0 * Wk0 + Wk1 * Wk1)) };
@@ -191,7 +191,7 @@
 				//std::vector < double> i_Wn = { Wn0 / (Wn0 * Wn0 + Wn1 * Wn1), -(Wn1 / (Wn0 * Wn0 + Wn1 * Wn1)) };
 				double i_Wn0 = Wn0 / (Wn0 * Wn0 + Wn1 * Wn1);
 				double i_Wn1 = -(Wn1 / (Wn0 * Wn0 + Wn1 * Wn1));
-				
+
 
 				denom0 -= (Wk0 + i_Wk0 + Wm0 + i_Wm0 + Wn0 + i_Wn0);
 				denom1 -= (Wk1 + i_Wk1 + Wm1 + i_Wm1 + Wn1 + i_Wn1);
@@ -199,8 +199,8 @@
 				{
 
 					double q = rho[k][m][n][0];
-					rho[k][m][n][0] = h * h*(rho[k][m][n][0] * denom0 + rho[k][m][n][1] * denom1) / (denom0 * denom0 + denom1 * denom1);
-					rho[k][m][n][1] = h * h*(rho[k][m][n][1] * denom0 - q * denom1) / (denom0 * denom0 + denom1 * denom1);
+					rho[k][m][n][0] = (rho[k][m][n][0] * denom0 + rho[k][m][n][1] * denom1) / (denom0 * denom0 + denom1 * denom1);
+					rho[k][m][n][1] = (rho[k][m][n][1] * denom0 - q * denom1) / (denom0 * denom0 + denom1 * denom1);
 
 				}
 				double b = Wn0;
@@ -211,7 +211,7 @@
 			Wm0 = Wm0 * W0 - Wm1 * W1;
 			Wm1 = Wm1 * W0 + r * W1;
 		}
-	
+
 		double a = Wk0;
 		Wk0 = Wk0 * W0 - Wk1 * W1;
 		Wk1 = Wk1 * W0 + a * W1;
@@ -237,7 +237,7 @@
 			{
 				f[y].resize(2);
 			}
-			// inverse FFT rows of rho 
+			// inverse FFT rows of rho
 			for (size_t j = 0; j < dim; j++) {
 				for (size_t k = 0; k < dim; k++) {
 					f[k][0] = rho[i][j][k][0];
@@ -259,7 +259,7 @@
 			{
 				f[y].resize(2);
 			}
-		// inverse FFT columns of rho 
+		// inverse FFT columns of rho
 		for (size_t k = 0; k < dim; k++) {
 			for (size_t j = 0; j < dim; j++)
 			{
@@ -284,7 +284,7 @@
 			{
 				f[y].resize(2);
 			}
-			
+
 			for (size_t j = 0; j < dim; j++) {
 				for (size_t i = 0; i< dim; i++)
 				{
@@ -303,7 +303,7 @@
 	//std::cout << "Solving ... DONE" << std::endl;
 }
 
-  void GetAccel(std::vector<std::vector<double>>& Particles, 
+  void GetAccel(std::vector<std::vector<double>>& Particles,
 						std::vector<std::vector<std::vector<std::vector<double >>>>& density,
 							std::vector<std::vector<double>>& a, double H)
 {
@@ -387,5 +387,26 @@
 	}
 	g.clear();
 	//std::cout << " DONE." << std::endl;
-	
+
+}
+
+double Signum(double  x)
+{
+    return (x > 0) ? 1 : ((x < 0) ? -1 : 0);
+}
+void Direct(std::vector<std::vector<double>> & Particles, std::vector<std::vector<double>> & dir)
+{
+  for (size_t i =0 ; i<Particles.size(); ++i )
+  {
+    for (size_t j =0; j< Particles.size(); ++j)
+    {
+      if (i != j)
+      {
+        dir[i][0]+= Signum(Particles[i][0]-Particles[j][0]) /((Particles[i][0]-Particles[j][0])*(Particles[i][0]-Particles[j][0]));
+        dir[i][1]+= Signum(Particles[i][1]-Particles[j][1]) /((Particles[i][1]-Particles[j][1])*(Particles[i][1]-Particles[j][1]));
+        dir[i][2]+= Signum(Particles[i][2]-Particles[j][2]) /((Particles[i][2]-Particles[j][2])*(Particles[i][2]-Particles[j][2]));
+        // std::cout<<"dir"<< " i = "<<i<<" j = "<<j <<"   dir = "<<dir[i][0]<<std::endl;
+      }
+    }
+  }
 }
