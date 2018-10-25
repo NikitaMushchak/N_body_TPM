@@ -15,7 +15,7 @@ inline double Min_num(double f, double m)
 }
  double Get_Step(std::vector<std::vector<double>> &a, double mass)
 {
-	double  u_max_a0_ratio = 100.;// maximum possible dv of particles
+	double  u_max_a0_ratio = 50.;// maximum possible dv of particles
 	double f_max = 0.;
 	double a0 = 1.0;
 		double gamma0 = 1.;
@@ -34,7 +34,7 @@ inline double Min_num(double f, double m)
 {
 	//std::cout << "Par = " << Particles.size() << "  vel= " << vel.size() << "   a  = " << a.size() << std::endl;
 	//double dt = 0;
-	
+
 	for (size_t i = 0; i < Particles.size(); ++i)
 	{
 		vel[i][0] += a[i][0] * dt;
@@ -83,7 +83,7 @@ inline double Min_num(double f, double m)
 	for (size_t i = 0; i < Particles.size(); i++)
 	{
 		a[i].resize(3);
-		
+
 	}*/
 	 GetAccel(Particles, density,a, H);
 	density.clear();
@@ -119,7 +119,7 @@ inline double Min_num(double f, double m)
 	std::string suff = "p.a3r";
 	sprintf(cbuf, "./Results/%09d_", dt);
 	std::string filename = cbuf + suff;
-	
+
 	//print results
 	ai::saveA3R(filename , Particles);
 	ai::saveMatrix(filename, Particles);

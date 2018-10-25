@@ -70,7 +70,7 @@ int main() {
 	}
 	//now density dimXdimXdimX2
 
-	CaclDensity(Particles, density, mass, H, dim);
+	// CaclDensity(Particles, density, mass, H, dim);
 	//auto NewFinish = ai::time();
 	//std::cout << "time duration New = " << ai::duration(NewStart, NewFinish, "ms") << " ms" << std::endl;
 	/*std::cout << "New density  =" << std::endl;
@@ -86,7 +86,7 @@ int main() {
 
 	//std::cout << "dens dim = " << density.size() << std::endl;
 	//auto start = ai::time();
-	CalcPotential(density, dim);
+	// CalcPotential(density, dim);
 
 	//auto finish = ai::time();
 
@@ -104,7 +104,7 @@ int main() {
 	//updating particle s velocities and position
 	// acceleraton
 
-	GetAccel(Particles, density, a, H);
+	// GetAccel(Particles, density, a, H);
 	/*std::vector <
 		std::vector <
 			std::vector <
@@ -246,7 +246,7 @@ int main() {
 	{
 		std::cout << "Acceleration particle  " << i + 1 << "= " << " ( " << a[i][0] << " , " << a[i][1] << " , " << a[i][2] << " )" << std::endl;
 	}*/
-	double T1 = 10.1;
+	double T1 = 200.1;
 	double dt=0;
 	double time=0;
 	size_t it = 0 ;
@@ -282,7 +282,7 @@ while (time <T1)
 
 		 }
 		 GetAccel(Particles, density, a, H);
-		 //density.clear();
+		 density.clear();
 		 // std::cout<<"Acceleration"<<std::endl;
 		 // ai::printMatrix(a);
 		 std::vector<std::vector<double >> vel;
@@ -290,16 +290,16 @@ while (time <T1)
 		 for (size_t i = 0; i < Particles.size(); i++)
 		 {
 		 vel[i].resize(3);
-	   }/**/
+	   	 }/**/
 
-		 dt = 1000 * Get_Step(a, mass);
+		 dt = 500 * Get_Step(a, mass);
 		 //std::cout << "dt = " << dt << std::endl;
 		 // time += dt;
 		 for (size_t i = 0; i < Particles.size(); ++i)
 		 {
-			 vel[i][0] += a[i][0] * dt;
-			 vel[i][1] += a[i][1] * dt;
-			 vel[i][2] += a[i][2] * dt;
+			 vel[i][0] += -a[i][0] * dt;
+			 vel[i][1] += -a[i][1] * dt;
+			 vel[i][2] += -a[i][2] * dt;
 		 }
 		 // std::cout << "Vel\n";
 		 // ai::printMatrix(vel);
@@ -313,17 +313,19 @@ while (time <T1)
 		 //Step_PM(Particles, vel, a, mass, dt);
 		 time += dt;
 
-		 std::cout << "Step_PM # = " << it <<"   time = "<<time  <<std::endl;
+		 std::cout << "Step_PM # = " << it <<"      dt = "<<dt<<"   time = "<<time  <<std::endl;
 		 // std::cout<<"Particles pos = "<<std::endl;
 		 // ai::printMatrix(Particles);
-		 char cbuf[256];
+		 char cbuf[512];
 		 std::string suff = "p.a3r";
-		 sprintf(cbuf, "./Results/%09d_", time);
+		 sprintf(cbuf, "./Results/%11d_", (char)it);
 		 std::string filename = cbuf + suff;
 
 		 //print results
 		 ai::saveA3R(filename, Particles);
 		 //ai::saveMatrix(filename, Particles);
+		 vel.clear();
+		 a.clear();
 	}
 		return 0;
 }
