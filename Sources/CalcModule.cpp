@@ -333,9 +333,9 @@
 		{
 			for (size_t k = 1; k < dim - 1; ++k)
 			{
-				g[i][j][k][0] = -0.5*(density[i + 1][j][k][0] - density[i - 1][j][k][0]);
-				g[i][j][k][1] = -0.5*(density[i][j + 1][k][0] - density[i][j - 1][k][0]);
-				g[i][j][k][2] = -0.5*(density[i][j][k + 1][0] - density[i][j][k - 1][0]);
+				g[i][j][k][0] += -0.5*(density[i + 1][j][k][0] - density[i - 1][j][k][0]);
+				g[i][j][k][1] += -0.5*(density[i][j + 1][k][0] - density[i][j - 1][k][0]);
+				g[i][j][k][2] += -0.5*(density[i][j][k + 1][0] - density[i][j][k - 1][0]);
 			}
 		}
 	}
@@ -343,11 +343,11 @@
 	//accleration of particles
 	/*std::vector<
 		std::vector<double>> a;*/
-	a.resize(Particles.size());
-	for (size_t i = 0; i < Particles.size(); ++i)
-	{
-		a[i].resize(3);
-	}
+	// a.resize(Particles.size());
+	// for (size_t i = 0; i < Particles.size(); ++i)
+	// {
+	// 	a[i].resize(3);
+	// }
 	//particles cicle
 	//double dx, dy, dz, tx, ty, tz;
 	//std::cout << "Interpolating forces into particles ";
@@ -369,17 +369,17 @@
 			z = std::floor(Particles[i][2] / H);
 		}
 		std::cout << ".";
-		a[i][0] = g[x][y][z][0] * tx*ty*tz + g[x + 1][y][z][0] * dx*ty*tz +
+		a[i][0] += g[x][y][z][0] * tx*ty*tz + g[x + 1][y][z][0] * dx*ty*tz +
 			g[x][y + 1][z][0] * tx*dy*tz + g[x + 1][y + 1][z][0] * dx*dy*tz +
 			g[x][y][z + 1][0] * tx*ty*dz + g[x + 1][y][z + 1][0] * dx*ty*dz +
 			g[x][y + 1][z + 1][0] * tx*dy*dz + g[x + 1][y + 1][z + 1][0] * dx*dy*dz;
 		std::cout << ".";
-		a[i][1] = g[x][y][z][1] * tx*ty*tz + g[x + 1][y][z][1] * dx*ty*tz +
+		a[i][1] += g[x][y][z][1] * tx*ty*tz + g[x + 1][y][z][1] * dx*ty*tz +
 			g[x][y + 1][z][1] * tx*dy*tz + g[x + 1][y + 1][z][1] * dx*dy*tz +
 			g[x][y][z + 1][1] * tx*ty*dz + g[x + 1][y][z + 1][1] * dx*ty*dz +
 			g[x][y + 1][z + 1][1] * tx*dy*dz + g[x + 1][y + 1][z + 1][1] * dx*dy*dz;
 		std::cout << ".";
-		a[i][2] = g[x][y][z][2] * tx*ty*tz + g[x + 1][y][z][2] * dx*ty*tz +
+		a[i][2] += g[x][y][z][2] * tx*ty*tz + g[x + 1][y][z][2] * dx*ty*tz +
 			g[x][y + 1][z][2] * tx*dy*tz + g[x + 1][y + 1][z][2] * dx*dy*tz +
 			g[x][y][z + 1][2] * tx*ty*dz + g[x + 1][y][z + 1][2] * dx*ty*dz +
 			g[x][y + 1][z + 1][2] * tx*dy*dz + g[x + 1][y + 1][z + 1][2] * dx*dy*dz;
@@ -394,19 +394,39 @@ double Signum(double  x)
 {
     return (x > 0) ? 1 : ((x < 0) ? -1 : 0);
 }
-void Direct(std::vector<std::vector<double>> & Particles, std::vector<std::vector<double>> & dir)
+void Direct(std::vector<std::vector<double>> & Particles, std::vector<std::vector<double>> & dir, double mass)
 {
-  for (size_t i =0 ; i<Particles.size(); ++i )
+  // for (size_t i =0 ; i<Particles.size(); ++i )
+  // {
+  //   for (size_t j =0; j< Particles.size(); ++j)
+  //   {
+  //     if (i != j)
+  //     {
+  //       dir[i][0]+= 1. /((Particles[i][0]-Particles[j][0])*(Particles[i][0]-Particles[j][0])*(Particles[i][0]-Particles[j][0]));
+  //       dir[i][1]+= 1. /((Particles[i][1]-Particles[j][1])*(Particles[i][1]-Particles[j][1])*(Particles[i][1]-Particles[j][1]));
+  //       dir[i][2]+= 1. /((Particles[i][2]-Particles[j][2])*(Particles[i][2]-Particles[j][2])*(Particles[i][2]-Particles[j][2]));
+  //       // std::cout<<"dir"<< " i = "<<i<<" j = "<<j <<"   dir = "<<dir[i][0]<<std::endl;
+  //     }
+  //   }
+  // }
+
+  for(size_t i =0 ; i<Particles.size(); ++i)
   {
-    for (size_t j =0; j< Particles.size(); ++j)
+    for(size_t j = i+1 ; j<Particles.size(); ++j)
     {
-      if (i != j)
-      {
-        dir[i][0]+= Signum(Particles[i][0]-Particles[j][0]) /((Particles[i][0]-Particles[j][0])*(Particles[i][0]-Particles[j][0]));
-        dir[i][1]+= Signum(Particles[i][1]-Particles[j][1]) /((Particles[i][1]-Particles[j][1])*(Particles[i][1]-Particles[j][1]));
-        dir[i][2]+= Signum(Particles[i][2]-Particles[j][2]) /((Particles[i][2]-Particles[j][2])*(Particles[i][2]-Particles[j][2]));
-        // std::cout<<"dir"<< " i = "<<i<<" j = "<<j <<"   dir = "<<dir[i][0]<<std::endl;
-      }
+        double dx = Particles[i][0] - Particles[j][0];
+        double dy = Particles[i][1] - Particles[j][1];
+        double dz = Particles[i][2] - Particles[j][2];
+        double distij = sqrt(dx*dx + dy*dy +dz*dz);
+        double magi = (1.0*mass) /(distij*distij*distij);
+        dir[i][0] -= magi*dx;
+        dir[i][1] -= magi*dy;
+        dir[i][2] -= magi*dz;
+        double magj = (1.0*mass)/(distij*distij*distij);
+        dir[j][0] += magi*dx;
+        dir[j][1] += magi*dy;
+        dir[j][2] += magi*dz;
     }
+
   }
 }

@@ -19,5 +19,5 @@
 								std::vector<std::vector<double>>& a,
 									double H);
 
-void Direct(std::vector<std::vector<double>> & Particles, std::vector<std::vector<double>> & dir);
+void Direct(std::vector<std::vector<double>> & Particles, std::vector<std::vector<double>> & dir, double mass);
 double Signum(double  x);

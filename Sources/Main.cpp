@@ -8,25 +8,84 @@
 #include "Fourier_tools.hh"
 #include "CaclModule.h"
 #include "Integrator.h"
+#include "tpm.h"
 
 
-int main() {
+int main(const int argc, const char *argv[]) {
 
 	// std::vector< Particle > particles;
 	// std::vector<BOX> boxes;
 
-	double H = 1.0; //dimention of the cubic BOX
+	 double H = 1.0; //dimention of the cubic BOX
    //number of boxes and particle must be N^3, where N=2^n
-	size_t dim = 16; //number of BOXes power of 2
-	size_t number_particles = 2;
-	double mass = 1.0;
+	 double dim = 16; //number of BOXes power of 2
+	 double number_particles = 2;
+	 double mass = 1.0;
+	 double T1 = 1.1;
 
 
-	std::vector<std::vector<double>> Particles;
-	for (size_t i = 0; i < number_particles ; ++i) {
-		std::vector<double> a = { (double) 1.+10.*i,  1.+10.*i, 1.+10*i  };
-		Particles.push_back(a);
-	}
+	 for(int i = 1; i < argc; ++i){
+           // if("-v" == std::string(argv[i]) || "--version" == std::string(argv[i])){
+           //     std::cout << "  Build: "  << buildVersion << "." << std::endl;
+           //     std::cout << "  Compiler: "  << compiler << "." << std::endl;
+           //     std::cout << "  Target: "  << target << "." << std::endl;
+           //     std::cout << "  AiLibrary: " << ai::getVersion() << "."
+           //         << std::endl;
+           //     std::cout << "  Compilation timestamp: "  << timestamp << "."
+           //         << std::endl;
+		   //
+           //     return 0;
+           // }
+
+           if("-h" == std::string(argv[i]) || "--help" == std::string(argv[i])){
+               std::cout << "usage: tpm [options]"
+                   << std::endl
+                   << "    -h  --help            print this usage and exit"
+                   << std::endl
+                   << "    -v  --version         print build info and exit"
+                   << std::endl
+                   << "    --list-errors         print possible errors ans exit"
+                   << std::endl << std::endl
+
+                   << "  Program parameters" << std::endl
+                   << "    --number_particles=<value>           number of particles"
+                   << std::endl
+                   << "    --H=<value>          dimention of the cubic BOX"
+                   << std::endl
+                   << "    --dim=<value>           number of BOXes power of 2 "
+                   << "[double, n/d]"
+                   << std::endl << std::endl
+
+                   << "  particles parameters" << std::endl
+                   << "    --mass=<value>           mass of partilces "
+
+                   << std::endl << std::endl
+
+                   << "  Time parameters" << std::endl
+                   << "    --T1=<value>        modeling time [double]"
+
+                   << std::endl << std::endl;
+
+
+				   if(
+				              ai::assignAbsDoubleParameter(argv[i], "--number_particles=", number_particles)
+				              || ai::assignAbsDoubleParameter(argv[i], "--H=", H)
+				              || ai::assignAbsDoubleParameter(argv[i], "--dim=", dim)
+				              || ai::assignAbsDoubleParameter(argv[i], "--T1=", T1)
+				              || ai::assignAbsDoubleParameter(argv[i], "--mass=", mass)
+
+				              )
+
+
+
+				          {
+				              continue;
+				          }
+
+}
+
+               return TPM(H,dim,number_particles,mass, T1);
+           }
 
 	//auto Oldfinish = ai::time();
 	//std::cout << "time duration Old = " << ai::duration(Oldstart, Oldfinish, "ms") << " ms" << std::endl;
@@ -242,95 +301,6 @@ int main() {
 	{
 		std::cout << "Acceleration particle  " << i + 1 << "= " << " ( " << a[i][0] << " , " << a[i][1] << " , " << a[i][2] << " )" << std::endl;
 	}*/
-	double T1 = 1.1;
-	double dt=0;
-	double time=0;
-	size_t it = 0 ;
-	//integrator here
-while (time <T1)
-	{
-		it++;
-		 std::vector<
-			 std::vector<
-			 std::vector<
-			 std::vector<double>>>> density;
-		 //resize 3D matrix
-		 density.resize(dim);
-		 for (size_t i = 0; i < dim; ++i) {
-			 density[i].resize(dim);
-			 for (size_t j = 0; j < dim; ++j) {
-				 density[i][j].resize(dim);
-				 for (size_t k = 0; k < dim; ++k) {
-					 density[i][j][k].resize(2);
-				 }
-			 }
-		 }
-		 //CIC assigment
-		 CaclDensity(Particles, density, mass, H, dim);
-		 //potetial field
-		 CalcPotential(density, dim);
-		 //Acceleration
-		 std::vector<std::vector<double >>a;
-		 a.resize(Particles.size());
-		 for (size_t i = 0; i < Particles.size(); i++)
-		 {
-		 a[i].resize(3);
-		 }
-		 GetAccel(Particles, density, a, H);
 
-		 std::vector<std::vector<double >>dir;
-		 dir.resize(Particles.size());
-		 for (size_t i = 0; i < Particles.size(); i++)
-		 {
-		 dir[i].resize(3);
-		 }
-		 Direct(Particles, dir);
-		 std::cout<<"Dir Force "<<std::endl;
-		 ai::printMatrix(dir);
-		 density.clear();
-		 std::cout<<"Acceleration"<<std::endl;
-		 ai::printMatrix(a);
-		 std::vector<std::vector<double >> vel;
-		 vel.resize(Particles.size());
-		 for (size_t i = 0; i < Particles.size(); i++)
-		 {
-		 vel[i].resize(3);
-	   	 }/**/
-
-		 dt = 500 * Get_Step(a, mass);
-		 //std::cout << "dt = " << dt << std::endl;
-		 // time += dt;
-		 for (size_t i = 0; i < Particles.size(); ++i)
-		 {
-			 vel[i][0] += -a[i][0] * dt;
-			 vel[i][1] += -a[i][1] * dt;
-			 vel[i][2] += -a[i][2] * dt;
-		 }
-		 // std::cout << "Vel\n";
-		 // ai::printMatrix(vel);
-		 for (size_t i = 0; i < Particles.size(); ++i)
-		 {
-			 Particles[i][0] += vel[i][0] * dt;
-			 Particles[i][1] += vel[i][1] * dt;
-			 Particles[i][2] += vel[i][2] * dt;
-		 }
-		 // std::cout << "Get_Step" << dt << std::endl;
-		 //Step_PM(Particles, vel, a, mass, dt);
-		 time += dt;
-
-		 std::cout << "Step_PM # = " << it <<"      dt = "<<dt<<"   time = "<<time  <<std::endl;
-		 // std::cout<<"Particles pos = "<<std::endl;
-		 // ai::printMatrix(Particles);
-		 char cbuf[512];
-		 std::string suff = "p.a3r";
-		 sprintf(cbuf, "./Results/%11d_", (char)it);
-		 std::string filename = cbuf + suff;
-
-		 //print results
-		 ai::saveA3R(filename, Particles);
-		 //ai::saveMatrix(filename, Particles);
-		 vel.clear();
-		 a.clear();
-	}
 		return 0;
 }
