@@ -7,6 +7,13 @@
 
 int TPM(const double H, const double dim,const double number_particles,const double mass,const double T1){
 
+std::cout << "Parameters: "<<std::endl
+          <<" H = "<<H<<std::endl
+          <<" dim = "<<dim <<std::endl
+          <<"number_particles = "<<number_particles<<std::endl
+          <<"mass = "<<mass<<std::endl
+          <<"T1 = "<<T1<<std::endl;
+
 std::vector<std::vector<double>> Particles;
 for (size_t i = 0; i < number_particles ; ++i) {
     std::vector<double> a = { (double) 1.+3.1*i,  1.+3.1*i, 1.+3.1*i  };

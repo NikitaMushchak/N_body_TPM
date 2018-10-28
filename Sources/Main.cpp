@@ -65,8 +65,8 @@ int main(const int argc, const char *argv[]) {
                    << "    --T1=<value>        modeling time [double]"
 
                    << std::endl << std::endl;
-
-
+									 	return 0;
+								}
 				   if(
 				              ai::assignAbsDoubleParameter(argv[i], "--number_particles=", number_particles)
 				              || ai::assignAbsDoubleParameter(argv[i], "--H=", H)
@@ -301,6 +301,3 @@ int main(const int argc, const char *argv[]) {
 	{
 		std::cout << "Acceleration particle  " << i + 1 << "= " << " ( " << a[i][0] << " , " << a[i][1] << " , " << a[i][2] << " )" << std::endl;
 	}*/
-
-		return 0;
-}
