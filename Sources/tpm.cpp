@@ -6,6 +6,15 @@
 #include "ai.hh"
 
 int TPM(const double H, const double dim,const double number_particles,const double mass,const double T1){
+std::cout<<"----------------------"<<std::endl;
+// std::cout<<" ____  __  _  _ "<< std::endl
+//          <<"|   |  |  | | \/ |"<<std::endl
+//          <<"  ||   ||  |     |"<<std::endl;
+
+std::cout<<"----------------------"<<std::endl;
+std::cout<<"--Developed by Nikita Mushchak, 2018--"<<std::endl;
+std::cout<<"Department of Theoretical Mecanics, SPbSTU, Russia"<<std::endl;
+
 
 std::cout << "Parameters: "<<std::endl
           <<" H = "<<H<<std::endl
@@ -16,7 +25,7 @@ std::cout << "Parameters: "<<std::endl
 
 std::vector<std::vector<double>> Particles;
 for (size_t i = 0; i < number_particles ; ++i) {
-    std::vector<double> a = { (double) 1.+3.1*i,  1.+3.1*i, 1.+3.1*i  };
+    std::vector<double> a = { (double) 16.+21.3*i,  32., 32.  };
     Particles.push_back(a);
 }
 
@@ -26,6 +35,7 @@ for (size_t i = 0; i < number_particles ; ++i) {
   double time=0;
  size_t it = 0 ;
 //integrator here
+auto start = ai::time();
 while (time <T1)
     {
     it++;
@@ -44,6 +54,9 @@ while (time <T1)
              }
          }
      }
+     std::cout<<"Particles coords"<<std::endl;
+     ai::printMatrix(Particles);
+
      //CIC assigment
      CaclDensity(Particles, density, mass, H, dim);
      //potetial field
@@ -69,7 +82,7 @@ while (time <T1)
      density.clear();
      std::cout<<"Acceleration"<<std::endl;
      ai::printMatrix(a);
-
+     std::cout<<"  \nDir/ FFT"<<dir[0][0]/a[0][0]<<std::endl;
      std::vector<std::vector<double >> vel;
      vel.resize(Particles.size());
      for (size_t i = 0; i < Particles.size(); i++)
@@ -112,5 +125,8 @@ while (time <T1)
      vel.clear();
      a.clear();
     }
+
+    auto finish = ai::time();
+    std::cout <<"Time caclulation = "<<ai::duration (start , finish, "s")<<" sec"<<std::endl;
 return 0;
 }

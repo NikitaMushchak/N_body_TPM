@@ -87,7 +87,7 @@
 				f[k][1] = rho[i][j][k][1];
 
 			}
-			fft(f, dim);
+			fft2(f);
 			for (size_t k = 0; k < dim; ++k) {
 				rho[i][j][k][0] = f[k][0];
 				rho[i][j][k][1] = f[k][1];
@@ -112,7 +112,7 @@
 				f[j][1] = rho[i][j][k][1];
 
 			}
-			fft(f, dim);
+			fft2(f);
 			for (size_t j = 0; j < dim; ++j) {
 				rho[i][j][k][0] = f[j][0];
 				rho[i][j][k][1] = f[j][1];
@@ -138,7 +138,7 @@
 				f[i][1] = rho[i][j][k][1];
 				//f[j][1] = rho[j][k][1];
 			}
-			fft(f, dim);
+			fft2(f);
 			for (size_t i = 0; i < dim; i++) {
 				rho[i][j][k][0] = f[i][0];
 				rho[i][j][k][1] = f[i][1];
@@ -198,9 +198,10 @@
 				if (denom0 !=0. )
 				{
 
-					double q = rho[k][m][n][0];
-					rho[k][m][n][0] = (rho[k][m][n][0] * denom0 + rho[k][m][n][1] * denom1) / (denom0 * denom0 + denom1 * denom1);
-					rho[k][m][n][1] = (rho[k][m][n][1] * denom0 - q * denom1) / (denom0 * denom0 + denom1 * denom1);
+					double q =  -4.*pi*rho[k][m][n][0];
+          double b =  -4.*pi*rho[k][m][n][1];
+					rho[k][m][n][0] =  (q * denom0 + b * denom1) / (denom0 * denom0 + denom1 * denom1);
+					rho[k][m][n][1] =  (b * denom0 - q * denom1) / (denom0 * denom0 + denom1 * denom1);
 
 				}
 				double b = Wn0;
@@ -243,7 +244,7 @@
 					f[k][0] = rho[i][j][k][0];
 					f[k][1] = rho[i][j][k][1];
 				}
-				ifft(f, dim);
+				ifft2(f);
 				for (size_t k = 0; k < dim; k++)
 				{
 					rho[i][j][k][0] = f[k][0];
@@ -266,7 +267,7 @@
 				f[j][0] = rho[i][j][k][0];
 				f[j][1] = rho[i][j][k][1];
 			}
-			ifft(f, dim);
+			ifft2(f);
 			for (size_t j = 0; j < dim; j++)
 			{
 				rho[i][j][k][0] = f[j][0];
@@ -292,7 +293,7 @@
 					f[i][1] = rho[i][j][k][1];
 					//f[j][1] = rho[j][k][1];
 				}
-				ifft(f, dim);
+				ifft2(f);
 				for (size_t i = 0; i < dim; i++) {
 					rho[i][j][k][0] = f[i][0];
 					rho[i][j][k][1] = f[i][1];
