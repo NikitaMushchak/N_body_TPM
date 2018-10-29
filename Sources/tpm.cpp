@@ -6,12 +6,21 @@
 #include "ai.hh"
 
 int TPM(const double H, const double dim,const double number_particles,const double mass,const double T1){
-std::cout<<"----------------------"<<std::endl;
+
 // std::cout<<" ____  __  _  _ "<< std::endl
 //          <<"|   |  |  | | \/ |"<<std::endl
 //          <<"  ||   ||  |     |"<<std::endl;
-
-std::cout<<"----------------------"<<std::endl;
+std::cout<<" _ _       _           _      " <<std::endl;
+std::cout         <<"| \\ | ___ | |_  ___  _| | _ _ "<<std::endl;
+std::cout         <<"|   ||___|| . \\/ . \\/ . || | |"<<std::endl;
+std::cout         <<"|_\\_|     |___/\\___/\\___|`_. |"<<std::endl;
+std::cout         <<"                         <___'"<<std::endl;
+std::cout<<" _______ _____  __  __ "<<std::endl;
+std::cout        <<"|__   __|  __ \\|  \\/  |"<<std::endl;
+std::cout        <<"   | |  | |__) | \\  / |"<<std::endl;
+std::cout        <<"   | |  |  ___/| |\\/| |"<<std::endl;
+std::cout        <<"   | |  | |    | |  | |"<<std::endl;
+std::cout        <<"   |_|  |_|    |_|  |_|"<<std::endl;
 std::cout<<"--Developed by Nikita Mushchak, 2018--"<<std::endl;
 std::cout<<"Department of Theoretical Mecanics, SPbSTU, Russia"<<std::endl;
 
