@@ -3,109 +3,11 @@
 
 
 
-//cojugate vector with std::vector<double> data
-inline void conjugate(std::vector< std::vector<double> > &x, size_t N)
-{
-	size_t i = 0;
 
-	for (; i <= N - 4; i += 4)
-	{
-		x[i][0] = x[i][0];
-		x[i][1] = -x[i][1];
-
-		x[i+1][0] =  x[i+1][0];
-		x[i+1][1] = -x[i+1][1];
-
-		x[i + 2][0] = x[i + 2][0];
-		x[i + 2][1] = -x[i + 2][1];
-
-		x[i + 3][0] = x[i + 3][0];
-		x[i + 3][1] = -x[i + 3][1];
-	}
-	for (; i < N; ++i)
-	{
-		x[i][0] = x[i][0];
-		x[i][1] = -x[i][1];
-	}
-}
 // Cooley-Tukey FFT
 
 /**/
-inline void fft(std::vector< std::vector<double> > &x, size_t N)
-{
-	// DFT
-	size_t k = N, n;
-	double thetaT = 3.14159265358979 / ((double) N);
 
-	std::vector<double> phiT = { cos(thetaT), -sin(thetaT) };
-	std::vector<double> T;
-	while (k > 1)
-	{
-		n = k;
-		k >>= 1;
-
-		phiT = { phiT[0] * phiT[0] - phiT[1] * phiT[1], 2 * phiT[0] * phiT[1] };
-		std::vector<double> T { 1. , 0. };
-
-		for (size_t l = 0; l < k; l++)
-		{
-			for (size_t a = l; a < N; a += n)
-			{
-				size_t b = a + k;
-				std::vector<double> t = { x[a][0] - x[b][0], x[a][1] - x[b][1] };
-				x[a][0] += x[b][0];
-				x[a][1] += x[b][1];
-				x[b][0] = t[0] * T[0] - t[1] * T[1];
-				x[b][1] = t[0] * T[1] + t[1] * T[0];
-
-			}
-			double tempT = T[0];
-			T[0] = T[0]* phiT[0] - T[1] * phiT[1];
-			T[1] = tempT* phiT[1] + T[1] * phiT[0];
-
-		}
-	}
-	// Decimate
-	size_t m = (size_t)log2(N);
-	for (size_t a = 0; a < N; ++a)
-	{
-		size_t b = a;
-		// Reverse bits
-		b = (((b & 0xaaaaaaaa) >> 1) | ((b & 0x55555555) << 1));
-		b = (((b & 0xcccccccc) >> 2) | ((b & 0x33333333) << 2));
-		b = (((b & 0xf0f0f0f0) >> 4) | ((b & 0x0f0f0f0f) << 4));
-		b = (((b & 0xff00ff00) >> 8) | ((b & 0x00ff00ff) << 8));
-		b = ((b >> 16) | (b << 16)) >> (32 - m);
-		if (b > a)
-		{
-			std::vector<double> t { x[a][0] , x[a][1] };
-			x[a][0] = x[b][0];
-			x[a][1] = x[b][1];
-			x[b][0] = t[0];
-			x[b][1] = t[1];
-
-		}
-	}
-}
-// inverse fft
-/**/
-/**/
-inline void ifft(std::vector< std::vector<double> >& x, size_t N)
-{
-	// conjugate the std::vector<double> numbers
-	conjugate(x, N);
-	// fft
-	fft(x, N);
-	// conjugate the std::vector<double> numbers again
-	conjugate(x, N);
-	// scale the numbers
-	for (size_t i = 0; i < N; i++)
-	{
-		x[i][0] /= N;
-		x[i][1] /= N;
-
-	}
-}
 /**/
 inline void conjugate2(std::vector< std::vector<double> > &vector){
     std::size_t length = vector.size();
@@ -198,9 +100,112 @@ inline void ifft2(std::vector< std::vector<double> > &vector){
 
     fft2(vector);
 		conjugate2(vector);
-		
+
     for(std::size_t i = 0; i < length; ++i){
         vector[i][0] /= length;
 				vector[i][1] /= length;
+    }
+}
+inline void fft2_Real(std::vector< std::vector<double> > &vector) {
+
+    std::size_t N = vector.size();
+    std::size_t N_2 = N / 2;
+
+    double thetaT2 = 3.14159265358979 / N_2;
+    double swap0 = 0.;
+    double U0 = 1.;
+    double U1 = 0.;
+    double phiT0_2 = cos(thetaT2);
+    double phiT1_2 = sin(thetaT2);
+
+    //std::vector<double> vector0, vector1;
+    std::vector< std::vector<double> > vector0;
+    vector0.resize(N_2);
+
+    std::size_t i;
+    for (i = 0; i < N_2; ++i)
+    {
+        vector0[i].resize(2);
+        vector0[i][0] = vector[2 * i][0] / 2.0;
+        vector0[i][1] = vector[2 * i + 1][0] / 2.0;
+    }
+
+    fft2(vector0);
+
+    for (i = 0; i < N_2; ++i) {
+
+        std::size_t k = (N_2 - i) % N_2;
+
+        double Ax = vector0[i][0];
+        double Ay = vector0[i][1];
+        double Bx = vector0[k][0];
+        double By = vector0[k][1];
+
+        double Cx = Ax + Bx;
+        double Cy = Ay - By;
+        double Dx = Ay + By;
+        double Dy = Ax - Bx;
+
+        Ax = U0 * Dx + U1 * Dy;
+        Ay = U1 * Dx - U0 * Dy;
+
+        vector[i][0] = Ax + Cx;
+        vector[i][1] = Ay + Cy;
+        vector[i + N_2][0] = Cx - Ax;
+        vector[i + N_2][1] = Cy - Ay;
+
+        swap0 = U0;
+        U0 = swap0 * phiT0_2 - U1 * phiT1_2;
+        U1 = swap0 * phiT1_2 + U1 * phiT0_2;
+    }
+}
+
+// Îáðàòíîå FFT ñ âåùåñòâåííûì âûõîäîì
+
+inline void ifft2_Real(std::vector< std::vector<double> > &vector) {
+
+    std::size_t N = vector.size();
+    std::size_t N_2 = N / 2;
+
+    double thetaT2 = 3.14159265358979 / N_2;
+    double swap0 = 0.;
+    double U0 = 1.;
+    double U1 = 0.;
+    double phiT0_2 = cos(thetaT2);
+    double phiT1_2 = sin(thetaT2);
+
+    //std::vector<double> vector0, vector1;
+    std::vector< std::vector<double> > vector0;
+    vector0.resize(N_2);
+
+    std::size_t i;
+    for (i = 0; i < N_2; ++i) {
+
+        double X1_Re = vector[i][0];
+        double X1_Im = vector[i][1];
+        double X2_Re = vector[i + N_2][0];
+        double X2_Im = vector[i + N_2][1];
+
+        double Y0_Re = X1_Re + X2_Re;
+        double Y0_Im = X1_Im + X2_Im;
+        double Y1_Re = U0 * (X1_Re - X2_Re) - U1 * (X1_Im - X2_Im);
+        double Y1_Im = U1 * (X1_Re - X2_Re) + U0 * (X1_Im - X2_Im);
+
+        vector0[i].resize(2);
+        vector0[i][0] = (Y0_Re - Y1_Im) / 2.0;
+        vector0[i][1] = (Y0_Im + Y1_Re) / 2.0;
+
+        swap0 = U0;
+        U0 = swap0 * phiT0_2 - U1 * phiT1_2;
+        U1 = swap0 * phiT1_2 + U1 * phiT0_2;
+    }
+
+    ifft2(vector0);
+
+    for (i = 0; i < N_2; ++i) {
+
+        vector[2 * i][0] = vector0[i][0];
+        vector[2 * i + 1][0] = vector0[i][1];
+        vector[i][1] = vector[i + N_2][1] = 0;
     }
 }

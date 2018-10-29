@@ -29,3 +29,16 @@ namespace particle_ut
 		return coords;
 	}
 }
+
+
+void ScalePos(std::vector<std::vector<double>> &Coordinates, double scale)
+{
+	std::size_t size= Coordinates.size();//number of particles
+	for (size_t i = 0 ; i<size ;++i)
+	{
+
+		Coordinates[i][0]/=scale;
+		Coordinates[i][1]/=scale;
+		Coordinates[i][2]/=scale;
+	}
+}

@@ -18,6 +18,7 @@ int main(const int argc, const char *argv[]) {
 
 	 double H = 1.0; //dimention of the cubic BOX
    //number of boxes and particle must be N^3, where N=2^n
+	 double L = 10; // dimention of calculation area
 	 double dim = 16; //number of BOXes power of 2
 	 double number_particles = 2;
 	 double mass = 1.0;
@@ -52,6 +53,8 @@ int main(const int argc, const char *argv[]) {
                    << std::endl
                    << "    --H=<value>          dimention of the cubic BOX"
                    << std::endl
+									 << "    --L=<value>          dimention of the calculation area"
+                   << std::endl
                    << "    --dim=<value>           number of BOXes power of 2 "
                    << "[double, n/d]"
                    << std::endl << std::endl
@@ -70,6 +73,7 @@ int main(const int argc, const char *argv[]) {
 				   if(
 				              ai::assignAbsDoubleParameter(argv[i], "--number_particles=", number_particles)
 				              || ai::assignAbsDoubleParameter(argv[i], "--H=", H)
+											|| ai::assignAbsDoubleParameter(argv[i], "--L=", L)
 				              || ai::assignAbsDoubleParameter(argv[i], "--dim=", dim)
 				              || ai::assignAbsDoubleParameter(argv[i], "--T1=", T1)
 				              || ai::assignAbsDoubleParameter(argv[i], "--mass=", mass)
@@ -84,7 +88,7 @@ int main(const int argc, const char *argv[]) {
 
 }
 							// auto start = ai::time();
-               return TPM(H,dim,number_particles,mass, T1);
+               return TPM(H,L,dim,number_particles,mass, T1);
 							 // auto
            }
 

@@ -20,3 +20,4 @@ namespace particle_ut
 
 
 }
+void ScalePos(std::vector<std::vector<double>> &Coordinates, double scale)

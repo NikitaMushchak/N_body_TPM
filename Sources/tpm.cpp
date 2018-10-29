@@ -4,8 +4,9 @@
 #include "CaclModule.h"
 #include "Integrator.h"
 #include "ai.hh"
+#include "particles_ut.h"
 
-int TPM(const double H, const double dim,const double number_particles,const double mass,const double T1){
+int TPM(const double H, const double L , const double dim,const double number_particles,const double mass,const double T1){
 
 // std::cout<<" ____  __  _  _ "<< std::endl
 //          <<"|   |  |  | | \/ |"<<std::endl
@@ -27,6 +28,7 @@ std::cout<<"Department of Theoretical Mecanics, SPbSTU, Russia"<<std::endl;
 
 std::cout << "Parameters: "<<std::endl
           <<" H = "<<H<<std::endl
+          <<" L = "<<L<<std::endl
           <<" dim = "<<dim <<std::endl
           <<"number_particles = "<<number_particles<<std::endl
           <<"mass = "<<mass<<std::endl
@@ -38,7 +40,8 @@ for (size_t i = 0; i < number_particles ; ++i) {
     Particles.push_back(a);
 }
 
-
+double scale = L/dim;
+ScalePos(Particles, scale);
 // const double T1 = 3.1;
   double dt=0;
   double time=0;
