@@ -1,10 +1,10 @@
 #include <vector>
 #include <algorithm>
-#include "particle_struct.h"
+// #include "particle_struct.h"
 //#include "a3r.h"
 #include "ai.hh"
 #include "particles_ut.h"
-#include "box_struct.h"
+// #include "box_struct.h"
 #include "Fourier_tools.hh"
 #include "CaclModule.h"
 #include "Integrator.h"
@@ -18,7 +18,7 @@ int main(const int argc, const char *argv[]) {
 
 	 double H = 1.0; //dimention of the cubic BOX
    //number of boxes and particle must be N^3, where N=2^n
-	 double L = 10; // dimention of calculation area
+	 double L = 100; // dimention of calculation area
 	 double dim = 16; //number of BOXes power of 2
 	 double number_particles = 2;
 	 double mass = 1.0;

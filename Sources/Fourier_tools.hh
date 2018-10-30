@@ -8,8 +8,8 @@
 
 /**/
 
-/**/
-inline void conjugate2(std::vector< std::vector<double> > &vector){
+/**/;
+ inline void conjugate2(std::vector< std::vector<double> > &vector){
     std::size_t length = vector.size();
 
     for(std::size_t i = 0; i < length; ++i){
@@ -17,7 +17,7 @@ inline void conjugate2(std::vector< std::vector<double> > &vector){
     }
 }
 
-inline void fft2(std::vector< std::vector<double> > &vector){
+ inline void fft2(std::vector< std::vector<double> > &vector){
     std::size_t k = vector.size();
     std::size_t j = 0;
     std::size_t n = 0;
@@ -93,7 +93,7 @@ inline void fft2(std::vector< std::vector<double> > &vector){
     }
 }
 
-inline void ifft2(std::vector< std::vector<double> > &vector){
+ inline void ifft2(std::vector< std::vector<double> > &vector){
     const double length = (double) vector.size();
 
     conjugate2(vector);
@@ -106,7 +106,7 @@ inline void ifft2(std::vector< std::vector<double> > &vector){
 				vector[i][1] /= length;
     }
 }
-inline void fft2_Real(std::vector< std::vector<double> > &vector) {
+inline  void fft2_Real(std::vector< std::vector<double> > &vector) {
 
     std::size_t N = vector.size();
     std::size_t N_2 = N / 2;

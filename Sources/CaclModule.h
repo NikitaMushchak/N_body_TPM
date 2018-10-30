@@ -2,6 +2,7 @@
 #include <vector>
 //#include <algorithm>
 
+void ScalePos(std::vector<std::vector<double>>& Particles, double scale);
 
  void CaclDensity(std::vector<std::vector<double>>&Particles,std::vector<std::vector <std::vector<std::vector<double>>>>&density,
 	float mass,

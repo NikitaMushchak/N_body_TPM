@@ -4,7 +4,7 @@
 #include "CaclModule.h"
 #include "Integrator.h"
 #include "ai.hh"
-#include "particles_ut.h"
+
 
 int TPM(const double H, const double L , const double dim,const double number_particles,const double mass,const double T1){
 
@@ -36,12 +36,16 @@ std::cout << "Parameters: "<<std::endl
 
 std::vector<std::vector<double>> Particles;
 for (size_t i = 0; i < number_particles ; ++i) {
-    std::vector<double> a = { (double) 16.+21.3*i,  32., 32.  };
+    std::vector<double> a = { (double) 16.+11.3*i,  32., 32.  };
     Particles.push_back(a);
 }
 
 double scale = L/dim;
-ScalePos(Particles, scale);
+
+ScalePos(Particles,scale);
+
+std::cout << "Scaled pos"<<std::endl;
+ai::printMatrix(Particles);
 // const double T1 = 3.1;
   double dt=0;
   double time=0;

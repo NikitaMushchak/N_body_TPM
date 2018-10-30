@@ -5,7 +5,15 @@
 #include "particle_struct.h"
 #include "box_struct.h"
 
-
+void ScalePos(std::vector<std::vector<double>>& Particles, double scale)
+{
+    std::size_t size = Particles.size();
+    for (size_t i = 0; i < size; i++) {
+        Particles[i][0]/=scale;
+        Particles[i][1]/=scale;
+        Particles[i][2]/=scale;
+    }
+}
 
  void CaclDensity(std::vector<
 					std::vector<double>>& Particles ,
@@ -21,7 +29,9 @@
 	//for ()
 	size_t x, y, z = 0;
 	double dx, dy, dz, tx, ty, tz;
-
+    double h = 1./(double)(dim-1);
+    mass/=(float)(h*h*h);
+    std::cout <<"mass scaled"<<mass<<std::endl;
 
 	for (size_t i = 0; i < Particles.size(); ++i)
 	{
@@ -68,7 +78,7 @@
 							std::vector<double>>>>& rho,
 							size_t dim )
 {
-	double h = 1 / double(dim - 1);
+	double h = 1. / double(dim - 1);
 
 	//calculate FFT for each layer
 	for (size_t i = 0; i < dim; ++i)
@@ -198,10 +208,10 @@
 				if (denom0 !=0. )
 				{
 
-					double q =  -4.*pi*rho[k][m][n][0];
-          double b =  -4.*pi*rho[k][m][n][1];
-					rho[k][m][n][0] =  (q * denom0 + b * denom1) / (denom0 * denom0 + denom1 * denom1);
-					rho[k][m][n][1] =  (b * denom0 - q * denom1) / (denom0 * denom0 + denom1 * denom1);
+					double q =  -rho[k][m][n][0];
+          double b =  -rho[k][m][n][1];
+					rho[k][m][n][0] =  4.*pi*h*h*h*(q * denom0 + b * denom1) / (denom0 * denom0 + denom1 * denom1);
+					rho[k][m][n][1] =  4.*pi*h*h*h*(b * denom0 - q * denom1) / (denom0 * denom0 + denom1 * denom1);
 
 				}
 				double b = Wn0;
