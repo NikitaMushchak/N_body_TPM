@@ -8,9 +8,6 @@
 
 int TPM(const double H, const double L , const double dim,const double number_particles,const double mass,const double T1){
 
-// std::cout<<" ____  __  _  _ "<< std::endl
-//          <<"|   |  |  | | \/ |"<<std::endl
-//          <<"  ||   ||  |     |"<<std::endl;
 std::cout<<" _ _       _           _      " <<std::endl;
 std::cout         <<"| \\ | ___ | |_  ___  _| | _ _ "<<std::endl;
 std::cout         <<"|   ||___|| . \\/ . \\/ . || | |"<<std::endl;
@@ -23,7 +20,7 @@ std::cout        <<"   | |  |  ___/| |\\/| |"<<std::endl;
 std::cout        <<"   | |  | |    | |  | |"<<std::endl;
 std::cout        <<"   |_|  |_|    |_|  |_|"<<std::endl;
 std::cout<<"--Developed by Nikita Mushchak, 2018--"<<std::endl;
-std::cout<<"Department of Theoretical Mecanics, SPbSTU, Russia"<<std::endl;
+std::cout<<"Department of Theoretical Mechanics, SPbSTU, Russia"<<std::endl;
 
 
 std::cout << "Parameters: "<<std::endl
@@ -36,9 +33,11 @@ std::cout << "Parameters: "<<std::endl
 
 std::vector<std::vector<double>> Particles;
 for (size_t i = 0; i < number_particles ; ++i) {
-    std::vector<double> a = { (double) 16.+11.3*i,  32., 32.  };
+    std::vector<double> a = { (double) 16.+1.9*i,  16.+1.9*i, 16.+1.9*i };
     Particles.push_back(a);
 }
+std::cout << "non-Scaled pos"<<std::endl;
+ai::printMatrix(Particles);
 
 double scale = L/dim;
 
@@ -70,8 +69,8 @@ while (time <T1)
              }
          }
      }
-     std::cout<<"Particles coords"<<std::endl;
-     ai::printMatrix(Particles);
+     // std::cout<<"Particles coords"<<std::endl;
+     // ai::printMatrix(Particles);
 
      //CIC assigment
      CaclDensity(Particles, density, mass, H, dim);
