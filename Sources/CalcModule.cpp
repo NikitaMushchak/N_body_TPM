@@ -5,7 +5,7 @@
 #include "particle_struct.h"
 #include "box_struct.h"
 
-void ScalePos(std::vector<std::vector<double>>& Particles, double scale)
+void ScalePos(std::vector<std::vector<double> >& Particles, double scale)
 {
     std::size_t size = Particles.size();
     for (size_t i = 0; i < size; i++) {
@@ -20,7 +20,7 @@ void ScalePos(std::vector<std::vector<double>>& Particles, double scale)
 				 std::vector<
 					std::vector <
 						std::vector<
-							std::vector<double>>>>& density,
+							std::vector<double> > > >& density,
 				 float mass,
   			  	 double H,
 				 size_t dim)
@@ -31,7 +31,7 @@ void ScalePos(std::vector<std::vector<double>>& Particles, double scale)
 	double dx, dy, dz, tx, ty, tz;
     double h = 1./(double)(dim-1);
     mass/=(float)(h*h*h);
-    std::cout <<"mass scaled"<<mass<<std::endl;
+    // std::cout <<"mass scaled"<<mass<<std::endl;
 
 	for (size_t i = 0; i < Particles.size(); ++i)
 	{
@@ -318,50 +318,9 @@ void ScalePos(std::vector<std::vector<double>>& Particles, double scale)
 						std::vector<std::vector<std::vector<std::vector<double >>>>& density,
 							std::vector<std::vector<double>>& a, double H)
 {
-	std::vector <
-		std::vector <
-		std::vector <
-		std::vector<double>>>> g;
+
 	size_t dim = density.size();
-	g.resize(dim);
-	for (size_t i = 0; i < dim; ++i)
-	{
-		g[i].resize(dim);
-		for (size_t j = 0; j < dim; ++j)
-		{
-			g[i][j].resize(dim);
-			for (size_t k = 0; k < dim; ++k)
-			{
-				g[i][j][k].resize(3);
-			}
-		}
-	}
-	//std::cout << "making acceleretion fields ....";
-	//acceleration field
-	for (size_t i = 1; i < dim - 1; ++i)
-	{
-		for (size_t j = 1; j < dim - 1; ++j)
-		{
-			for (size_t k = 1; k < dim - 1; ++k)
-			{
-				g[i][j][k][0] += -0.5*(density[i + 1][j][k][0] - density[i - 1][j][k][0]);
-				g[i][j][k][1] += -0.5*(density[i][j + 1][k][0] - density[i][j - 1][k][0]);
-				g[i][j][k][2] += -0.5*(density[i][j][k + 1][0] - density[i][j][k - 1][0]);
-			}
-		}
-	}
-	//std::cout << "Done." << std::endl;
-	//accleration of particles
-	/*std::vector<
-		std::vector<double>> a;*/
-	// a.resize(Particles.size());
-	// for (size_t i = 0; i < Particles.size(); ++i)
-	// {
-	// 	a[i].resize(3);
-	// }
-	//particles cicle
-	//double dx, dy, dz, tx, ty, tz;
-	//std::cout << "Interpolating forces into particles ";
+
 	size_t x, y, z = 0;
 	for (size_t i = 0; i < Particles.size(); ++i)
 	{
@@ -379,24 +338,28 @@ void ScalePos(std::vector<std::vector<double>>& Particles, double scale)
 			y = std::floor(Particles[i][1] / H);
 			z = std::floor(Particles[i][2] / H);
 		}
-		std::cout << ".";
-		a[i][0] += g[x][y][z][0] * tx*ty*tz + g[x + 1][y][z][0] * dx*ty*tz +
-			g[x][y + 1][z][0] * tx*dy*tz + g[x + 1][y + 1][z][0] * dx*dy*tz +
-			g[x][y][z + 1][0] * tx*ty*dz + g[x + 1][y][z + 1][0] * dx*ty*dz +
-			g[x][y + 1][z + 1][0] * tx*dy*dz + g[x + 1][y + 1][z + 1][0] * dx*dy*dz;
-		std::cout << ".";
-		a[i][1] += g[x][y][z][1] * tx*ty*tz + g[x + 1][y][z][1] * dx*ty*tz +
-			g[x][y + 1][z][1] * tx*dy*tz + g[x + 1][y + 1][z][1] * dx*dy*tz +
-			g[x][y][z + 1][1] * tx*ty*dz + g[x + 1][y][z + 1][1] * dx*ty*dz +
-			g[x][y + 1][z + 1][1] * tx*dy*dz + g[x + 1][y + 1][z + 1][1] * dx*dy*dz;
-		std::cout << ".";
-		a[i][2] += g[x][y][z][2] * tx*ty*tz + g[x + 1][y][z][2] * dx*ty*tz +
-			g[x][y + 1][z][2] * tx*dy*tz + g[x + 1][y + 1][z][2] * dx*dy*tz +
-			g[x][y][z + 1][2] * tx*ty*dz + g[x + 1][y][z + 1][2] * dx*ty*dz +
-			g[x][y + 1][z + 1][2] * tx*dy*dz + g[x + 1][y + 1][z + 1][2] * dx*dy*dz;
 
+            // x componet
+            	a[i][0] = -0.5*(density[x + 1][y][z][0] - density[x - 1][y][z][0])*tx*ty*tz- 0.5*(density[x + 2][y][z][0] - density[x][y][z][0])*dx*ty*tz
+            		- 0.5*(density[x + 1][y + 1][z][0] - density[x - 1][y + 1][z][0])*tx*dy*tz - 0.5*(density[x + 2][y + 1][z][0] - density[x][y + 1][z][0])*dx*dy*tz
+            		- 0.5*(density[x + 1][y][z + 1][0] - density[x - 1][y][z + 1][0])*tx*ty*dz - 0.5 *(density[x + 2][y][z + 1][0] - density[x][y][z + 1][0])*dx*ty*dz
+            		- 0.5*(density[x + 1][y + 1][z + 1][0] - density[x - 1][y + 1][z + 1][0])*tx*dy*dz - 0.5*(density[x + 2][y + 1][z + 1][0] - density[x][y + 1][z + 1][0])*dx*dy*dz;
+            	// std::cout << "g[i].x = " << g[i][0] << std::endl;
+            	//y component
+            	a[i][1] = -0.5*(density[x][y + 1][z][0] - density[x][y - 1][z][0])*tx*ty*tz - 0.5*(density[x + 1][y+1][z][0] - density[x+1][y-1][z][0])*dx*ty*tz
+            		- 0.5*(density[x][y + 2][z][0] - density[x][y][z][0])*tx*dy*tz - 0.5*(density[x + 1][y + 2][z][0] - density[x+1][y][z][0])*dx*dy*tz
+            		- 0.5*(density[x][y+1][z + 1][0] - density[x][y-1][z + 1][0])*tx*ty*dz - 0.5 *(density[x + 1][y+1][z + 1][0] - density[x+1][y-1][z + 1][0])*dx*ty*dz
+            		- 0.5*(density[x][y + 2][z + 1][0] - density[x][y][z + 1][0])*tx*dy*dz - 0.5*(density[x + 1][y + 2][z + 1][0] - density[x+1][y][z + 1][0])*dx*dy*dz;
+            	// std::cout << "g[i].y = " << g[i][1] << std::endl;
+            	//z component
+            	a[i][2] = -0.5*(density[x][y][z + 1][0] - density[x][y][z - 1][0])*tx*ty*tz -0.5*(density[x + 1][y][z + 1][0] - density[x + 1][y][z - 1][0])*dx*ty*tz
+            		- 0.5*(density[x][y + 1][z+1][0] - density[x][y+1][z-1][0])*tx*dy*tz - 0.5*(density[x + 1][y + 1][z+1][0] - density[x + 1][y+1][z-1][0])*dx*dy*tz
+            		- 0.5*(density[x][y][z + 2][0] - density[x][y][z][0])*tx*ty*dz - 0.5 *(density[x + 1][y][z + 2][0] - density[x + 1][y][z][0])*dx*ty*dz
+            		- 0.5*(density[x][y + 1][z + 2][0] - density[x][y+1][z][0])*tx*dy*dz - 0.5*(density[x + 1][y + 1][z + 2][0] - density[x + 1][y+1][z][0])*dx*dy*dz;
+            	// std::cout << "g[i].z = " << g[i][2] << std::endl;
+            //}
 	}
-	g.clear();
+
 	//std::cout << " DONE." << std::endl;
 
 }
