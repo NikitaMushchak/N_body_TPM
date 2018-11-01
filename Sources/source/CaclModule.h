@@ -2,7 +2,9 @@
 #include <vector>
 //#include <algorithm>
 
-void ScalePos(std::vector<std::vector<double>>& Particles, double scale);
+void ScalePos(std::vector<std::vector<double>>& Particles, double scale, size_t dim);
+
+void  Genconfig(std::vector<std::vector<double> >& Particles, double number_particles,double L);
 
  void CaclDensity(std::vector<std::vector<double>>&Particles,std::vector<std::vector <std::vector<std::vector<double>>>>&density,
 	double mass,

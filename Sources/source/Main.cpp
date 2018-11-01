@@ -18,8 +18,8 @@ int main(const int argc, const char *argv[]) {
 
 	 double H = 1.0; //dimention of the cubic BOX
    //number of boxes and particle must be N^3, where N=2^n
-	 double L = 120; // dimention of calculation area
-	 double dim = 16; //number of BOXes power of 2
+	 double L = 128; // dimention of calculation area
+	 double dim = 128; //number of BOXes power of 2
 	 double number_particles = 2;
 	 double mass = 1.0;
 	 double T1 = 1.1;

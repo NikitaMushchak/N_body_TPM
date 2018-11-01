@@ -1,26 +1,49 @@
 #include "CaclModule.h"
 #include <vector>
+#include <time.h>
 //#include <algorithm>
 #include "Fourier_tools.hh"
 #include "particle_struct.h"
 #include "box_struct.h"
 
-void ScalePos(std::vector<std::vector<double> >& Particles, double scale)
+void ScalePos(std::vector<std::vector<double> >& Particles, double scale, size_t dim)
 {
     std::size_t size = Particles.size();
-    for (size_t i = 0; i < size; i++) {
+    // double max = ai::max(Particles);
+	// double min = ai::min(Particles);
+	
+	
+	// std::cout << "diff = "<<max -min<<std::endl;
+	for (size_t i = 0; i < size; i++) {
         Particles[i][0]/=scale;
         Particles[i][1]/=scale;
         Particles[i][2]/=scale;
     }
 }
 
+
+void  Genconfig(std::vector<std::vector<double> >& Particles, double number_particles,double L)
+{
+	
+	srand (time(NULL));
+	double min  = 0.25*L;
+	double max = 0.75*L;
+	double range = max-min;
+	for(size_t i = 0 ; i<number_particles; ++i)
+	{
+		Particles[i][0] = rand() % (size_t)range + min;
+		Particles[i][1] = rand() % (size_t)range + min;
+		Particles[i][2] = rand() % (size_t)range + min;
+		
+	}
+}
  void CaclDensity(std::vector<
 					std::vector<double> >& Particles ,
 				 std::vector<
 					std::vector <
 						std::vector<
 							std::vector<double> > > >& density,
+							std::vector<std::vector<double> >box,
 				 double mass,
   			  	 double H,
 				 size_t dim)
@@ -48,6 +71,11 @@ void ScalePos(std::vector<std::vector<double> >& Particles, double scale)
 			x = std::floor(Particles[i][0] / H);
 			y = std::floor(Particles[i][1] / H);
 			z = std::floor(Particles[i][2] / H);
+			box[i][0] = x;
+			box[i][1] = y ;
+			box[i][2] = z;
+			// box[i][3] = 0;
+			// std::cout<<"x = "<<x <<"   y = "<<y << "  z = "<<z<<std::endl;
 
 			density[x][y][z][0] += mass * tx *ty*tz;
 
@@ -69,6 +97,15 @@ void ScalePos(std::vector<std::vector<double> >& Particles, double scale)
 		}
 
 	}
+	size_t it =1;
+	for (size_t i = 0 ; i<Particles.size(); ++i)
+	{
+		for (size_t j = 1 ; j <Particles.size(); ++j )
+		{
+			if (box[i][0] == box[j][0] && box[i][1] == box[j][1] && box[i][2] == box[j][2])
+				box[i][3]=box[j][3] = it;
+		}
+		it++;
 }
 
 
@@ -337,6 +374,7 @@ void ScalePos(std::vector<std::vector<double> >& Particles, double scale)
 			x = std::floor(Particles[i][0] / H);
 			y = std::floor(Particles[i][1] / H);
 			z = std::floor(Particles[i][2] / H);
+			std::cout<<"x = "<<x <<"  y = "<<y <<"  z = "<<z <<std::endl;
 		}
 
             // x componet

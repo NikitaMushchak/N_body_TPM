@@ -15,8 +15,7 @@
 #include <stdexcept>
 #include <sys/stat.h>
 
-// edited by N.D. Mushchak 19.07
-////////////////////////////////
+
 //defines
 
 //typedef std::vector<CArray> CMatrix;
@@ -233,7 +232,33 @@ namespace ai {
 
 		return maximum;
 	}
+	
+	template<typename T>
+	T min(const std::vector<T> input)
+	{
+		T minimum  = input[0];
+		for (size_t i = 1; i<input.size() ; ++i)
+		{
+			minimum = ai::min(minimum, input[i]);
+		}
+		return minimum;
+	}
+	
+	
+	
+	template<typename T>
+	T min(const std::vector< std::vector<T> > input) {
+		T minimum = input[0][0];
 
+		for (std::size_t i = 0; i < input.size(); ++i) {
+			for (std::size_t j = 0; j < input[0].size(); ++j) {
+				minimum = ai::min(minimum, input[i][j]);
+			}
+		}
+
+		return minimum;
+	}
+	
 	/*/
 	* функция, возвращающая максимальное значение в матрице
 	/*/
