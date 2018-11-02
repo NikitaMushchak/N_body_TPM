@@ -11,8 +11,8 @@ void ScalePos(std::vector<std::vector<double> >& Particles, double scale, size_t
     std::size_t size = Particles.size();
     // double max = ai::max(Particles);
 	// double min = ai::min(Particles);
-	
-	
+
+
 	// std::cout << "diff = "<<max -min<<std::endl;
 	for (size_t i = 0; i < size; i++) {
         Particles[i][0]/=scale;
@@ -24,7 +24,7 @@ void ScalePos(std::vector<std::vector<double> >& Particles, double scale, size_t
 
 void  Genconfig(std::vector<std::vector<double> >& Particles, double number_particles,double L)
 {
-	
+
 	srand (time(NULL));
 	double min  = 0.25*L;
 	double max = 0.75*L;
@@ -34,7 +34,7 @@ void  Genconfig(std::vector<std::vector<double> >& Particles, double number_part
 		Particles[i][0] = rand() % (size_t)range + min;
 		Particles[i][1] = rand() % (size_t)range + min;
 		Particles[i][2] = rand() % (size_t)range + min;
-		
+
 	}
 }
  void CaclDensity(std::vector<
@@ -43,7 +43,7 @@ void  Genconfig(std::vector<std::vector<double> >& Particles, double number_part
 					std::vector <
 						std::vector<
 							std::vector<double> > > >& density,
-							std::vector<std::vector<double> >box,
+							std::vector<std::vector<size_t> >&box,
 				 double mass,
   			  	 double H,
 				 size_t dim)
@@ -72,7 +72,7 @@ void  Genconfig(std::vector<std::vector<double> >& Particles, double number_part
 			y = std::floor(Particles[i][1] / H);
 			z = std::floor(Particles[i][2] / H);
 			box[i][0] = x;
-			box[i][1] = y ;
+			box[i][1] = y;
 			box[i][2] = z;
 			// box[i][3] = 0;
 			// std::cout<<"x = "<<x <<"   y = "<<y << "  z = "<<z<<std::endl;
@@ -97,17 +97,26 @@ void  Genconfig(std::vector<std::vector<double> >& Particles, double number_part
 		}
 
 	}
-	size_t it =1;
+	size_t it =0;
 	for (size_t i = 0 ; i<Particles.size(); ++i)
 	{
 		for (size_t j = 1 ; j <Particles.size(); ++j )
 		{
 			if (box[i][0] == box[j][0] && box[i][1] == box[j][1] && box[i][2] == box[j][2])
-				box[i][3]=box[j][3] = it;
-		}
-		it++;
-}
+                  if( box[i][3]!=box[j][3])
+                  {
+                      it++;
+                    box[i][3]=box[j][3] = it;
+                  }
+                  else
+                  {
+                      box[i][3]=box[j][3] = it;
+                  }
+                // it++;
+        }
 
+    }
+}
 
   void CalcPotential(std::vector<
 					std::vector<
@@ -352,7 +361,8 @@ void  Genconfig(std::vector<std::vector<double> >& Particles, double number_part
 }
 
   void GetAccel(std::vector<std::vector<double>>& Particles,
-						std::vector<std::vector<std::vector<std::vector<double >>>>& density,
+						 std::vector<std::vector<std::vector<std::vector<double >>>>& density,
+                        std::vector<std::vector<size_t> > &box,
 							std::vector<std::vector<double>>& a, double H)
 {
 
@@ -361,7 +371,10 @@ void  Genconfig(std::vector<std::vector<double> >& Particles, double number_part
 	size_t x, y, z = 0;
 	for (size_t i = 0; i < Particles.size(); ++i)
 	{
-		//calculating indexes of parent cell
+
+        if ( box[i][3]==0 )
+        {
+        //calculating indexes of parent cell
 		double dx = Particles[i][0] - std::floor((Particles[i][0]) / H);
 		double dy = Particles[i][1] - std::floor((Particles[i][1]) / H);
 		double dz = Particles[i][2] - std::floor((Particles[i][2]) / H);
@@ -397,7 +410,26 @@ void  Genconfig(std::vector<std::vector<double> >& Particles, double number_part
             	// std::cout << "g[i].z = " << g[i][2] << std::endl;
             //}
 	}
+}
+size_t num = 0;
+for(size_t i =0 ; i<box.size(); ++i)
+{
+    if(box[i][3]>0){
 
+        num = box[i][3];
+        std::vector<std::vector<double> > par;
+
+        while(box[i][3]==num)
+        {
+            std::vector<double> a = {(double) Particles[i][0], Particles[i][1], Particles[i][2] };
+            par.push_back(a);
+        }
+
+        std::cout<<"par= "<<std::endl;
+        ai::printMatrix(par);
+
+    }
+}
 	//std::cout << " DONE." << std::endl;
 
 }

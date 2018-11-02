@@ -2,11 +2,12 @@
 #include <vector>
 //#include <algorithm>
 
-void ScalePos(std::vector<std::vector<double>>& Particles, double scale, size_t dim);
+void ScalePos(std::vector<std::vector<double> >& Particles, double scale, size_t dim);
 
 void  Genconfig(std::vector<std::vector<double> >& Particles, double number_particles,double L);
 
- void CaclDensity(std::vector<std::vector<double>>&Particles,std::vector<std::vector <std::vector<std::vector<double>>>>&density,
+ void CaclDensity(std::vector<std::vector<double> >&Particles,std::vector<std::vector <std::vector<std::vector<double> > > >&density,
+   std::vector<std::vector<size_t> >& box,
 	double mass,
 	double H,
 	size_t dim);
@@ -15,12 +16,13 @@ void  Genconfig(std::vector<std::vector<double> >& Particles, double number_part
   void CalcPotential(std::vector<
 					std::vector<
 						std::vector<
-							std::vector<double>>>>& rho,
+							std::vector<double> > > >& rho,
 				   size_t dim);
- void GetAccel(std::vector<std::vector<double>>& Particles,
-							std::vector<std::vector<std::vector<std::vector<double >>>>& density,
-								std::vector<std::vector<double>>& a,
+ void GetAccel(std::vector<std::vector<double> >& Particles,
+							   std::vector<std::vector<std::vector<std::vector<double > > > >& density,
+                  std::vector<std::vector<size_t> >& box,
+								         std::vector<std::vector<double> >& a,
 									double H);
 
-void Direct(std::vector<std::vector<double>> & Particles, std::vector<std::vector<double>> & dir, double mass);
+void Direct(std::vector<std::vector<double> > & Particles, std::vector<std::vector<double> > & dir, double mass);
 double Signum(double  x);

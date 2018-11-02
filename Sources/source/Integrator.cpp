@@ -74,9 +74,9 @@ inline double Min_num(double f, double m)
 		}
 	}
 	//CIC assigment
-	CaclDensity(Particles, density, mass, H, dim);
+	//CaclDensity(Particles, density, mass, H, dim);
 	//potetial field
-	CalcPotential(density, dim);
+	//CalcPotential(density, dim);
 	//Acceleration
 	/*std::vector<std::vector<double >>a;
 	a.resize(Particles.size());
@@ -85,8 +85,8 @@ inline double Min_num(double f, double m)
 		a[i].resize(3);
 
 	}*/
-	 GetAccel(Particles, density,a, H);
-	density.clear();
+	 //GetAccel(Particles, density,a, H);
+	//density.clear();
 
 	/*std::vector<std::vector<double >> vel;
 	vel.resize(Particles.size());
