@@ -103,7 +103,7 @@ void  Genconfig(std::vector<std::vector<double> >& Particles, double number_part
 		for (size_t j = 1 ; j <Particles.size(); ++j )
 		{
 			if (box[i][0] == box[j][0] && box[i][1] == box[j][1] && box[i][2] == box[j][2])
-                  if( box[i][3]!=box[j][3])
+                  if( box[j][3] == 0 && box[i][3]==0)
                   {
                       it++;
                     box[i][3]=box[j][3] = it;
@@ -411,26 +411,28 @@ void  Genconfig(std::vector<std::vector<double> >& Particles, double number_part
             //}
 	}
 }
-size_t num = 0;
-for(size_t i =0 ; i<box.size(); ++i)
-{
-    if(box[i][3]>0){
-
-        num = box[i][3];
-        std::vector<std::vector<double> > par;
-
-        while(box[i][3]==num)
-        {
-            std::vector<double> a = {(double) Particles[i][0], Particles[i][1], Particles[i][2] };
-            par.push_back(a);
-        }
-
-        std::cout<<"par= "<<std::endl;
-        ai::printMatrix(par);
-
-    }
-}
+// size_t num = 0;
+// for(size_t i =0 ; i<box.size(); ++i)
+// {
+//     if(box[i][3]>0){
+//
+//         num = box[i][3];
+//         std::vector<std::vector<double> > par;
+//
+//         while(box[i][3]==num)
+//         {
+//             std::vector<double> a = {(double) Particles[i][0], Particles[i][1], Particles[i][2] };
+//             par.push_back(a);
+//         }
+//
+//         std::cout<<"par= "<<std::endl;
+//         ai::printMatrix(par);
+//
+//     }
+// }
 	//std::cout << " DONE." << std::endl;
+
+
 
 }
 
