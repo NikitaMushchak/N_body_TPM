@@ -40,10 +40,10 @@
 //   }
 
 for (size_t i = 0; i < number_particles ; ++i) {
-       std::vector<double> a = { (double) 30.-0.4*i,  30.-0.4*i, 30.-0.4*i };
+       std::vector<double> a = { (double) 29.9-0.33*i,  29.9-0.33*i, 29.9-0.33*i };
 
         Particles.push_back(a);
-    }
+    }	// Particles.push_back( std::vector<double> {35.1, 35.1 , 35.1} );	// number_particles+=1;
 
     // Genconfig(Particles, number_particles, L);
 

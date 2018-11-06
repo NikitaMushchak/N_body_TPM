@@ -3,6 +3,7 @@
 #include <time.h>
 //#include <algorithm>
 #include "Fourier_tools.hh"
+#include "ai.hh"
 #include "particle_struct.h"
 #include "box_struct.h"
 
@@ -102,16 +103,18 @@ void  Genconfig(std::vector<std::vector<double> >& Particles, double number_part
 	{
 		for (size_t j = 1 ; j <Particles.size(); ++j )
 		{
+			if(i!=j)
 			if (box[i][0] == box[j][0] && box[i][1] == box[j][1] && box[i][2] == box[j][2])
                   if( box[j][3] == 0 && box[i][3]==0)
                   {
                       it++;
-                    box[i][3]=box[j][3] = it;
+                    box[i][3] = box[j][3] = it;
                   }
                   else
                   {
-                      box[i][3]=box[j][3] = it;
+                         box[i][3] = box[j][3] = it;
                   }
+			
                 // it++;
         }
 
@@ -371,9 +374,6 @@ void  Genconfig(std::vector<std::vector<double> >& Particles, double number_part
 	size_t x, y, z = 0;
 	for (size_t i = 0; i < Particles.size(); ++i)
 	{
-
-        if ( box[i][3]==0 )
-        {
         //calculating indexes of parent cell
 		double dx = Particles[i][0] - std::floor((Particles[i][0]) / H);
 		double dy = Particles[i][1] - std::floor((Particles[i][1]) / H);
@@ -409,30 +409,59 @@ void  Genconfig(std::vector<std::vector<double> >& Particles, double number_part
             		- 0.5*(density[x][y + 1][z + 2][0] - density[x][y+1][z][0])*tx*dy*dz - 0.5*(density[x + 1][y + 1][z + 2][0] - density[x + 1][y+1][z][0])*dx*dy*dz;
             	// std::cout << "g[i].z = " << g[i][2] << std::endl;
             //}
-	}
+	
 }
-// size_t num = 0;
-// for(size_t i =0 ; i<box.size(); ++i)
-// {
-//     if(box[i][3]>0){
-//
-//         num = box[i][3];
-//         std::vector<std::vector<double> > par;
-//
-//         while(box[i][3]==num)
-//         {
-//             std::vector<double> a = {(double) Particles[i][0], Particles[i][1], Particles[i][2] };
-//             par.push_back(a);
-//         }
-//
-//         std::cout<<"par= "<<std::endl;
-//         ai::printMatrix(par);
-//
-//     }
-// }
+
 	//std::cout << " DONE." << std::endl;
-
-
+	//find number of boxes with multiple particles 
+	size_t max = 0;
+	for (size_t i = 0; i< box.size(); ++i)
+	{
+		max = ai::max(max , box[i][3]);
+	}
+	//std::cout<<"max number of boxes= "<<max<<std::endl;
+	
+	//box cycle
+	for (size_t i = 1; i <= max; ++i)
+	{
+		std::vector<std::vector<double> > par;
+		std::vector<std::vector<double> > ac;
+		//particles cycle
+		for(size_t j = 0 ; j < box.size(); ++j)
+		{
+			
+			if(box[j][3]==i)
+			{
+				par.push_back( std::vector<double>{ Particles[j][0],  Particles[j][1], Particles[j][2]} );
+				ac.push_back(std::vector<double> {a[j][0], a[j][1], a[j][2]} );
+				// ac.push_back(std::vector<double> {0., 0., 0.} );
+			}
+		}
+		std::cout<<"ac  = "<<std::endl;
+		ai::printMatrix(ac);
+		
+		Direct(par, ac, 1.);
+		
+		std::cout<<"par matrix = "<<std::endl;
+		ai::printMatrix(par);
+		
+		std::cout<<"ac matrix after= "<<std::endl;
+		ai::printMatrix(ac);
+		size_t y  = 0;
+		for(size_t j = 0 ; j < box.size(); ++j)
+		{
+			
+			if(box[j][3]==i)
+			{
+				//par.push_back( std::vector<double>{ Particles[j][0],  Particles[j][1], Particles[j][2]} );
+				//ac.push_back(std::vector<double> {a[j][0], a[j][1], a[j][2]} );
+				a[j][0]=ac[y][0];
+				a[j][1]=ac[y][1];
+				a[j][2]=ac[y][2];
+				y++;
+			}
+		}
+	}
 
 }
 
@@ -440,21 +469,9 @@ double Signum(double  x)
 {
     return (x > 0) ? 1 : ((x < 0) ? -1 : 0);
 }
-void Direct(std::vector<std::vector<double>> & Particles, std::vector<std::vector<double>> & dir, double mass)
+void Direct(std::vector<std::vector<double> > & Particles, std::vector<std::vector<double> > & dir, double mass)
 {
-  // for (size_t i =0 ; i<Particles.size(); ++i )
-  // {
-  //   for (size_t j =0; j< Particles.size(); ++j)
-  //   {
-  //     if (i != j)
-  //     {
-  //       dir[i][0]+= 1. /((Particles[i][0]-Particles[j][0])*(Particles[i][0]-Particles[j][0])*(Particles[i][0]-Particles[j][0]));
-  //       dir[i][1]+= 1. /((Particles[i][1]-Particles[j][1])*(Particles[i][1]-Particles[j][1])*(Particles[i][1]-Particles[j][1]));
-  //       dir[i][2]+= 1. /((Particles[i][2]-Particles[j][2])*(Particles[i][2]-Particles[j][2])*(Particles[i][2]-Particles[j][2]));
-  //       // std::cout<<"dir"<< " i = "<<i<<" j = "<<j <<"   dir = "<<dir[i][0]<<std::endl;
-  //     }
-  //   }
-  // }
+  
 
   for(size_t i =0 ; i<Particles.size(); ++i)
   {
@@ -468,7 +485,7 @@ void Direct(std::vector<std::vector<double>> & Particles, std::vector<std::vecto
         dir[i][0] -= magi*dx;
         dir[i][1] -= magi*dy;
         dir[i][2] -= magi*dz;
-        double magj = (1.0*mass)/(distij*distij*distij);
+       // double magj = (1.0*mass)/(distij*distij*distij);
         dir[j][0] += magi*dx;
         dir[j][1] += magi*dy;
         dir[j][2] += magi*dz;
