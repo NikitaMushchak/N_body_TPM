@@ -170,14 +170,14 @@ std::vector<std::vector<size_t> > nuls; //for particles in same box
        std::cout<<"  \nDir/ FFT"<<dir[0][0]/a[0][0]<<std::endl;
        auto t10 = ai::time();
 
-        dt =  30*Get_Step(dir, mass);
+        dt =  3*Get_Step(dir, mass);
         //std::cout << "dt = " << dt << std::endl;
         // time += dt;
         for (size_t i = 0; i < Particles.size(); ++i)
         {
-        vel[i][0] += dir[i][0] * dt;
-        vel[i][1] += dir[i][1] * dt;
-        vel[i][2] += dir[i][2] * dt;
+        vel[i][0] += a[i][0] * dt;
+        vel[i][1] += a[i][1] * dt;
+        vel[i][2] += a[i][2] * dt;
         }     // std::cout << "Vel\n";
 
     // ai::printMatrix(vel);

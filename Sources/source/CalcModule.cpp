@@ -420,7 +420,8 @@ void  Genconfig(std::vector<std::vector<double> >& Particles, double number_part
 		max = ai::max(max , box[i][3]);
 	}
 	//std::cout<<"max number of boxes= "<<max<<std::endl;
-	
+	std::cout<<"PM acceleration ="<<std::endl;
+	ai::printMatrix(a);
 	//box cycle
 	for (size_t i = 1; i <= max; ++i)
 	{
@@ -433,19 +434,19 @@ void  Genconfig(std::vector<std::vector<double> >& Particles, double number_part
 			if(box[j][3]==i)
 			{
 				par.push_back( std::vector<double>{ Particles[j][0],  Particles[j][1], Particles[j][2]} );
-				ac.push_back(std::vector<double> {a[j][0], a[j][1], a[j][2]} );
-				// ac.push_back(std::vector<double> {0., 0., 0.} );
+				// ac.push_back(std::vector<double> {a[j][0], a[j][1], a[j][2]} );
+				ac.push_back(std::vector<double> {0., 0., 0.} );
 			}
 		}
-		std::cout<<"ac  = "<<std::endl;
+		std::cout<<"PM forces matrix  = "<<std::endl;
 		ai::printMatrix(ac);
 		
 		Direct(par, ac, 1.);
 		
-		std::cout<<"par matrix = "<<std::endl;
-		ai::printMatrix(par);
+		// std::cout<<"par matrix = "<<std::endl;
+		// ai::printMatrix(par);
 		
-		std::cout<<"ac matrix after= "<<std::endl;
+		std::cout<<"dir+PM matrix after= "<<std::endl;
 		ai::printMatrix(ac);
 		size_t y  = 0;
 		for(size_t j = 0 ; j < box.size(); ++j)
@@ -455,9 +456,9 @@ void  Genconfig(std::vector<std::vector<double> >& Particles, double number_part
 			{
 				//par.push_back( std::vector<double>{ Particles[j][0],  Particles[j][1], Particles[j][2]} );
 				//ac.push_back(std::vector<double> {a[j][0], a[j][1], a[j][2]} );
-				a[j][0]=ac[y][0];
-				a[j][1]=ac[y][1];
-				a[j][2]=ac[y][2];
+				a[j][0]+=ac[y][0];
+				a[j][1]+=ac[y][1];
+				a[j][2]+=ac[y][2];
 				y++;
 			}
 		}
