@@ -40,20 +40,20 @@
 //   }
 
 for (size_t i = 0; i < number_particles ; ++i) {
-       std::vector<double> a = { (double) 30.-0.4*i,  30.-0.4*i, 30.-0.4*i };
+       std::vector<double> a = { (double) 22.9+2.33*i,  22.9+2.33*i, 22.9+2.33*i };
 
         Particles.push_back(a);
-    }
+    }	// Particles.push_back( std::vector<double> {35.1, 35.1 , 35.1} );	// number_particles+=1;
 
     // Genconfig(Particles, number_particles, L);
 
     std::cout << "non-Scaled pos"<<std::endl;
-    ai::printMatrix(Particles);
+    ai::printMatrix(Particles);	// dimention of grid element
     double scale = L/dim;
 
     std::cout<<"scale = "<<scale<<std::endl;
 
-    ScalePos(Particles,scale, dim);
+    ScalePos(Particles,L, dim);
 
 std::cout << "Scaled pos"<<std::endl;
 
@@ -143,15 +143,17 @@ std::vector<std::vector<size_t> > nuls; //for particles in same box
      // ai::printMatrix(Particles);
                 //CIC assigment
         auto t1 =ai::time();
-          CaclDensity(Particles, density, box, mass, scale, dim);
+          CaclDensity(Particles, density, mass, scale, dim , L);
          auto t2=ai::time();
           std::cout<<"Calcdensity time = "<<ai::duration(t1, t2 , "ms")<<" ms"<<std::endl;
-
+		 PuttoBox(Particles , box , scale ,  dim);
+		
           std::cout<<"boxes"<<std::endl;
           ai::printMatrix(box);
+		  
              //potetial field
       auto t3 = ai::time();
-        CalcPotential(density, dim);
+        CalcPotential(density, dim, scale , L);
      auto t4 =ai::time();
      std::cout<<"CalcPotential time = "<<ai::duration(t3,t4, "ms")<<" ms"<<std::endl;
         //Acceleration
@@ -170,14 +172,14 @@ std::vector<std::vector<size_t> > nuls; //for particles in same box
        std::cout<<"  \nDir/ FFT"<<dir[0][0]/a[0][0]<<std::endl;
        auto t10 = ai::time();
 
-        dt =  30*Get_Step(dir, mass);
+        dt =  3*Get_Step(dir, mass);
         //std::cout << "dt = " << dt << std::endl;
         // time += dt;
         for (size_t i = 0; i < Particles.size(); ++i)
         {
-        vel[i][0] += dir[i][0] * dt;
-        vel[i][1] += dir[i][1] * dt;
-        vel[i][2] += dir[i][2] * dt;
+        vel[i][0] += a[i][0] * dt;
+        vel[i][1] += a[i][1] * dt;
+        vel[i][2] += a[i][2] * dt;
         }     // std::cout << "Vel\n";
 
     // ai::printMatrix(vel);
