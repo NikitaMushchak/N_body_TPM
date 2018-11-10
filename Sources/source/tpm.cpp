@@ -51,9 +51,9 @@ for (size_t i = 0; i < number_particles ; ++i) {
     ai::printMatrix(Particles);	// dimention of grid element
     double scale = L/dim;
 
-    std::cout<<"scale = "<<scale<<std::endl;
+    std::cout<<"scale of mesh = "<<scale<<std::endl;
 
-    ScalePos(Particles,L, dim);
+    ScalePos(Particles,scale);
 
 std::cout << "Scaled pos"<<std::endl;
 
@@ -143,22 +143,22 @@ std::vector<std::vector<size_t> > nuls; //for particles in same box
      // ai::printMatrix(Particles);
                 //CIC assigment
         auto t1 =ai::time();
-          CaclDensity(Particles, density, mass, scale, dim , L);
+          CaclDensity(Particles, density, mass, H, dim , L);
          auto t2=ai::time();
           std::cout<<"Calcdensity time = "<<ai::duration(t1, t2 , "ms")<<" ms"<<std::endl;
-		 PuttoBox(Particles , box , scale ,  dim);
+		 PuttoBox(Particles , box , H , dim);
 		
           std::cout<<"boxes"<<std::endl;
           ai::printMatrix(box);
 		  
              //potetial field
       auto t3 = ai::time();
-        CalcPotential(density, dim, scale , L);
+        CalcPotential(density, dim, H , L);
      auto t4 =ai::time();
      std::cout<<"CalcPotential time = "<<ai::duration(t3,t4, "ms")<<" ms"<<std::endl;
         //Acceleration
          auto t5 = ai::time();
-         GetAccel(Particles, density,box, a, scale);
+         GetAccel(Particles, density,box, a, H);
  auto t6 = ai::time();
      std::cout <<"Acclel time = "<<ai::duration(t5,t6,"ms")<<" ms"<<std::endl;
       auto t7 = ai::time();

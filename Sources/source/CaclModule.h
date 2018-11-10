@@ -2,7 +2,7 @@
 #include <vector>
 //#include <algorithm>
 
-void ScalePos(std::vector<std::vector<double> >& Particles, double scale, size_t dim);
+void ScalePos(std::vector<std::vector<double> >& Particles, double scale);
 
 void  Genconfig(std::vector<std::vector<double> >& Particles, double number_particles,double L);
 
