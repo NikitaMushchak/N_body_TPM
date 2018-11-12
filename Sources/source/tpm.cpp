@@ -40,7 +40,7 @@
 //   }
 
 for (size_t i = 0; i < number_particles ; ++i) {
-       std::vector<double> a = { (double) 18.9+30.8*i,  18.9+30.8*i, 18.9+30.8*i };
+       std::vector<double> a = { (double) 28.9+0.8*i,  28.9+0.8*i, 28.9+0.8*i };
 
         Particles.push_back(a);
     }	// Particles.push_back( std::vector<double> {35.1, 35.1 , 35.1} );	// number_particles+=1;
@@ -147,10 +147,10 @@ std::vector<std::vector<size_t> > nuls; //for particles in same box
          auto t2=ai::time();
           std::cout<<"Calcdensity time = "<<ai::duration(t1, t2 , "ms")<<" ms"<<std::endl;
 		 PuttoBox(Particles , box , H , dim);
-		
+
           std::cout<<"boxes"<<std::endl;
           ai::printMatrix(box);
-		  
+
              //potetial field
       auto t3 = ai::time();
         CalcPotential(density, dim, H , L);
