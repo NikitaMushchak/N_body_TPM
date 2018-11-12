@@ -40,20 +40,20 @@
 //   }
 
 for (size_t i = 0; i < number_particles ; ++i) {
-       std::vector<double> a = { (double) 22.9+2.33*i,  22.9+2.33*i, 22.9+2.33*i };
+       std::vector<double> a = { (double) 18.9+30.8*i,  18.9+30.8*i, 18.9+30.8*i };
 
         Particles.push_back(a);
     }	// Particles.push_back( std::vector<double> {35.1, 35.1 , 35.1} );	// number_particles+=1;
 
     // Genconfig(Particles, number_particles, L);
 
-    std::cout << "non-Scaled pos"<<std::endl;
-    ai::printMatrix(Particles);	// dimention of grid element
+    // std::cout << "non-Scaled pos"<<std::endl;
+    // ai::printMatrix(Particles);	// dimention of grid element
     double scale = L/dim;
 
-    std::cout<<"scale of mesh = "<<scale<<std::endl;
+    // std::cout<<"scale of mesh = "<<scale<<std::endl;
 
-    ScalePos(Particles,scale);
+    // ScalePos(Particles,scale);
 
 std::cout << "Scaled pos"<<std::endl;
 
@@ -158,7 +158,7 @@ std::vector<std::vector<size_t> > nuls; //for particles in same box
      std::cout<<"CalcPotential time = "<<ai::duration(t3,t4, "ms")<<" ms"<<std::endl;
         //Acceleration
          auto t5 = ai::time();
-         GetAccel(Particles, density,box, a, H);
+         GetAccel(Particles, density, box, a, H);
  auto t6 = ai::time();
      std::cout <<"Acclel time = "<<ai::duration(t5,t6,"ms")<<" ms"<<std::endl;
       auto t7 = ai::time();

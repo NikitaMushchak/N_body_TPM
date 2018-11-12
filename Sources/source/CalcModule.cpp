@@ -142,8 +142,11 @@ void  Genconfig(std::vector<std::vector<double> >& Particles, double number_part
 			box[i][0] = x;
 			box[i][1] = y;
 			box[i][2] = z;
+			// std::cout<<" in ";
 			}
 		}		
+		// std::cout<<"puttobox"<<std::endl;
+		// ai::printMatrix(box);
 	size_t it =0;
 	for (size_t i = 0 ; i<Particles.size(); ++i)
 	{
@@ -174,8 +177,8 @@ void  Genconfig(std::vector<std::vector<double> >& Particles, double number_part
 								double H, 
 								double L)
 {
-	// double h = L / double(dim - 1);
-	double h=H; //mesh step
+	double h = L / double(dim - 1);
+	// double h=H; //mesh step
 
 	//calculate FFT for each layer
 	for (size_t i = 0; i < dim; ++i)
