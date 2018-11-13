@@ -158,6 +158,9 @@ std::vector<std::vector<size_t> > nuls; //for particles in same box
      std::cout<<"CalcPotential time = "<<ai::duration(t3,t4, "ms")<<" ms"<<std::endl;
         //Acceleration
          auto t5 = ai::time();
+         GetAccelPM(Particles, density, box, a, H);
+         std::cout <<"Acclel PM"<<std::endl;
+         ai::printMatrix(a);
          GetAccel(Particles, density, box, a, H);
  auto t6 = ai::time();
      std::cout <<"Acclel time = "<<ai::duration(t5,t6,"ms")<<" ms"<<std::endl;
@@ -167,7 +170,7 @@ std::vector<std::vector<size_t> > nuls; //for particles in same box
        std::cout <<"Direct time= "<<ai::duration(t7,t8,"ms")<<" ms"<<std::endl;
        std::cout<<"Dir accel "<<std::endl;
        ai::printMatrix(dir);
-       std::cout<<"Acceleration"<<std::endl;
+       std::cout<<"Acceleration Dir + PM"<<std::endl;
        ai::printMatrix(a);
        std::cout<<"  \nDir/ FFT"<<dir[0][0]/a[0][0]<<std::endl;
        auto t10 = ai::time();

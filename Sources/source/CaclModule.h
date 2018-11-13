@@ -12,7 +12,7 @@ void  Genconfig(std::vector<std::vector<double> >& Particles, double number_part
 	double H,
 	size_t dim,
 	double L);
-	
+
 	void PuttoBox(std::vector<
 					std::vector<double> >& Particles ,
 					std::vector<std::vector<size_t> >&box,
@@ -28,11 +28,15 @@ void  Genconfig(std::vector<std::vector<double> >& Particles, double number_part
 				   size_t dim,
 				   double H,
 				   double L);
- void GetAccel(std::vector<std::vector<double> >& Particles,
+ void GetAccelPM(std::vector<std::vector<double> >& Particles,
 							   std::vector<std::vector<std::vector<std::vector<double > > > >& density,
                   std::vector<std::vector<size_t> >& box,
 								         std::vector<std::vector<double> >& a,
 									double H);
-
+void GetAccel(std::vector<std::vector<double>>& Particles,
+                             std::vector<std::vector<std::vector<std::vector<double > > > >& density,
+                                        std::vector<std::vector<size_t> > &box,
+                              std::vector<std::vector<double>>& a, double H);
+                              
 void Direct(std::vector<std::vector<double> > & Particles, std::vector<std::vector<double> > & dir, double mass);
 double Signum(double  x);

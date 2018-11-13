@@ -414,7 +414,7 @@ void  Genconfig(std::vector<std::vector<double> >& Particles, double number_part
 	//std::cout << "Solving ... DONE" << std::endl;
 }
 
-  void GetAccel(std::vector<std::vector<double>>& Particles,
+  void GetAccelPM(std::vector<std::vector<double>>& Particles,
 						 std::vector<std::vector<std::vector<std::vector<double > > > >& density,
                         std::vector<std::vector<size_t> > &box,
 							std::vector<std::vector<double>>& a, double H)
@@ -423,6 +423,7 @@ void  Genconfig(std::vector<std::vector<double> >& Particles, double number_part
 	size_t dim = density.size();
 	// double h = 1./H;
 	size_t x, y, z = 0;
+  double mass = 1.0;
 	for (size_t i = 0; i < Particles.size(); ++i)
 	{
         //calculating indexes of parent cell
@@ -441,74 +442,28 @@ void  Genconfig(std::vector<std::vector<double> >& Particles, double number_part
 			x = std::floor(Particles[i][0] / H);
 			y = std::floor(Particles[i][1] / H);
 			z = std::floor(Particles[i][2] / H);
-			std::cout<<"x = "<<x <<"  y = "<<y <<"  z = "<<z <<std::endl;
+			// std::cout<<"x = "<<x <<"  y = "<<y <<"  z = "<<z <<std::endl;
 		}
       // find number of boxes with multiple particles
-      size_t max = 0;
-      for (size_t i = 0; i< box.size(); ++i)
-      {
-    	   max = ai::max(max , box[i][3]);
-      }
 
-            std::vector <std::vector <double > > par;
-            for (size_t j = 0 ; j<box.size(); ++j)
-            {
-                if (i!=j){
-                if (box[i][3]== box[j][3]) // Записываем частицы в в i-ой ячейке
-                {
-                  par.push_back(std::vector<double>{Particles[j][0] , Particles[j][1] , Particles[j][2]});
-                }
-                if (box[i][0]!=box[j][0] &&
-                  box[i][1]!=box[j][1] &&
-                  box[i][2]!=box[j][2] &&
-                  fabs(box[i][0]-box[j][0]) <= (size_t)2 &&
-                  fabs(box[i][1] - box[j][1]) <= (size_t)2 &&
-                   fabs(box[i][2]- box[j][2]) <= (size_t)2)
-                  {
-                    par.push_back(std::vector<double>{Particles[j][0] , Particles[j][1] , Particles[j][2]} );
-                  }
-
-                }
-
-              }
-              std::cout <<"Nearest particles coords"<<std::endl;
-            ai::printMatrix(par);
-
-            for (size_t y = 0 ; y < par.size() ;++y)
-            {
-                //if (i!=j){
-                  double dx = Particles[i][0] - par[y][0];
-                  double dy = Particles[i][1] - par[y][1];
-                  double dz = Particles[i][2] - par[j][2];
-                  double distij = sqrt(dx*dx + dy*dy +dz*dz);
-                  double magi = (1.0*mass) /(distij*distij*distij);
-                  a[i][0] += magi*dx;
-                  a[i][1] += magi*dy;
-                  a[i][2] += magi*dz;
-                  // double magj = (1.0*mass)/(distij*distij*distij);
-                  // dir[j][0] += magi*dx;
-                  // dir[j][1] += magi*dy;
-                  // dir[j][2] += magi*dz;
-                // }
-            }
             // x componet
-            	a[i][0] += -0.5*H*(density[x + 1][y][z][0] - density[x - 1][y][z][0])*tx*ty*tz- 0.5*H*(density[x + 2][y][z][0] - density[x][y][z][0])*dx*ty*tz
+            	a[i][0] = -0.5*H*(density[x + 1][y][z][0] - density[x - 1][y][z][0])*tx*ty*tz- 0.5*H*(density[x + 2][y][z][0] - density[x][y][z][0])*dx*ty*tz
             		- 0.5*H*(density[x + 1][y + 1][z][0] - density[x - 1][y + 1][z][0])*tx*dy*tz - 0.5*H*(density[x + 2][y + 1][z][0] - density[x][y + 1][z][0])*dx*dy*tz
             		- 0.5*H*(density[x + 1][y][z + 1][0] - density[x - 1][y][z + 1][0])*tx*ty*dz - 0.5 *H*(density[x + 2][y][z + 1][0] - density[x][y][z + 1][0])*dx*ty*dz
             		- 0.5*H*(density[x + 1][y + 1][z + 1][0] - density[x - 1][y + 1][z + 1][0])*tx*dy*dz - 0.5*H*(density[x + 2][y + 1][z + 1][0] - density[x][y + 1][z + 1][0])*dx*dy*dz;
-            	// std::cout << "g[i].x = " << g[i][0] << std::endl;
+
             	//y component
-            	a[i][1] += -0.5*H*(density[x][y + 1][z][0] - density[x][y - 1][z][0])*tx*ty*tz - 0.5*H*(density[x + 1][y+1][z][0] - density[x+1][y-1][z][0])*dx*ty*tz
+            	a[i][1] = -0.5*H*(density[x][y + 1][z][0] - density[x][y - 1][z][0])*tx*ty*tz - 0.5*H*(density[x + 1][y+1][z][0] - density[x+1][y-1][z][0])*dx*ty*tz
             		- 0.5*H*(density[x][y + 2][z][0] - density[x][y][z][0])*tx*dy*tz - 0.5*H*(density[x + 1][y + 2][z][0] - density[x+1][y][z][0])*dx*dy*tz
             		- 0.5*H*(density[x][y+1][z + 1][0] - density[x][y-1][z + 1][0])*tx*ty*dz - 0.5 *H*(density[x + 1][y+1][z + 1][0] - density[x+1][y-1][z + 1][0])*dx*ty*dz
             		- 0.5*H*(density[x][y + 2][z + 1][0] - density[x][y][z + 1][0])*tx*dy*dz - 0.5*H*(density[x + 1][y + 2][z + 1][0] - density[x+1][y][z + 1][0])*dx*dy*dz;
-            	// std::cout << "g[i].y = " << g[i][1] << std::endl;
+
             	//z component
-            	a[i][2] += -0.5*H*(density[x][y][z + 1][0] - density[x][y][z - 1][0])*tx*ty*tz -0.5*H*(density[x + 1][y][z + 1][0] - density[x + 1][y][z - 1][0])*dx*ty*tz
+            	a[i][2] = -0.5*H*(density[x][y][z + 1][0] - density[x][y][z - 1][0])*tx*ty*tz -0.5*H*(density[x + 1][y][z + 1][0] - density[x + 1][y][z - 1][0])*dx*ty*tz
             		- 0.5*H*(density[x][y + 1][z+1][0] - density[x][y+1][z-1][0])*tx*dy*tz - 0.5*H*(density[x + 1][y + 1][z+1][0] - density[x + 1][y+1][z-1][0])*dx*dy*tz
             		- 0.5*H*(density[x][y][z + 2][0] - density[x][y][z][0])*tx*ty*dz - 0.5 *H*(density[x + 1][y][z + 2][0] - density[x + 1][y][z][0])*dx*ty*dz
             		- 0.5*H*(density[x][y + 1][z + 2][0] - density[x][y+1][z][0])*tx*dy*dz - 0.5*H*(density[x + 1][y + 1][z + 2][0] - density[x + 1][y+1][z][0])*dx*dy*dz;
-            	// std::cout << "g[i].z = " << g[i][2] << std::endl;
+
             //}
 
 }
@@ -565,6 +520,88 @@ void  Genconfig(std::vector<std::vector<double> >& Particles, double number_part
 	// 	}
 	// }
 
+}
+
+void GetAccel(std::vector<std::vector<double>>& Particles,
+           std::vector<std::vector<std::vector<std::vector<double > > > >& density,
+                      std::vector<std::vector<size_t> > &box,
+            std::vector<std::vector<double>>& a, double H)
+{
+  size_t dim = density.size();
+  // double h = 1./H;
+  size_t x, y, z = 0;
+  double mass = 1.0;
+  for (size_t i = 0; i < Particles.size(); ++i)
+  {
+        //calculating indexes of parent cell
+    double dx = Particles[i][0] - std::floor((Particles[i][0]) / H);
+    double dy = Particles[i][1] - std::floor((Particles[i][1]) / H);
+    double dz = Particles[i][2] - std::floor((Particles[i][2]) / H);
+    double tx = 1. - dx;
+    // double tx = H - dx;
+    double ty = 1. - dy;
+    // double ty = H - dy;
+    double tz = 1. - dz;
+    // double tz = H - dz;
+    if (std::floor(Particles[i][0] / H) < dim &&
+      std::floor(Particles[i][1] / H) < dim &&
+      std::floor(Particles[i][2] / H) < dim) {
+      x = std::floor(Particles[i][0] / H);
+      y = std::floor(Particles[i][1] / H);
+      z = std::floor(Particles[i][2] / H);
+      std::cout<<"x = "<<x <<"  y = "<<y <<"  z = "<<z <<std::endl;
+    }
+      // find number of boxes with multiple particles
+
+
+            std::vector <std::vector <double > > par;
+            std::vector < std::vector <double > > ac;
+            for (size_t j = 0 ; j<box.size(); ++j)
+            {
+                if (i!=j){
+                if (box[i][3]== box[j][3]) // Записываем частицы в в i-ой ячейке
+                {
+                //  par.push_back(std::vector<double>{Particles[j][0] , Particles[j][1] , Particles[j][2]});
+                }
+                if (box[i][0]!=box[j][0] &&
+                  box[i][1]!=box[j][1] &&
+                  box[i][2]!=box[j][2] &&
+                  abs((int)box[i][0] - (int)box[j][0]) <= 2 &&
+                  abs((int)box[i][1] - (int)box[j][1]) <= 2 &&
+                   abs((int)box[i][2] - (int)box[j][2]) <= 2 )
+                  {
+                    //std::cout<<"in";
+                    par.push_back(std::vector<double>{Particles[j][0] , Particles[j][1] , Particles[j][2]} );
+
+                  }
+
+                }
+
+              }
+            //  std::cout <<"Nearest particles coords"<<std::endl;
+            //ai::printMatrix(par);
+            for (size_t y = 0 ; y < par.size() ;++y)
+            {
+
+                  double dx = Particles[i][0] - par[y][0];
+                  double dy = Particles[i][1] - par[y][1];
+                  double dz = Particles[i][2] - par[y][2];
+                  double distij = sqrt(dx*dx + dy*dy +dz*dz);
+                  double magi = (1.0*mass) /(distij*distij*distij);
+                  double a1 = a[i][0];
+                  double a2 = a[i][1];
+                  double a3 = a[i][2];
+                  a[i][0] = magi*dx + a[y][0];
+                  a[i][1] = magi*dy + a[y][1];
+                  a[i][2] = magi*dz + a[y][2];
+
+                  // double magj = (1.0*mass)/(distij*distij*distij);
+                  // a[y][0] = magi*dx - a1;
+                  // a[y][1] = magi*dy - a2;
+                  // a[y][2] = magi*dz - a3;
+
+            }
+      }
 }
 
 double Signum(double  x)
