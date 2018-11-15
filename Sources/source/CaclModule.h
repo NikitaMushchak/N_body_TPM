@@ -37,6 +37,7 @@ void GetAccel(std::vector<std::vector<double>>& Particles,
                              std::vector<std::vector<std::vector<std::vector<double > > > >& density,
                                         std::vector<std::vector<size_t> > &box,
                               std::vector<std::vector<double>>& a, double H);
-                              
+
 void Direct(std::vector<std::vector<double> > & Particles, std::vector<std::vector<double> > & dir, double mass);
+void DirectPM(std::vector<std::vector<double> > & Particles, std::vector<std::vector<double> > & dir, double mass);
 double Signum(double  x);

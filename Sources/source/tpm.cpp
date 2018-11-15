@@ -161,17 +161,22 @@ std::vector<std::vector<size_t> > nuls; //for particles in same box
          GetAccelPM(Particles, density, box, a, H);
          std::cout <<"Acclel PM"<<std::endl;
          ai::printMatrix(a);
-         GetAccel(Particles, density, box, a, H);
+         //GetAccel(Particles, density, box, a, H);
  auto t6 = ai::time();
      std::cout <<"Acclel time = "<<ai::duration(t5,t6,"ms")<<" ms"<<std::endl;
       auto t7 = ai::time();
-       Direct(Particles, dir, mass);
+       DirectPM(Particles, a, mass);
+       Direct(Particles, dir, mass);
+
        auto t8 = ai::time();
        std::cout <<"Direct time= "<<ai::duration(t7,t8,"ms")<<" ms"<<std::endl;
+       std::cout <<"Dir+PM accel"<<std::endl;
+       ai::printMatrix(a);
+
        std::cout<<"Dir accel "<<std::endl;
        ai::printMatrix(dir);
        std::cout<<"Acceleration Dir + PM"<<std::endl;
-       ai::printMatrix(a);
+       //ai::printMatrix(a);
        std::cout<<"  \nDir/ FFT"<<dir[0][0]/a[0][0]<<std::endl;
        auto t10 = ai::time();
 

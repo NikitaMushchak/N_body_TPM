@@ -549,58 +549,47 @@ void GetAccel(std::vector<std::vector<double>>& Particles,
       x = std::floor(Particles[i][0] / H);
       y = std::floor(Particles[i][1] / H);
       z = std::floor(Particles[i][2] / H);
-      std::cout<<"x = "<<x <<"  y = "<<y <<"  z = "<<z <<std::endl;
+      //std::cout<<"x = "<<x <<"  y = "<<y <<"  z = "<<z <<std::endl;
     }
       // find number of boxes with multiple particles
 
 
             std::vector <std::vector <double > > par;
             std::vector < std::vector <double > > ac;
+            //Записываем частицы, которые попадают в радиус в 2 ячейки
             for (size_t j = 0 ; j<box.size(); ++j)
             {
                 if (i!=j){
-                if (box[i][3]== box[j][3]) // Записываем частицы в в i-ой ячейке
+                if (box[i][3]!= 0 && box[i][3] == box[j][3]) // Записываем частицы в в i-ой ячейке
                 {
-                //  par.push_back(std::vector<double>{Particles[j][0] , Particles[j][1] , Particles[j][2]});
+                  par.push_back(std::vector<double>{Particles[j][0] , Particles[j][1] , Particles[j][2]});
+                  ac.push_back(std::vector<double>{a[j][0] , a[j][1] , a[j][2]});
+
                 }
                 if (box[i][0]!=box[j][0] &&
                   box[i][1]!=box[j][1] &&
                   box[i][2]!=box[j][2] &&
                   abs((int)box[i][0] - (int)box[j][0]) <= 2 &&
                   abs((int)box[i][1] - (int)box[j][1]) <= 2 &&
-                   abs((int)box[i][2] - (int)box[j][2]) <= 2 )
+                  abs((int)box[i][2] - (int)box[j][2]) <= 2 )
                   {
                     //std::cout<<"in";
                     par.push_back(std::vector<double>{Particles[j][0] , Particles[j][1] , Particles[j][2]} );
+                    ac.push_back(std::vector<double>{a[j][0] , a[j][1] , a[j][2]});
 
                   }
 
                 }
 
               }
-            //  std::cout <<"Nearest particles coords"<<std::endl;
-            //ai::printMatrix(par);
-            for (size_t y = 0 ; y < par.size() ;++y)
-            {
+             std::cout <<"Nearest particles coords"<<std::endl;
+            ai::printMatrix(par);
 
-                  double dx = Particles[i][0] - par[y][0];
-                  double dy = Particles[i][1] - par[y][1];
-                  double dz = Particles[i][2] - par[y][2];
-                  double distij = sqrt(dx*dx + dy*dy +dz*dz);
-                  double magi = (1.0*mass) /(distij*distij*distij);
-                  double a1 = a[i][0];
-                  double a2 = a[i][1];
-                  double a3 = a[i][2];
-                  a[i][0] = magi*dx + a[y][0];
-                  a[i][1] = magi*dy + a[y][1];
-                  a[i][2] = magi*dz + a[y][2];
+            std::cout<<"their accel"<<std::endl;
+            ai::printMatrix(ac);
 
-                  // double magj = (1.0*mass)/(distij*distij*distij);
-                  // a[y][0] = magi*dx - a1;
-                  // a[y][1] = magi*dy - a2;
-                  // a[y][2] = magi*dz - a3;
-
-            }
+            std::cout<<"accel step"<<std::endl;
+            ai::printMatrix(a);
       }
 }
 
@@ -608,6 +597,37 @@ double Signum(double  x)
 {
     return (x > 0) ? 1 : ((x < 0) ? -1 : 0);
 }
+void DirectPM(std::vector<std::vector<double> > & Particles, std::vector<std::vector<double> > & dir, double mass)
+{
+
+
+  for(size_t i =0 ; i<Particles.size(); ++i)
+  {
+    for(size_t j = i+1 ; j<Particles.size(); ++j)
+    {
+        if (i!=j){
+		    double dx = Particles[i][0] - Particles[j][0];
+        double dy = Particles[i][1] - Particles[j][1];
+        double dz = Particles[i][2] - Particles[j][2];
+        double distij = sqrt(dx*dx + dy*dy +dz*dz);
+        double magi = (1.0*mass) /(distij*distij*distij);
+        double a = dir[i][0];
+        double b = dir[i][1];
+        double c = dir[i][2];
+        dir[i][0] -= magi*dx - dir[j][0];
+        dir[i][1] -= magi*dy - dir[j][1];
+        dir[i][2] -= magi*dz - dir[j][2];
+       // double magj = (1.0*mass)/(distij*distij*distij);
+        dir[j][0] += magi*dx + a;
+        dir[j][1] += magi*dy + b;
+        dir[j][2] += magi*dz + c;
+		}
+    }
+
+  }
+}
+
+
 void Direct(std::vector<std::vector<double> > & Particles, std::vector<std::vector<double> > & dir, double mass)
 {
 
@@ -617,18 +637,19 @@ void Direct(std::vector<std::vector<double> > & Particles, std::vector<std::vect
     for(size_t j = i+1 ; j<Particles.size(); ++j)
     {
         if (i!=j){
-		double dx = Particles[i][0] - Particles[j][0];
+		    double dx = Particles[i][0] - Particles[j][0];
         double dy = Particles[i][1] - Particles[j][1];
         double dz = Particles[i][2] - Particles[j][2];
         double distij = sqrt(dx*dx + dy*dy +dz*dz);
         double magi = (1.0*mass) /(distij*distij*distij);
-        dir[i][0] -= magi*dx;
-        dir[i][1] -= magi*dy;
-        dir[i][2] -= magi*dz;
+
+        dir[i][0] -= magi*dx ;
+        dir[i][1] -= magi*dy ;
+        dir[i][2] -= magi*dz ;
        // double magj = (1.0*mass)/(distij*distij*distij);
-        dir[j][0] += magi*dx;
-        dir[j][1] += magi*dy;
-        dir[j][2] += magi*dz;
+        dir[j][0] += magi*dx ;
+        dir[j][1] += magi*dy ;
+        dir[j][2] += magi*dz ;
 		}
     }
 
