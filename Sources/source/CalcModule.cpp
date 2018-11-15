@@ -609,9 +609,9 @@ std::vector<double> DirectPM(std::vector<std::vector<double> > & Particles, std:
         double a = dir[i][0];
         double b = dir[i][1];
         double c = dir[i][2];
-        dir[i][0] -= dir[j][0] -magi*dx ;
-        dir[i][1] -= dir[j][1] -magi*dy ;
-        dir[i][2] -= dir[j][2] -magi*dz ;
+        dir[i][0] +=  -magi*dx ;
+        dir[i][1] +=  -magi*dy ;
+        dir[i][2] +=  -magi*dz ;
        // double magj= (1.0*mass)/(distij*distij*distij);
         // dir[j][0] -= magi*dx - a;
         // dir[j][1] += magi*dy - b;

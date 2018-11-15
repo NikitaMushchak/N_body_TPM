@@ -123,12 +123,28 @@ std::vector<std::vector<size_t> > nuls; //for particles in same box
           dir.resize(Particles.size());
              for (size_t i = 0; i < Particles.size(); i++)    {
                dir[i].resize(3);
-             } std::vector<std::vector<double> > vel;
+             }
+              std::vector<std::vector<double> > vel;
               vel.resize(Particles.size());
                for (size_t i = 0; i < Particles.size(); i++)
                   {
                   vel[i].resize(3);
                  }
+
+
+                 std::vector<std::vector<double> > ac;
+
+                 ac.resize(Particles.size());
+
+                  for (size_t i = 0; i < Particles.size(); i++)
+
+                     {
+
+                     ac[i].resize(3);
+
+                    }
+
+
         	std::vector< std::vector<double > > null2 ;
 	null2.resize( Particles.size());
     for (size_t i = 0 ; i<  Particles.size() ; ++i)
@@ -159,9 +175,16 @@ std::vector<std::vector<size_t> > nuls; //for particles in same box
         //Acceleration
          auto t5 = ai::time();
          GetAccelPM(Particles, density, box, a, H);
+         ac=a;
          std::cout <<"Acclel PM"<<std::endl;
          ai::printMatrix(a);
          GetAccel(Particles, density, box, a, H);
+         for (size_t i = 0 ; i< a.size(); ++i)
+         {
+           a[i][0]-=ac[i][0] ;
+           a[i][1]-=ac[i][1];
+           a[i][2]-=ac[i][2];
+         }
  auto t6 = ai::time();
      std::cout <<"Acclel time = "<<ai::duration(t5,t6,"ms")<<" ms"<<std::endl;
       auto t7 = ai::time();
