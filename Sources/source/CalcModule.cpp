@@ -309,7 +309,7 @@ void  Genconfig(std::vector<std::vector<double> >& Particles, double number_part
 				{
 
 					double q =  -rho[k][m][n][0];
-          double b =  -rho[k][m][n][1];
+                    double b =  -rho[k][m][n][1];
 					rho[k][m][n][0] =  4.*pi*h*h*(q * denom0 + b * denom1) / (denom0 * denom0 + denom1 * denom1);
 					rho[k][m][n][1] =  4.*pi*h*h*(b * denom0 - q * denom1) / (denom0 * denom0 + denom1 * denom1);
 
@@ -529,34 +529,27 @@ void GetAccel(std::vector<std::vector<double>>& Particles,
 {
   size_t dim = density.size();
   // double h = 1./H;
-  size_t x, y, z = 0;
+std::vector<std::vector<double > > as;
+as.resize(Particles.size());
+for (size_t i =0 ; i< Particles.size() ; ++i)
+{
+    as[i].resize(3);
+}
   double mass = 1.0;
   for (size_t i = 0; i < Particles.size(); ++i)
   {
         //calculating indexes of parent cell
-    double dx = Particles[i][0] - std::floor((Particles[i][0]) / H);
-    double dy = Particles[i][1] - std::floor((Particles[i][1]) / H);
-    double dz = Particles[i][2] - std::floor((Particles[i][2]) / H);
-    double tx = 1. - dx;
-    // double tx = H - dx;
-    double ty = 1. - dy;
-    // double ty = H - dy;
-    double tz = 1. - dz;
-    // double tz = H - dz;
-    if (std::floor(Particles[i][0] / H) < dim &&
-      std::floor(Particles[i][1] / H) < dim &&
-      std::floor(Particles[i][2] / H) < dim) {
-      x = std::floor(Particles[i][0] / H);
-      y = std::floor(Particles[i][1] / H);
-      z = std::floor(Particles[i][2] / H);
+
       //std::cout<<"x = "<<x <<"  y = "<<y <<"  z = "<<z <<std::endl;
-    }
+
       // find number of boxes with multiple particles
 
 
             std::vector <std::vector <double > > par;
             std::vector < std::vector <double > > ac;
             //Записываем частицы, которые попадают в радиус в 2 ячейки
+            par.push_back(std::vector<double>{Particles[i][0] , Particles[i][1] , Particles[i][2]});
+            ac.push_back(std::vector<double>{a[i][0] , a[i][1] , a[i][2]});
             for (size_t j = 0 ; j<box.size(); ++j)
             {
                 if (i!=j){
@@ -587,17 +580,19 @@ void GetAccel(std::vector<std::vector<double>>& Particles,
 
             std::cout<<"their accel"<<std::endl;
             ai::printMatrix(ac);
-
+            as[i] = DirectPM(par, ac , mass);
             std::cout<<"accel step"<<std::endl;
-            ai::printMatrix(a);
-      }
+            ai::printMatrix(as);
+  }
+  a=as;
 }
 
 double Signum(double  x)
 {
     return (x > 0) ? 1 : ((x < 0) ? -1 : 0);
 }
-void DirectPM(std::vector<std::vector<double> > & Particles, std::vector<std::vector<double> > & dir, double mass)
+//Сила дейсвующая на первую частицу со стороны окружающих частиц
+std::vector<double> DirectPM(std::vector<std::vector<double> > & Particles, std::vector<std::vector<double> > & dir, double mass)
 {
 
 
@@ -605,8 +600,8 @@ void DirectPM(std::vector<std::vector<double> > & Particles, std::vector<std::ve
   {
     for(size_t j = i+1 ; j<Particles.size(); ++j)
     {
-        if (i!=j){
-		    double dx = Particles[i][0] - Particles[j][0];
+
+	    double dx = Particles[i][0] - Particles[j][0];
         double dy = Particles[i][1] - Particles[j][1];
         double dz = Particles[i][2] - Particles[j][2];
         double distij = sqrt(dx*dx + dy*dy +dz*dz);
@@ -614,17 +609,20 @@ void DirectPM(std::vector<std::vector<double> > & Particles, std::vector<std::ve
         double a = dir[i][0];
         double b = dir[i][1];
         double c = dir[i][2];
-        dir[i][0] -= magi*dx - dir[j][0];
-        dir[i][1] -= magi*dy - dir[j][1];
-        dir[i][2] -= magi*dz - dir[j][2];
-       // double magj = (1.0*mass)/(distij*distij*distij);
-        dir[j][0] += magi*dx + a;
-        dir[j][1] += magi*dy + b;
-        dir[j][2] += magi*dz + c;
-		}
+        dir[i][0] -= dir[j][0] -magi*dx ;
+        dir[i][1] -= dir[j][1] -magi*dy ;
+        dir[i][2] -= dir[j][2] -magi*dz ;
+       // double magj= (1.0*mass)/(distij*distij*distij);
+        // dir[j][0] -= magi*dx - a;
+        // dir[j][1] += magi*dy - b;
+        // dir[j][2] += magi*dz - c;
+
     }
 
   }
+  std::cout<<"dir matrix"<<std::endl;
+  ai::printMatrix(dir);
+  return std::vector<double>{dir[0][0], dir[0][1], dir[0][2]};
 }
 
 

@@ -161,11 +161,11 @@ std::vector<std::vector<size_t> > nuls; //for particles in same box
          GetAccelPM(Particles, density, box, a, H);
          std::cout <<"Acclel PM"<<std::endl;
          ai::printMatrix(a);
-         //GetAccel(Particles, density, box, a, H);
+         GetAccel(Particles, density, box, a, H);
  auto t6 = ai::time();
      std::cout <<"Acclel time = "<<ai::duration(t5,t6,"ms")<<" ms"<<std::endl;
       auto t7 = ai::time();
-       DirectPM(Particles, a, mass);
+      // DirectPM(Particles, a, mass);
        Direct(Particles, dir, mass);
 
        auto t8 = ai::time();
