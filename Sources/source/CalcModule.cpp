@@ -562,9 +562,9 @@ for (size_t i =0 ; i< Particles.size() ; ++i)
                 if (box[i][0]!=box[j][0] &&
                   box[i][1]!=box[j][1] &&
                   box[i][2]!=box[j][2] &&
-                  abs((int)box[i][0] - (int)box[j][0]) <= 2 &&
-                  abs((int)box[i][1] - (int)box[j][1]) <= 2 &&
-                  abs((int)box[i][2] - (int)box[j][2]) <= 2 )
+                  abs((int)box[i][0] - (int)box[j][0]) <= 3 &&
+                  abs((int)box[i][1] - (int)box[j][1]) <= 3 &&
+                  abs((int)box[i][2] - (int)box[j][2]) <= 3 )
                   {
                     //std::cout<<"in";
                     par.push_back(std::vector<double>{Particles[j][0] , Particles[j][1] , Particles[j][2]} );
@@ -594,7 +594,7 @@ double Signum(double  x)
 //Сила дейсвующая на первую частицу со стороны окружающих частиц
 std::vector<double> DirectPM(std::vector<std::vector<double> > & Particles, std::vector<std::vector<double> > & dir, double mass)
 {
-
+ double rsr = 2.5;
 
   for(size_t i =0 ; i<Particles.size(); ++i)
   {
@@ -606,9 +606,50 @@ std::vector<double> DirectPM(std::vector<std::vector<double> > & Particles, std:
         double dz = Particles[i][2] - Particles[j][2];
         double distij = sqrt(dx*dx + dy*dy +dz*dz);
         double magi = (1.0*mass) /(distij*distij*distij);
-        double a = dir[i][0];
-        double b = dir[i][1];
-        double c = dir[i][2];
+        if(distij >= 0 && dizstij <= rsr ){
+            double ksix = 2.*dx/rsr;
+            double ksiy = 2.*dy/rsr;
+            double ksiz = 2.*dz/rsr;
+            if (distij >= 0 && dist <= rsr/2.)
+            {
+
+                dir[i][0] += magi*dx - (1./(35.* rsr*rsr))*(224.* ksix -
+                224.*ksix*ksix*ksix +
+                70.*ksix*ksix*ksix*ksix +
+                48.*ksix*ksix*ksix*ksix*ksix -
+                21.*ksix*ksix*ksix*ksix*ksix*ksix);
+                dir[i][1] += magi*dy- (1./(35.* rsr*rsr))*(224.* ksiy -
+                224.*ksiy*ksiy*ksiy +
+                70.*ksiy*ksiy*ksiy*ksiy +
+                48.*ksiy*ksiy*ksiy*ksiy*ksiy -
+                21.*ksiy*ksiy*ksiy*ksiy*ksiy*ksiy);
+                dir[i][2] += magi*dz - (1./(35.* rsr*rsr))*(224.* ksiz -
+                224.*ksiz*ksiz*ksiz +
+                70.*ksiz*ksiz*ksiz*ksiz +
+                48.*ksiz*ksiz*ksiz*ksiz*ksiz -
+                21.*ksiz*ksiz*ksiz*ksiz*ksiz*ksiz);
+            }
+        else
+        {
+            dir[i][0] += magi*dx - (1./(35.* rsr*rsr))*(12./(ksix*ksix) - 224. +896.*ksix -
+            840.*ksix*ksix +
+            224. *ksix*ksix*ksix +
+            70.*ksix*ksix*ksix*ksix -
+            48.*ksix*ksix*ksix*ksix*ksix +
+            7.*ksix*ksix*ksix*ksix*ksix*ksix);
+            dir[i][1] += magi*dy- (1./(35.* rsr*rsr))*(224.* ksiy -
+            224.*ksiy*ksiy*ksiy +
+            70.*ksiy*ksiy*ksiy*ksiy +
+            48.*ksiy*ksiy*ksiy*ksiy*ksiy -
+            21.*ksiy*ksiy*ksiy*ksiy*ksiy*ksiy);
+            dir[i][2] += magi*dz - (1./(35.* rsr*rsr))*(224.* ksiz -
+            224.*ksiz*ksiz*ksiz +
+            70.*ksiz*ksiz*ksiz*ksiz +
+            48.*ksiz*ksiz*ksiz*ksiz*ksiz -
+            21.*ksiz*ksiz*ksiz*ksiz*ksiz*ksiz);
+        }
+    }
+
         dir[i][0] +=  -magi*dx ;
         dir[i][1] +=  -magi*dy ;
         dir[i][2] +=  -magi*dz ;
@@ -620,8 +661,8 @@ std::vector<double> DirectPM(std::vector<std::vector<double> > & Particles, std:
     }
 
   }
-  std::cout<<"dir matrix"<<std::endl;
-  ai::printMatrix(dir);
+  // std::cout<<"dir matrix"<<std::endl;
+  // ai::printMatrix(dir);
   return std::vector<double>{dir[0][0], dir[0][1], dir[0][2]};
 }
 
