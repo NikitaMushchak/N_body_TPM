@@ -580,11 +580,11 @@ for (size_t i =0 ; i< Particles.size() ; ++i)
 
             std::cout<<"their accel"<<std::endl;
             ai::printMatrix(ac);
-            as[i] = DirectPM(par, ac , mass);
+            DirectPM(par, ac , mass);
             std::cout<<"accel step"<<std::endl;
             ai::printMatrix(as);
   }
-  a=as;
+  
 }
 
 double Signum(double  x)
@@ -592,64 +592,72 @@ double Signum(double  x)
     return (x > 0) ? 1 : ((x < 0) ? -1 : 0);
 }
 //Сила дейсвующая на первую частицу со стороны окружающих частиц
-std::vector<double> DirectPM(std::vector<std::vector<double> > & Particles, std::vector<std::vector<double> > & dir, double mass)
+void DirectPM(std::vector<std::vector<double> > & Particles, std::vector<std::vector<double> > & dir, double mass)
 {
  double rsr = 2.5;
+ double ksix ;
+ double ksiy ;
+ double ksiz ;
+ double dx;
+ double dy;
+ double dz;
+ double distij;
+ double magi;
+ double R;
+ double gx, gy, gz;
 
-  for(size_t i =0 ; i<Particles.size(); ++i)
+  for(size_t i = 0 ; i<Particles.size(); ++i)
   {
     for(size_t j = i+1 ; j<Particles.size(); ++j)
     {
 
-	    double dx = Particles[i][0] - Particles[j][0];
-        double dy = Particles[i][1] - Particles[j][1];
-        double dz = Particles[i][2] - Particles[j][2];
-        double distij = sqrt(dx*dx + dy*dy +dz*dz);
-        double magi = (1.0*mass) /(distij*distij*distij);
+	   dx = Particles[i][0] - Particles[j][0];
+       dy = Particles[i][1] - Particles[j][1];
+       dz = Particles[i][2] - Particles[j][2];
+       distij = sqrt(dx*dx + dy*dy +dz*dz);
+       magi = (1.0*mass) /(distij*distij*distij);
 
         if(distij >= 0 && distij <= rsr ){
-            double ksix = 2.*dx/rsr;
-            double ksiy = 2.*dy/rsr;
-            double ksiz = 2.*dz/rsr;
+             ksix = 2.*distij/rsr;
+             ksiy = 2.*distij/rsr;
+             ksiz = 2.*distij/rsr;
             if (distij >= 0 && distij <= rsr/2.)
             {
 
-                dir[i][0] = magi*dx - (1./(35.* rsr*rsr))*(224.* ksix -
+                R = (1./(35.* rsr*rsr))*(224.* ksix -
                 224.*ksix*ksix*ksix +
                 70.*ksix*ksix*ksix*ksix +
                 48.*ksix*ksix*ksix*ksix*ksix -
                 21.*ksix*ksix*ksix*ksix*ksix*ksix);
-                dir[i][1] = magi*dy - (1./(35.* rsr*rsr))*(224.* ksiy -
-                224.*ksiy*ksiy*ksiy +
-                70.*ksiy*ksiy*ksiy*ksiy +
-                48.*ksiy*ksiy*ksiy*ksiy*ksiy -
-                21.*ksiy*ksiy*ksiy*ksiy*ksiy*ksiy);
-                dir[i][2] = magi*dz - (1./(35.* rsr*rsr))*(224.* ksiz -
-                224.*ksiz*ksiz*ksiz +
-                70.*ksiz*ksiz*ksiz*ksiz +
-                48.*ksiz*ksiz*ksiz*ksiz*ksiz -
-                21.*ksiz*ksiz*ksiz*ksiz*ksiz*ksiz);
+                gx = 1.- R/(-magi*dx);
+                gy = 1.- R/(-magi*dy);
+                gz = 1.- R/(-magi*dz);
+                dir[i][0] += magi*dx*gx;//direct force
+                dir[i][1] += magi*dy*gy;
+                dir[i][2] += magi*dz*gz;
+
+                dir[j][0] -= magi*dx*gx;//direct force
+                dir[j][1] -= magi*dy*gy;
+                dir[j][2] -= magi*dz*gz;
             }
             else
             {
-              dir[i][0] = magi*dx - (1./(35.* rsr*rsr))*(12./(ksix*ksix) - 224. +896.*ksix -
-              840.*ksix*ksix +
-              224. *ksix*ksix*ksix +
-              70.*ksix*ksix*ksix*ksix -
-              48.*ksix*ksix*ksix*ksix*ksix +
-              7.*ksix*ksix*ksix*ksix*ksix*ksix);
-              dir[i][1] = magi*dy - (1./(35.* rsr*rsr))*(12./(ksiy*ksiy) - 224. +896.*ksiy -
-              840.*ksiy*ksiy +
-              224. *ksiy*ksiy*ksiy +
-              70.*ksiy*ksiy*ksiy*ksiy -
-              48.*ksiy*ksiy*ksiy*ksiy*ksiy +
-              7.*ksiy*ksiy*ksiy*ksiy*ksiy*ksiy);
-              dir[i][2] = magi*dz - (1./(35.* rsr*rsr))*(12./(ksiz*ksiz) - 224. +896.*ksiz -
-              840.*ksiz*ksiz +
-              224. *ksiz*ksiz*ksiz +
-              70.*ksiz*ksiz*ksiz*ksiz -
-              48.*ksiz*ksiz*ksiz*ksiz*ksiz +
-              7.*ksiz*ksiz*ksiz*ksiz*ksiz*ksiz);
+                R = (1./(35.* rsr*rsr))*(12./(ksix*ksix) - 224. + 896.*ksix -
+                840.*ksix*ksix +
+                224. *ksix*ksix*ksix +
+                70.*ksix*ksix*ksix*ksix -
+                48.*ksix*ksix*ksix*ksix*ksix +
+                7.*ksix*ksix*ksix*ksix*ksix*ksix);
+                gx = 1.- R/(-magi*dx);
+                gy = 1.- R/(-magi*dy);
+                gz = 1.- R/(-magi*dz);
+                dir[i][0] += magi*dx*gx; //direct force
+                dir[i][1] += magi*dx*gy;
+                dir[i][2] += magi*dx*gz;
+
+                dir[j][0] -= magi*dx*gx;//direct force
+                dir[j][1] -= magi*dy*gy;
+                dir[j][2] -= magi*dz*gz;
             }
     }
 
@@ -660,30 +668,36 @@ std::vector<double> DirectPM(std::vector<std::vector<double> > & Particles, std:
         // dir[j][0] -= magi*dx - a;
         // dir[j][1] += magi*dy - b;
         // dir[j][2] += magi*dz - c;
+        std::cout<<"true accel"<<std::endl;
+        ai::printMatrix(dir);
 
     }
 
   }
   // std::cout<<"dir matrix"<<std::endl;
   // ai::printMatrix(dir);
-  return std::vector<double>{dir[0][0], dir[0][1], dir[0][2]};
+
 }
 
 
 void Direct(std::vector<std::vector<double> > & Particles, std::vector<std::vector<double> > & dir, double mass)
 {
-
+    double dx;
+    double dy;
+    double dz;
+    double distij;
+    double magi;
 
   for(size_t i =0 ; i<Particles.size(); ++i)
   {
     for(size_t j = i+1 ; j<Particles.size(); ++j)
     {
         if (i!=j){
-		    double dx = Particles[i][0] - Particles[j][0];
-        double dy = Particles[i][1] - Particles[j][1];
-        double dz = Particles[i][2] - Particles[j][2];
-        double distij = sqrt(dx*dx + dy*dy +dz*dz);
-        double magi = (1.0*mass) /(distij*distij*distij);
+		 dx = Particles[i][0] - Particles[j][0];
+         dy = Particles[i][1] - Particles[j][1];
+         dz = Particles[i][2] - Particles[j][2];
+         distij = sqrt(dx*dx + dy*dy +dz*dz);
+         magi = (1.0*mass) /(distij*distij*distij);
 
         dir[i][0] -= magi*dx ;
         dir[i][1] -= magi*dy ;

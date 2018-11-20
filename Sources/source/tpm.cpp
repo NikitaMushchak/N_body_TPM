@@ -200,7 +200,7 @@ std::vector<std::vector<size_t> > nuls; //for particles in same box
        ai::printMatrix(dir);
        std::cout<<"Acceleration Dir + PM"<<std::endl;
        //ai::printMatrix(a);
-       std::cout<<"  \nDir/ FFT"<<dir[0][0]/a[0][0]<<std::endl;
+       std::cout<<"  \nDir/ FFT "<< abs(((dir[0][0]-a[0][0])/a[0][0])*100)<<" %"<<std::endl;
        auto t10 = ai::time();
 
         dt =  3*Get_Step(dir, mass);
