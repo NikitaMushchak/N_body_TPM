@@ -179,12 +179,12 @@ std::vector<std::vector<size_t> > nuls; //for particles in same box
          std::cout <<"Acclel PM"<<std::endl;
          ai::printMatrix(a);
          GetAccel(Particles, density, box, a, H);
-         for (size_t i = 0 ; i< a.size(); ++i)
-         {
-           a[i][0]-=ac[i][0] ;
-           a[i][1]-=ac[i][1];
-           a[i][2]-=ac[i][2];
-         }
+         // for (size_t i = 0 ; i< a.size(); ++i)
+         // {
+         //   a[i][0]-=ac[i][0] ;
+         //   a[i][1]-=ac[i][1];
+         //   a[i][2]-=ac[i][2];
+         // }
  auto t6 = ai::time();
      std::cout <<"Acclel time = "<<ai::duration(t5,t6,"ms")<<" ms"<<std::endl;
       auto t7 = ai::time();

@@ -606,53 +606,56 @@ std::vector<double> DirectPM(std::vector<std::vector<double> > & Particles, std:
         double dz = Particles[i][2] - Particles[j][2];
         double distij = sqrt(dx*dx + dy*dy +dz*dz);
         double magi = (1.0*mass) /(distij*distij*distij);
-        if(distij >= 0 && dizstij <= rsr ){
+
+        if(distij >= 0 && distij <= rsr ){
             double ksix = 2.*dx/rsr;
             double ksiy = 2.*dy/rsr;
             double ksiz = 2.*dz/rsr;
-            if (distij >= 0 && dist <= rsr/2.)
+            if (distij >= 0 && distij <= rsr/2.)
             {
 
-                dir[i][0] += magi*dx - (1./(35.* rsr*rsr))*(224.* ksix -
+                dir[i][0] = magi*dx - (1./(35.* rsr*rsr))*(224.* ksix -
                 224.*ksix*ksix*ksix +
                 70.*ksix*ksix*ksix*ksix +
                 48.*ksix*ksix*ksix*ksix*ksix -
                 21.*ksix*ksix*ksix*ksix*ksix*ksix);
-                dir[i][1] += magi*dy- (1./(35.* rsr*rsr))*(224.* ksiy -
+                dir[i][1] = magi*dy - (1./(35.* rsr*rsr))*(224.* ksiy -
                 224.*ksiy*ksiy*ksiy +
                 70.*ksiy*ksiy*ksiy*ksiy +
                 48.*ksiy*ksiy*ksiy*ksiy*ksiy -
                 21.*ksiy*ksiy*ksiy*ksiy*ksiy*ksiy);
-                dir[i][2] += magi*dz - (1./(35.* rsr*rsr))*(224.* ksiz -
+                dir[i][2] = magi*dz - (1./(35.* rsr*rsr))*(224.* ksiz -
                 224.*ksiz*ksiz*ksiz +
                 70.*ksiz*ksiz*ksiz*ksiz +
                 48.*ksiz*ksiz*ksiz*ksiz*ksiz -
                 21.*ksiz*ksiz*ksiz*ksiz*ksiz*ksiz);
             }
-        else
-        {
-            dir[i][0] += magi*dx - (1./(35.* rsr*rsr))*(12./(ksix*ksix) - 224. +896.*ksix -
-            840.*ksix*ksix +
-            224. *ksix*ksix*ksix +
-            70.*ksix*ksix*ksix*ksix -
-            48.*ksix*ksix*ksix*ksix*ksix +
-            7.*ksix*ksix*ksix*ksix*ksix*ksix);
-            dir[i][1] += magi*dy- (1./(35.* rsr*rsr))*(224.* ksiy -
-            224.*ksiy*ksiy*ksiy +
-            70.*ksiy*ksiy*ksiy*ksiy +
-            48.*ksiy*ksiy*ksiy*ksiy*ksiy -
-            21.*ksiy*ksiy*ksiy*ksiy*ksiy*ksiy);
-            dir[i][2] += magi*dz - (1./(35.* rsr*rsr))*(224.* ksiz -
-            224.*ksiz*ksiz*ksiz +
-            70.*ksiz*ksiz*ksiz*ksiz +
-            48.*ksiz*ksiz*ksiz*ksiz*ksiz -
-            21.*ksiz*ksiz*ksiz*ksiz*ksiz*ksiz);
-        }
+            else
+            {
+              dir[i][0] = magi*dx - (1./(35.* rsr*rsr))*(12./(ksix*ksix) - 224. +896.*ksix -
+              840.*ksix*ksix +
+              224. *ksix*ksix*ksix +
+              70.*ksix*ksix*ksix*ksix -
+              48.*ksix*ksix*ksix*ksix*ksix +
+              7.*ksix*ksix*ksix*ksix*ksix*ksix);
+              dir[i][1] = magi*dy - (1./(35.* rsr*rsr))*(12./(ksiy*ksiy) - 224. +896.*ksiy -
+              840.*ksiy*ksiy +
+              224. *ksiy*ksiy*ksiy +
+              70.*ksiy*ksiy*ksiy*ksiy -
+              48.*ksiy*ksiy*ksiy*ksiy*ksiy +
+              7.*ksiy*ksiy*ksiy*ksiy*ksiy*ksiy);
+              dir[i][2] = magi*dz - (1./(35.* rsr*rsr))*(12./(ksiz*ksiz) - 224. +896.*ksiz -
+              840.*ksiz*ksiz +
+              224. *ksiz*ksiz*ksiz +
+              70.*ksiz*ksiz*ksiz*ksiz -
+              48.*ksiz*ksiz*ksiz*ksiz*ksiz +
+              7.*ksiz*ksiz*ksiz*ksiz*ksiz*ksiz);
+            }
     }
 
-        dir[i][0] +=  -magi*dx ;
-        dir[i][1] +=  -magi*dy ;
-        dir[i][2] +=  -magi*dz ;
+        // dir[i][0] +=  -magi*dx ;
+        // dir[i][1] +=  -magi*dy ;
+        // dir[i][2] +=  -magi*dz ;
        // double magj= (1.0*mass)/(distij*distij*distij);
         // dir[j][0] -= magi*dx - a;
         // dir[j][1] += magi*dy - b;
