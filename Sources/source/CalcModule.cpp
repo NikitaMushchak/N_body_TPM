@@ -530,11 +530,13 @@ void GetAccel(std::vector<std::vector<double>>& Particles,
   size_t dim = density.size();
   // double h = 1./H;
 std::vector<std::vector<double > > as;
+//as-матрица с посчитанными значениями ускорений
 as.resize(Particles.size());
 for (size_t i =0 ; i< Particles.size() ; ++i)
 {
     as[i].resize(3);
 }
+  as=a;
   double mass = 1.0;
   for (size_t i = 0; i < Particles.size(); ++i)
   {
@@ -581,10 +583,13 @@ for (size_t i =0 ; i< Particles.size() ; ++i)
             std::cout<<"their accel"<<std::endl;
             ai::printMatrix(ac);
             DirectPM(par, ac , mass);
+
+            // as.push_back(std::vector<double>{ac[i][0], ac[i][1], ac[i][2]});
+            as[i] = ac[i];
             std::cout<<"accel step"<<std::endl;
             ai::printMatrix(as);
   }
-  
+
 }
 
 double Signum(double  x)
@@ -605,13 +610,14 @@ void DirectPM(std::vector<std::vector<double> > & Particles, std::vector<std::ve
  double magi;
  double R;
  double gx, gy, gz;
-
+ std::cout<<"input accel"<<std::endl;
+ ai::printMatrix(dir);
   for(size_t i = 0 ; i<Particles.size(); ++i)
   {
     for(size_t j = i+1 ; j<Particles.size(); ++j)
     {
 
-	   dx = Particles[i][0] - Particles[j][0];
+	     dx = Particles[i][0] - Particles[j][0];
        dy = Particles[i][1] - Particles[j][1];
        dz = Particles[i][2] - Particles[j][2];
        distij = sqrt(dx*dx + dy*dy +dz*dz);
@@ -632,13 +638,13 @@ void DirectPM(std::vector<std::vector<double> > & Particles, std::vector<std::ve
                 gx = 1.- R/(-magi*dx);
                 gy = 1.- R/(-magi*dy);
                 gz = 1.- R/(-magi*dz);
-                dir[i][0] += magi*dx*gx;//direct force
-                dir[i][1] += magi*dy*gy;
-                dir[i][2] += magi*dz*gz;
+                dir[i][0] = Signum(dx)*magi*dx*gx;//direct force
+                dir[i][1] = Signum(dy)*magi*dy*gy;
+                dir[i][2] = Signum(dz)*magi*dz*gz;
 
-                dir[j][0] -= magi*dx*gx;//direct force
-                dir[j][1] -= magi*dy*gy;
-                dir[j][2] -= magi*dz*gz;
+                dir[j][0] = Signum(dx)*magi*dx*gx;//direct force
+                dir[j][1] = Signum(dy)*magi*dy*gy;
+                dir[j][2] = Signum(dz)*magi*dz*gz;
             }
             else
             {
@@ -651,13 +657,13 @@ void DirectPM(std::vector<std::vector<double> > & Particles, std::vector<std::ve
                 gx = 1.- R/(-magi*dx);
                 gy = 1.- R/(-magi*dy);
                 gz = 1.- R/(-magi*dz);
-                dir[i][0] += magi*dx*gx; //direct force
-                dir[i][1] += magi*dx*gy;
-                dir[i][2] += magi*dx*gz;
+                dir[i][0] = Signum(dx)*magi*dx*gx; //direct force
+                dir[i][1] = Signum(dy)*magi*dx*gy;
+                dir[i][2] = Signum(dz)*magi*dx*gz;
 
-                dir[j][0] -= magi*dx*gx;//direct force
-                dir[j][1] -= magi*dy*gy;
-                dir[j][2] -= magi*dz*gz;
+                dir[j][0] = Signum(dx)*magi*dx*gx;//direct force
+                dir[j][1] = Signum(dy)*magi*dy*gy;
+                dir[j][2] = Signum(dz)*magi*dz*gz;
             }
     }
 
@@ -668,7 +674,7 @@ void DirectPM(std::vector<std::vector<double> > & Particles, std::vector<std::ve
         // dir[j][0] -= magi*dx - a;
         // dir[j][1] += magi*dy - b;
         // dir[j][2] += magi*dz - c;
-        std::cout<<"true accel"<<std::endl;
+        std::cout<<"calculated accel"<<std::endl;
         ai::printMatrix(dir);
 
     }
