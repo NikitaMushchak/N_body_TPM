@@ -559,6 +559,7 @@ for (size_t i =0 ; i< Particles.size() ; ++i)
                 {
                   par.push_back(std::vector<double>{Particles[j][0] , Particles[j][1] , Particles[j][2]});
                   ac.push_back(std::vector<double>{a[j][0] , a[j][1] , a[j][2]});
+                  // ac.push_back(std::vector<double>{0. , 0. , 0.});
 
                 }
                 if (box[i][0]!=box[j][0] &&
@@ -571,6 +572,7 @@ for (size_t i =0 ; i< Particles.size() ; ++i)
                     //std::cout<<"in";
                     par.push_back(std::vector<double>{Particles[j][0] , Particles[j][1] , Particles[j][2]} );
                     ac.push_back(std::vector<double>{a[j][0] , a[j][1] , a[j][2]});
+                    // ac.push_back(std::vector<double>{0. , 0. , 0.});
 
                   }
 
@@ -582,14 +584,14 @@ for (size_t i =0 ; i< Particles.size() ; ++i)
 
             std::cout<<"their accel"<<std::endl;
             ai::printMatrix(ac);
-            DirectPM(par, ac , mass);
+            as[i] = DirectPM(par, ac , mass);
 
             // as.push_back(std::vector<double>{ac[i][0], ac[i][1], ac[i][2]});
-            as[i] = ac[i];
+          //  as[i] = ac[i];
             std::cout<<"accel step"<<std::endl;
             ai::printMatrix(as);
   }
-
+      a = as;
 }
 
 double Signum(double  x)
@@ -597,9 +599,9 @@ double Signum(double  x)
     return (x > 0) ? 1 : ((x < 0) ? -1 : 0);
 }
 //Сила дейсвующая на первую частицу со стороны окружающих частиц
-void DirectPM(std::vector<std::vector<double> > & Particles, std::vector<std::vector<double> > & dir, double mass)
+ std::vector<double> DirectPM(std::vector<std::vector<double> > & Particles, std::vector<std::vector<double> > & dir, double mass)
 {
- double rsr = 2.5;
+ double rsr = 3.0;
  double ksix ;
  double ksiy ;
  double ksiz ;
@@ -610,8 +612,8 @@ void DirectPM(std::vector<std::vector<double> > & Particles, std::vector<std::ve
  double magi;
  double R;
  double gx, gy, gz;
- std::cout<<"input accel"<<std::endl;
- ai::printMatrix(dir);
+ // std::cout<<"input accel"<<std::endl;
+ // ai::printMatrix(dir);
   for(size_t i = 0 ; i<Particles.size(); ++i)
   {
     for(size_t j = i+1 ; j<Particles.size(); ++j)
@@ -620,14 +622,17 @@ void DirectPM(std::vector<std::vector<double> > & Particles, std::vector<std::ve
 	     dx = Particles[i][0] - Particles[j][0];
        dy = Particles[i][1] - Particles[j][1];
        dz = Particles[i][2] - Particles[j][2];
+
+       std::cout<<"dx = "<<dx<<std::endl;
        distij = sqrt(dx*dx + dy*dy +dz*dz);
        magi = (1.0*mass) /(distij*distij*distij);
-
-        if(distij >= 0 && distij <= rsr ){
+       std::cout<<"distij = "<<distij<<std::endl;
+        if(distij < rsr ){
              ksix = 2.*distij/rsr;
              ksiy = 2.*distij/rsr;
              ksiz = 2.*distij/rsr;
-            if (distij >= 0 && distij <= rsr/2.)
+             std::cout<<"ksix = "<<ksix<<std::endl;
+            if (distij < rsr/2.)
             {
 
                 R = (1./(35.* rsr*rsr))*(224.* ksix -
@@ -635,16 +640,23 @@ void DirectPM(std::vector<std::vector<double> > & Particles, std::vector<std::ve
                 70.*ksix*ksix*ksix*ksix +
                 48.*ksix*ksix*ksix*ksix*ksix -
                 21.*ksix*ksix*ksix*ksix*ksix*ksix);
-                gx = 1.- R/(-magi*dx);
-                gy = 1.- R/(-magi*dy);
-                gz = 1.- R/(-magi*dz);
-                dir[i][0] = Signum(dx)*magi*dx*gx;//direct force
-                dir[i][1] = Signum(dy)*magi*dy*gy;
-                dir[i][2] = Signum(dz)*magi*dz*gz;
+                std::cout<<"R = "<<R<<std::endl;
+                // gx = 1.- std::abs(R/(-magi*dx));
+                // gy = 1.- std::abs(R/(-magi*dy));
+                // gz = 1.- std::abs(R/(-magi*dz));
+                gx = 1.- R/(-std::abs(magi*dx));
+                gy = 1.- R/(-std::abs(magi*dy));
+                gz = 1.- R/(-std::abs(magi*dz));
+                std::cout<<"gx = "<<gx<<std::endl;
+                dir[i][0] -= magi*dx*gx;//direct force
+                dir[i][1] -= magi*dy*gy;
+                dir[i][2] -= magi*dz*gz;
 
-                dir[j][0] = Signum(dx)*magi*dx*gx;//direct force
-                dir[j][1] = Signum(dy)*magi*dy*gy;
-                dir[j][2] = Signum(dz)*magi*dz*gz;
+                std::cout<<"dir[i][0] = "<<dir[i][0]<<std::endl;
+
+                dir[j][0] += magi*dx*gx;//direct force
+                dir[j][1] += magi*dy*gy;
+                dir[j][2] += magi*dz*gz;
             }
             else
             {
@@ -654,16 +666,21 @@ void DirectPM(std::vector<std::vector<double> > & Particles, std::vector<std::ve
                 70.*ksix*ksix*ksix*ksix -
                 48.*ksix*ksix*ksix*ksix*ksix +
                 7.*ksix*ksix*ksix*ksix*ksix*ksix);
-                gx = 1.- R/(-magi*dx);
-                gy = 1.- R/(-magi*dy);
-                gz = 1.- R/(-magi*dz);
-                dir[i][0] = Signum(dx)*magi*dx*gx; //direct force
-                dir[i][1] = Signum(dy)*magi*dx*gy;
-                dir[i][2] = Signum(dz)*magi*dx*gz;
-
-                dir[j][0] = Signum(dx)*magi*dx*gx;//direct force
-                dir[j][1] = Signum(dy)*magi*dy*gy;
-                dir[j][2] = Signum(dz)*magi*dz*gz;
+                std::cout<<"R = "<<R<<std::endl;
+                // gx = 1.- std::abs(R/(-magi*dx));
+                // gy = 1.- std::abs(R/(-magi*dy));
+                // gz = 1.- std::abs(R/(-magi*dz));
+                gx = 1.- R/(-std::abs(magi*dx));
+                gy = 1.- R/(-std::abs(magi*dy));
+                gz = 1.- R/(-std::abs(magi*dz));
+                  std::cout<<"gx = "<<gx<<std::endl;
+                dir[i][0] -= magi*dx*gx; //direct force
+                dir[i][1] -= magi*dx*gy;
+                dir[i][2] -= magi*dx*gz;
+                std::cout<<"dir[i][0] = "<<dir[i][0]<<std::endl;
+                dir[j][0] += magi*dx*gx;//direct force
+                dir[j][1] += magi*dy*gy;
+                dir[j][2] += magi*dz*gz;
             }
     }
 
@@ -682,7 +699,7 @@ void DirectPM(std::vector<std::vector<double> > & Particles, std::vector<std::ve
   }
   // std::cout<<"dir matrix"<<std::endl;
   // ai::printMatrix(dir);
-
+  return std::vector<double>{dir[0][0], dir[0][1], dir[0][2]};
 }
 
 

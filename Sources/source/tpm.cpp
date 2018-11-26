@@ -40,7 +40,7 @@
 //   }
 
 for (size_t i = 0; i < number_particles ; ++i) {
-       std::vector<double> a = { (double) 28.9+0.8*i,  28.9+0.8*i, 28.9+0.8*i };
+       std::vector<double> a = { (double) 30.1+0.6*i,  30.1+0.6*i, 30.1+0.6*i };
 
         Particles.push_back(a);
     }	// Particles.push_back( std::vector<double> {35.1, 35.1 , 35.1} );	// number_particles+=1;
