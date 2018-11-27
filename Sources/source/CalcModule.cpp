@@ -35,7 +35,20 @@ void  Genconfig(std::vector<std::vector<double> >& Particles, double number_part
 
 	}
 }
- void CaclDensity(std::vector<
+
+void SetSun(std::vector<
+ std::vector <
+   std::vector<
+     std::vector<double> > > >& density,
+   double mass,
+ size_t dim)
+ {
+   size_t center = 0.5 * dim;
+   density[center][center][center][0]=100. * mass;
+ }
+
+
+void CaclDensity(std::vector<
 					std::vector<double> >& Particles ,
 				 std::vector<
 					std::vector <
@@ -468,58 +481,6 @@ void  Genconfig(std::vector<std::vector<double> >& Particles, double number_part
 
 }
 
-	//std::cout << " DONE." << std::endl;
-	//find number of boxes with multiple particles
-	// size_t max = 0;
-	// for (size_t i = 0; i< box.size(); ++i)
-	// {
-	// 	max = ai::max(max , box[i][3]);
-	// }
-	// //std::cout<<"max number of boxes= "<<max<<std::endl;
-	// std::cout<<"PM acceleration ="<<std::endl;
-	// ai::printMatrix(a);
-	//box cycle
-	// for (size_t i = 1; i <= max; ++i)
-	// {
-	// 	std::vector<std::vector<double> > par;
-	// 	std::vector<std::vector<double> > ac;
-	// 	//particles cycle
-	// 	for(size_t j = 0 ; j < box.size(); ++j)
-	// 	{
-  //
-	// 		if(box[j][3]==i)
-	// 		{
-	// 			par.push_back( std::vector<double>{ Particles[j][0],  Particles[j][1], Particles[j][2]} );
-	// 			ac.push_back(std::vector<double> {-a[j][0], -a[j][1], -a[j][2]} );
-	// 			// ac.push_back(std::vector<double> {0., 0., 0.} );
-	// 		}
-	// 	}
-	// 	std::cout<<"PM forces matrix  = "<<std::endl;
-	// 	ai::printMatrix(ac);
-  //
-	// 	Direct(par, ac, 1.);
-  //
-	// 	// std::cout<<"par matrix = "<<std::endl;
-	// 	// ai::printMatrix(par);
-  //
-	// 	std::cout<<"dir+PM matrix after= "<<std::endl;
-	// 	ai::printMatrix(ac);
-	// 	size_t y  = 0;
-	// 	for(size_t j = 0 ; j < box.size(); ++j)
-	// 	{
-  //
-	// 		if(box[j][3]==i)
-	// 		{
-	// 			//par.push_back( std::vector<double>{ Particles[j][0],  Particles[j][1], Particles[j][2]} );
-	// 			//ac.push_back(std::vector<double> {a[j][0], a[j][1], a[j][2]} );
-	// 			a[j][0]+=ac[y][0];
-	// 			a[j][1]+=ac[y][1];
-	// 			a[j][2]+=ac[y][2];
-	// 			y++;
-	// 		}
-	// 	}
-	// }
-
 }
 
 void GetAccel(std::vector<std::vector<double>>& Particles,
@@ -552,14 +513,15 @@ for (size_t i =0 ; i< Particles.size() ; ++i)
             //Записываем частицы, которые попадают в радиус в 2 ячейки
             par.push_back(std::vector<double>{Particles[i][0] , Particles[i][1] , Particles[i][2]});
             ac.push_back(std::vector<double>{a[i][0] , a[i][1] , a[i][2]});
+            // ac.push_back(std::vector<double>{0. , 0. , 0.});
             for (size_t j = 0 ; j<box.size(); ++j)
             {
                 if (i!=j){
                 if (box[i][3]!= 0 && box[i][3] == box[j][3]) // Записываем частицы в в i-ой ячейке
                 {
                   par.push_back(std::vector<double>{Particles[j][0] , Particles[j][1] , Particles[j][2]});
-                  // ac.push_back(std::vector<double>{a[j][0] , a[j][1] , a[j][2]});
-                  ac.push_back(std::vector<double>{0. , 0. , 0.});
+                  ac.push_back(std::vector<double>{a[j][0] , a[j][1] , a[j][2]});
+                  // ac.push_back(std::vector<double>{0. , 0. , 0.});
 
                 }
                 if (box[i][0]!=box[j][0] &&
@@ -571,19 +533,19 @@ for (size_t i =0 ; i< Particles.size() ; ++i)
                   {
                     //std::cout<<"in";
                     par.push_back(std::vector<double>{Particles[j][0] , Particles[j][1] , Particles[j][2]} );
-                    // ac.push_back(std::vector<double>{a[j][0] , a[j][1] , a[j][2]});
-                    ac.push_back(std::vector<double>{0. , 0. , 0.});
+                    ac.push_back(std::vector<double>{a[j][0] , a[j][1] , a[j][2]});
+                    // ac.push_back(std::vector<double>{0. , 0. , 0.});
 
                   }
 
                 }
 
               }
-             std::cout <<"Nearest particles coords"<<std::endl;
-            ai::printMatrix(par);
+            //  std::cout <<"Nearest particles coords"<<std::endl;
+            // ai::printMatrix(par);
 
-            std::cout<<"their accel"<<std::endl;
-            ai::printMatrix(ac);
+            // std::cout<<"their accel"<<std::endl;
+            // ai::printMatrix(ac);
             as[i] = DirectPM(par, ac , mass);
 
             // as.push_back(std::vector<double>{ac[i][0], ac[i][1], ac[i][2]});
@@ -591,7 +553,15 @@ for (size_t i =0 ; i< Particles.size() ; ++i)
             std::cout<<"accel step"<<std::endl;
             ai::printMatrix(as);
   }
+      std::cout<<"a matrix"<<std::endl;
+      ai::printMatrix(a);
       a = as;
+      // for (size_t i = 0 ; i<a.size(); ++i)
+      // {
+      //   a[i][0]-=as[i][0];
+      //   a[i][1]-=as[i][1];
+      //   a[i][2]-=as[i][1];
+      // }
 }
 
 double Signum(double  x)
@@ -614,25 +584,25 @@ double Signum(double  x)
  double gx, gy, gz;
  // std::cout<<"input accel"<<std::endl;
  // ai::printMatrix(dir);
-  for(size_t i = 0 ; i<Particles.size(); ++i)
+  for(size_t i = 0 ; i<1; ++i)
   {
     for(size_t j = i+1 ; j<Particles.size(); ++j)
     {
 
-	   dx = Particles[i][0] - Particles[j][0];
+	     dx = Particles[i][0] - Particles[j][0];
        dy = Particles[i][1] - Particles[j][1];
        dz = Particles[i][2] - Particles[j][2];
 
-       std::cout<<"dx = "<<dx<<std::endl;
+       // std::cout<<"dx = "<<dx<<std::endl;
        distij = sqrt(dx*dx + dy*dy +dz*dz);
        magi = (1.0*mass) /(distij*distij*distij);
-       std::cout<<"distij = "<<distij<<std::endl;
-        if(distij < rsr ){
-             ksix = 2.*dx/rsr;
-             ksiy = 2.*dy/rsr;
-             ksiz = 2.*dz/rsr;
-             std::cout<<"ksix = "<<ksix<<std::endl;
-            if (distij < rsr/2.)
+       // std::cout<<"distij = "<<distij<<std::endl;
+
+             ksix = 2.*std::abs(dx)/rsr;
+             ksiy = 2.*std::abs(dy)/rsr;
+             ksiz = 2.*std::abs(dz)/rsr;
+             // std::cout<<"ksix = "<<ksix<<std::endl;
+            if ( distij >0 && distij <= rsr/2.)
             {
 
                 Rx = (1./(35.* rsr*rsr))*(224.* ksix -
@@ -650,25 +620,28 @@ double Signum(double  x)
                 70.*ksiz*ksiz*ksiz*ksiz +
                 48.*ksiz*ksiz*ksiz*ksiz*ksiz -
                 21.*ksiz*ksiz*ksiz*ksiz*ksiz*ksiz);
-                //std::cout<<"R = "<<R<<std::endl;
+                // std::cout<<"Rx = "<<Rx<<std::endl;
                 // gx = 1.- std::abs(R/(-magi*dx));
                 // gy = 1.- std::abs(R/(-magi*dy));
                 // gz = 1.- std::abs(R/(-magi*dz));
                 // gx = 1.- R/(-std::abs(magi*dx));
                 // gy = 1.- R/(-std::abs(magi*dy));
                 // gz = 1.- R/(-std::abs(magi*dz));
-                std::cout<<"gx = "<<gx<<std::endl;
-                dir[i][0] -= magi*dx - Rx;//direct force
-                dir[i][1] -= magi*dy - Ry;
-                dir[i][2] -= magi*dz - Rz;
+                // gx = 1.- Rx/(magi*dx +Rx);
+                // gy = 1.- Ry/(magi*dy+Ry);
+                // gz = 1.- Rz/(magi*dz+Rz);
+                //std::cout<<"gx = "<<gx<<std::endl;
+                dir[i][0] += magi*dx -Signum(dx)*Rx;//direct force
+                dir[i][1] += magi*dy -Signum(dy)*Ry;
+                dir[i][2] += magi*dz -Signum(dz)*Rz;
 
-                std::cout<<"dir[i][0] = "<<dir[i][0]<<std::endl;
+                // std::cout<<"dir[i][0] = "<<dir[i][0]<<std::endl;
 
-                // dir[j][0] += magi*dx - R;//direct force
-                // dir[j][1] += magi*dy - R;
-                // dir[j][2] += magi*dz - R;
+                // dir[j][0] += magi*dx -Signum(dx)*Rx;//direct force
+                // dir[j][1] += magi*dy -Signum(dy)*Ry;
+                // dir[j][2] += magi*dz -Signum(dz)*Rz;
             }
-            else
+            if(distij > 0.5*rsr && distij <= rsr)
             {
                 Rx = (1./(35.* rsr*rsr))*(12./(ksix*ksix) - 224. + 896.*ksix -
                 840.*ksix*ksix +
@@ -689,23 +662,23 @@ double Signum(double  x)
                 70.*ksiz*ksiz*ksiz*ksiz -
                 48.*ksiz*ksiz*ksiz*ksiz*ksiz +
                 7.*ksiz*ksiz*ksiz*ksiz*ksiz*ksiz);
-                //std::cout<<"R = "<<R<<std::endl;
+                // std::cout<<"Rx = "<<Rx<<std::endl;
                 // gx = 1.- std::abs(R/(-magi*dx));
                 // gy = 1.- std::abs(R/(-magi*dy));
                 // gz = 1.- std::abs(R/(-magi*dz));
-                // gx = 1.- R/(-std::abs(magi*dx));
-                // gy = 1.- R/(-std::abs(magi*dy));
-                // gz = 1.- R/(-std::abs(magi*dz));
-                  std::cout<<"gx = "<<gx<<std::endl;
-                dir[i][0] -= magi*dx - Rx; //direct force
-                dir[i][1] -= magi*dx - Ry;
-                dir[i][2] -= magi*dx - Rz ;
-                std::cout<<"dir[i][0] = "<<dir[i][0]<<std::endl;
-                // dir[j][0] += magi*dx - R;//direct force
-                // dir[j][1] += magi*dy - R;
-                // dir[j][2] += magi*dz - R;
+                // gx = 1.- Rx/(magi*dx +Rx);
+                // gy = 1.- Ry/(magi*dy+Ry);
+                // gz = 1.- Rz/(magi*dz+Rz);
+                //  std::cout<<"gx = "<<gx<<std::endl;
+                dir[i][0] += magi*dx -Signum(dx)*Rx; //direct force
+                dir[i][1] += magi*dx -Signum(dy)*Ry;
+                dir[i][2] += magi*dx  -Signum(dz)*Rz;
+                // std::cout<<"dir[i][0] = "<<dir[i][0]<<std::endl;
+                // dir[j][0] += magi*dx -Signum(dx)*Rx;//direct force
+                // dir[j][1] += magi*dy -Signum(dy)*Ry;
+                // dir[j][2] += magi*dz -Signum(dz)*Rz;
             }
-    }
+
 
         // dir[i][0] +=  -magi*dx ;
         // dir[i][1] +=  -magi*dy ;
@@ -714,8 +687,8 @@ double Signum(double  x)
         // dir[j][0] -= magi*dx - a;
         // dir[j][1] += magi*dy - b;
         // dir[j][2] += magi*dz - c;
-        std::cout<<"calculated accel"<<std::endl;
-        ai::printMatrix(dir);
+        // std::cout<<"calculated accel"<<std::endl;
+        // ai::printMatrix(dir);
 
     }
 

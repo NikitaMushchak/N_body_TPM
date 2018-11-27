@@ -6,6 +6,13 @@ void ScalePos(std::vector<std::vector<double> >& Particles, double scale);
 
 void  Genconfig(std::vector<std::vector<double> >& Particles, double number_particles,double L);
 
+void SetSun(std::vector<
+ std::vector <
+   std::vector<
+     std::vector<double> > > >& density,
+   double mass,
+ size_t dim);
+
  void CaclDensity(std::vector<std::vector<double> >&Particles,std::vector<std::vector <std::vector<std::vector<double> > > >&density,
    // std::vector<std::vector<size_t> >& box,
 	double mass,
