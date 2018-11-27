@@ -558,8 +558,8 @@ for (size_t i =0 ; i< Particles.size() ; ++i)
                 if (box[i][3]!= 0 && box[i][3] == box[j][3]) // Записываем частицы в в i-ой ячейке
                 {
                   par.push_back(std::vector<double>{Particles[j][0] , Particles[j][1] , Particles[j][2]});
-                  ac.push_back(std::vector<double>{a[j][0] , a[j][1] , a[j][2]});
-                  // ac.push_back(std::vector<double>{0. , 0. , 0.});
+                  // ac.push_back(std::vector<double>{a[j][0] , a[j][1] , a[j][2]});
+                  ac.push_back(std::vector<double>{0. , 0. , 0.});
 
                 }
                 if (box[i][0]!=box[j][0] &&
@@ -571,8 +571,8 @@ for (size_t i =0 ; i< Particles.size() ; ++i)
                   {
                     //std::cout<<"in";
                     par.push_back(std::vector<double>{Particles[j][0] , Particles[j][1] , Particles[j][2]} );
-                    ac.push_back(std::vector<double>{a[j][0] , a[j][1] , a[j][2]});
-                    // ac.push_back(std::vector<double>{0. , 0. , 0.});
+                    // ac.push_back(std::vector<double>{a[j][0] , a[j][1] , a[j][2]});
+                    ac.push_back(std::vector<double>{0. , 0. , 0.});
 
                   }
 
@@ -610,7 +610,7 @@ double Signum(double  x)
  double dz;
  double distij;
  double magi;
- double R;
+ double Rx , Ry, Rz;
  double gx, gy, gz;
  // std::cout<<"input accel"<<std::endl;
  // ai::printMatrix(dir);
@@ -619,7 +619,7 @@ double Signum(double  x)
     for(size_t j = i+1 ; j<Particles.size(); ++j)
     {
 
-	     dx = Particles[i][0] - Particles[j][0];
+	   dx = Particles[i][0] - Particles[j][0];
        dy = Particles[i][1] - Particles[j][1];
        dz = Particles[i][2] - Particles[j][2];
 
@@ -628,59 +628,82 @@ double Signum(double  x)
        magi = (1.0*mass) /(distij*distij*distij);
        std::cout<<"distij = "<<distij<<std::endl;
         if(distij < rsr ){
-             ksix = 2.*distij/rsr;
-             ksiy = 2.*distij/rsr;
-             ksiz = 2.*distij/rsr;
+             ksix = 2.*dx/rsr;
+             ksiy = 2.*dy/rsr;
+             ksiz = 2.*dz/rsr;
              std::cout<<"ksix = "<<ksix<<std::endl;
             if (distij < rsr/2.)
             {
 
-                R = (1./(35.* rsr*rsr))*(224.* ksix -
+                Rx = (1./(35.* rsr*rsr))*(224.* ksix -
                 224.*ksix*ksix*ksix +
                 70.*ksix*ksix*ksix*ksix +
                 48.*ksix*ksix*ksix*ksix*ksix -
                 21.*ksix*ksix*ksix*ksix*ksix*ksix);
-                std::cout<<"R = "<<R<<std::endl;
+                Ry = (1./(35.* rsr*rsr))*(224.* ksiy -
+                224.*ksiy*ksiy*ksiy +
+                70.*ksiy*ksiy*ksiy*ksiy +
+                48.*ksiy*ksiy*ksiy*ksiy*ksiy -
+                21.*ksiy*ksiy*ksiy*ksiy*ksiy*ksiy);
+                Rz = (1./(35.* rsr*rsr))*(224.* ksiz -
+                224.*ksiz*ksiz*ksiz +
+                70.*ksiz*ksiz*ksiz*ksiz +
+                48.*ksiz*ksiz*ksiz*ksiz*ksiz -
+                21.*ksiz*ksiz*ksiz*ksiz*ksiz*ksiz);
+                //std::cout<<"R = "<<R<<std::endl;
                 // gx = 1.- std::abs(R/(-magi*dx));
                 // gy = 1.- std::abs(R/(-magi*dy));
                 // gz = 1.- std::abs(R/(-magi*dz));
-                gx = 1.- R/(-std::abs(magi*dx));
-                gy = 1.- R/(-std::abs(magi*dy));
-                gz = 1.- R/(-std::abs(magi*dz));
+                // gx = 1.- R/(-std::abs(magi*dx));
+                // gy = 1.- R/(-std::abs(magi*dy));
+                // gz = 1.- R/(-std::abs(magi*dz));
                 std::cout<<"gx = "<<gx<<std::endl;
-                dir[i][0] -= magi*dx*gx;//direct force
-                dir[i][1] -= magi*dy*gy;
-                dir[i][2] -= magi*dz*gz;
+                dir[i][0] -= magi*dx - Rx;//direct force
+                dir[i][1] -= magi*dy - Ry;
+                dir[i][2] -= magi*dz - Rz;
 
                 std::cout<<"dir[i][0] = "<<dir[i][0]<<std::endl;
 
-                dir[j][0] += magi*dx*gx;//direct force
-                dir[j][1] += magi*dy*gy;
-                dir[j][2] += magi*dz*gz;
+                // dir[j][0] += magi*dx - R;//direct force
+                // dir[j][1] += magi*dy - R;
+                // dir[j][2] += magi*dz - R;
             }
             else
             {
-                R = (1./(35.* rsr*rsr))*(12./(ksix*ksix) - 224. + 896.*ksix -
+                Rx = (1./(35.* rsr*rsr))*(12./(ksix*ksix) - 224. + 896.*ksix -
                 840.*ksix*ksix +
                 224. *ksix*ksix*ksix +
                 70.*ksix*ksix*ksix*ksix -
                 48.*ksix*ksix*ksix*ksix*ksix +
                 7.*ksix*ksix*ksix*ksix*ksix*ksix);
-                std::cout<<"R = "<<R<<std::endl;
+                Ry = (1./(35.* rsr*rsr))*(12./(ksiy*ksiy) - 224. + 896.*ksiy -
+                840.*ksiy*ksiy +
+                224. *ksiy*ksiy*ksiy +
+                70.*ksiy*ksiy*ksiy*ksiy -
+                48.*ksiy*ksiy*ksiy*ksiy*ksiy +
+                7.*ksiy*ksiy*ksiy*ksiy*ksiy*ksiy);
+
+                Rz = (1./(35.* rsr*rsr))*(12./(ksiz*ksiz) - 224. + 896.*ksiz -
+                840.*ksiz*ksiz +
+                224. *ksiz*ksiz*ksiz +
+                70.*ksiz*ksiz*ksiz*ksiz -
+                48.*ksiz*ksiz*ksiz*ksiz*ksiz +
+                7.*ksiz*ksiz*ksiz*ksiz*ksiz*ksiz);
+                //std::cout<<"R = "<<R<<std::endl;
                 // gx = 1.- std::abs(R/(-magi*dx));
                 // gy = 1.- std::abs(R/(-magi*dy));
                 // gz = 1.- std::abs(R/(-magi*dz));
-                gx = 1.- R/(-std::abs(magi*dx));
-                gy = 1.- R/(-std::abs(magi*dy));
-                gz = 1.- R/(-std::abs(magi*dz));
+                // gx = 1.- R/(-std::abs(magi*dx));
+                // gy = 1.- R/(-std::abs(magi*dy));
+                // gz = 1.- R/(-std::abs(magi*dz));
                   std::cout<<"gx = "<<gx<<std::endl;
-                dir[i][0] -= magi*dx*gx; //direct force
-                dir[i][1] -= magi*dx*gy;
-                dir[i][2] -= magi*dx*gz;
+                dir[i][0] -= magi*dx - Rx; //direct force
+                dir[i][1] -= magi*dx - Ry;
+                dir[i][2] -= magi*dx - Rz ;
                 std::cout<<"dir[i][0] = "<<dir[i][0]<<std::endl;
-                dir[j][0] += magi*dx*gx;//direct force
-                dir[j][1] += magi*dy*gy;
-                dir[j][2] += magi*dz*gz;
+                // dir[j][0] += magi*dx - R;//direct force
+                // dir[j][1] += magi*dy - R;
+                // dir[j][2] += magi*dz - R;
             }
     }
 
