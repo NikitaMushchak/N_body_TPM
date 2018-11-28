@@ -35,6 +35,29 @@ void  Genconfig(std::vector<std::vector<double> >& Particles, double number_part
 
 	}
 }
+void GenRing(std::vector<std::vector<double> >& Particles, double number_particles, double L)
+{
+    srand (time (NULL));
+    double R1 = L / 8.;
+    double R2 = 0.25 * L;
+    double Di = R2-R1;
+    double center =0.5*L;
+    double x;
+
+    for (size_t i = 0; i < number_particles ; ++i)
+    {
+
+            x = R1 + rand() % (int)Di;
+                //std::cout<<"x = "<<x<<std::endl;
+                    //
+                    Particles[i][0] =x * cos(i) +center;
+                    Particles[i][1] = x * sin(i)+center;
+                    Particles[i][2] = center;
+
+    }
+
+
+}
 
 void SetSun(std::vector<
  std::vector <
@@ -44,7 +67,7 @@ void SetSun(std::vector<
  size_t dim)
  {
    size_t center = 0.5 * dim;
-   density[center][center][center][0]=100. * mass;
+   density[center][center][center][0] = 100. * mass;
  }
 
 

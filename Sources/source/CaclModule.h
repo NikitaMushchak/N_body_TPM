@@ -6,6 +6,8 @@ void ScalePos(std::vector<std::vector<double> >& Particles, double scale);
 
 void  Genconfig(std::vector<std::vector<double> >& Particles, double number_particles,double L);
 
+void GenRing(std::vector<std::vector<double> >& Particles, double number_particles, double L);
+
 void SetSun(std::vector<
  std::vector <
    std::vector<

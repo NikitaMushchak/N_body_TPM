@@ -33,17 +33,43 @@
                   <<"T1 = "<<T1<<std::endl;
 
 std::vector<std::vector<double> > Particles;
-
+Particles.resize(number_particles);
+for (size_t i =0 ; i< number_particles ; ++i)
+{
+    Particles[i].resize(3);
+}
 //     Particles.resize((size_t)number_particles);
 //     for (size_t i =0 ; i< number_particles; ++i){
 //      	Particles[i].resize(3);
 //   }
 
-for (size_t i = 0; i < number_particles ; ++i) {
-       std::vector<double> a = { (double) 30.1+0.9*i,  30.1+0.9*i, 30.1+0.9*i };
+// for (size_t i = 0; i < number_particles ; ++i) {
+//        std::vector<double> a = { (double) 30.1+0.9*i,  30.1+0.9*i, 30.1+0.9*i };
+//
+//         Particles.push_back(a);
+//     }	// Particles.push_back( std::vector<double> {35.1, 35.1 , 35.1} );	// number_particles+=1;
+    GenRing( Particles, number_particles, L);
+    char cbuf[512];
+    size_t ppp=3234234;
+    std::string suff = "p.a3r";
 
-        Particles.push_back(a);
-    }	// Particles.push_back( std::vector<double> {35.1, 35.1 , 35.1} );	// number_particles+=1;
+
+    sprintf(cbuf, "./Results/%09d_", ppp);
+
+
+    std::string filename = cbuf + suff;
+
+
+
+    //print results
+
+
+    ai::saveA3R(filename, Particles);
+
+
+
+
+    //ai::saveA3R("./inicond", Particles);
 
     // Genconfig(Particles, number_particles, L);
 
@@ -158,6 +184,8 @@ std::vector<std::vector<size_t> > nuls; //for particles in same box
            // std::cout<<"Particles coords"<<std::endl;
      // ai::printMatrix(Particles);
                 //CIC assigment
+        SetSun(density, mass, dim);
+
         auto t1 =ai::time();
           CaclDensity(Particles, density, mass, H, dim , L);
          auto t2=ai::time();
@@ -189,21 +217,21 @@ std::vector<std::vector<size_t> > nuls; //for particles in same box
      std::cout <<"Acclel time = "<<ai::duration(t5,t6,"ms")<<" ms"<<std::endl;
       auto t7 = ai::time();
       // DirectPM(Particles, a, mass);
-       Direct(Particles, dir, mass);
+       //Direct(Particles, dir, mass);
 
        auto t8 = ai::time();
        std::cout <<"Direct time= "<<ai::duration(t7,t8,"ms")<<" ms"<<std::endl;
        std::cout <<"Dir+PM accel"<<std::endl;
        ai::printMatrix(a);
 
-       std::cout<<"Dir accel "<<std::endl;
-       ai::printMatrix(dir);
-       std::cout<<"Acceleration Dir + PM"<<std::endl;
-       //ai::printMatrix(a);
-       std::cout<<"  \nDir/ FFT "<< abs(((dir[0][0]-a[0][0])/a[0][0])*100)<<" %"<<std::endl;
+       // std::cout<<"Dir accel "<<std::endl;
+       // ai::printMatrix(dir);
+       // std::cout<<"Acceleration Dir + PM"<<std::endl;
+       // //ai::printMatrix(a);
+       // std::cout<<"  \nDir/ FFT "<< abs(((dir[0][0]-a[0][0])/a[0][0])*100)<<" %"<<std::endl;
        auto t10 = ai::time();
 
-        dt =  3*Get_Step(dir, mass);
+        dt =  30*Get_Step(dir, mass);
         //std::cout << "dt = " << dt << std::endl;
         // time += dt;
         for (size_t i = 0; i < Particles.size(); ++i)
