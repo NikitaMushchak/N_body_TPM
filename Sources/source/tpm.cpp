@@ -38,6 +38,30 @@ for (size_t i =0 ; i< number_particles ; ++i)
 {
     Particles[i].resize(3);
 }
+std::vector<std::vector<double> > vel;
+
+vel.resize(Particles.size());
+
+ for (size_t i = 0; i < Particles.size(); i++)
+
+    {
+
+    vel[i].resize(3);
+
+   }
+   // std::vector<std::vector<double> >a;
+   //
+   //     a.resize(Particles.size());
+   //
+   //    for (size_t i = 0; i < Particles.size(); i++)
+   //  {
+   //
+   //       a[i].resize(3);
+   //
+   //      }
+
+
+
 //     Particles.resize((size_t)number_particles);
 //     for (size_t i =0 ; i< number_particles; ++i){
 //      	Particles[i].resize(3);
@@ -48,11 +72,12 @@ for (size_t i =0 ; i< number_particles ; ++i)
 //
 //         Particles.push_back(a);
 //     }	// Particles.push_back( std::vector<double> {35.1, 35.1 , 35.1} );	// number_particles+=1;
-    GenRing( Particles, number_particles, L);
+    GenRing( Particles, vel , number_particles, L);
     char cbuf[512];
-    size_t ppp=3234234;
+    size_t ppp=0;
     std::string suff = "p.a3r";
-
+// std::cout<<"vel = "<<std::endl;
+// ai::printMatrix(vel);
 
     sprintf(cbuf, "./Results/%09d_", ppp);
 
@@ -83,7 +108,7 @@ for (size_t i =0 ; i< number_particles ; ++i)
 
 std::cout << "Scaled pos"<<std::endl;
 
-    ai::printMatrix(Particles);
+    //ai::printMatrix(Particles);
 
     // const double T1 = 3.1;
      double dt=0;
@@ -145,17 +170,17 @@ std::vector<std::vector<size_t> > nuls; //for particles in same box
         for (size_t i = 0; i < Particles.size(); i++)    {
            a[i].resize(3);
           }
-          std::vector<std::vector<double> >dir;
-          dir.resize(Particles.size());
-             for (size_t i = 0; i < Particles.size(); i++)    {
-               dir[i].resize(3);
-             }
-              std::vector<std::vector<double> > vel;
-              vel.resize(Particles.size());
-               for (size_t i = 0; i < Particles.size(); i++)
-                  {
-                  vel[i].resize(3);
-                 }
+          // std::vector<std::vector<double> >dir;
+          // dir.resize(Particles.size());
+          //    for (size_t i = 0; i < Particles.size(); i++)    {
+          //      dir[i].resize(3);
+          //    }
+              // std::vector<std::vector<double> > vel;
+              // vel.resize(Particles.size());
+              //  for (size_t i = 0; i < Particles.size(); i++)
+              //     {
+              //     vel[i].resize(3);
+              //    }
 
 
                  std::vector<std::vector<double> > ac;
@@ -176,8 +201,13 @@ std::vector<std::vector<size_t> > nuls; //for particles in same box
     for (size_t i = 0 ; i<  Particles.size() ; ++i)
     {
     		null2[i].resize(3);
-    } /**///integrator here
+    }
+    /**///integrator here
     auto start = ai::time();
+
+
+
+
     while (time <T1)
     {
         it++;
@@ -192,8 +222,8 @@ std::vector<std::vector<size_t> > nuls; //for particles in same box
           std::cout<<"Calcdensity time = "<<ai::duration(t1, t2 , "ms")<<" ms"<<std::endl;
 		 PuttoBox(Particles , box , H , dim);
 
-          std::cout<<"boxes"<<std::endl;
-          ai::printMatrix(box);
+          // std::cout<<"boxes"<<std::endl;
+          // ai::printMatrix(box);
 
              //potetial field
       auto t3 = ai::time();
@@ -203,16 +233,16 @@ std::vector<std::vector<size_t> > nuls; //for particles in same box
         //Acceleration
          auto t5 = ai::time();
          GetAccelPM(Particles, density, box, a, H);
-         ac=a;
-         std::cout <<"Acclel PM"<<std::endl;
-         ai::printMatrix(a);
+         //ac=a;
+         //std::cout <<"Acclel PM"<<std::endl;
+        // ai::printMatrix(a);
          GetAccel(Particles, density, box, a, H);
-         // for (size_t i = 0 ; i< a.size(); ++i)
-         // {
-         //   a[i][0]-=ac[i][0] ;
-         //   a[i][1]-=ac[i][1];
-         //   a[i][2]-=ac[i][2];
-         // }
+         for (size_t i = 0 ; i< a.size(); ++i)
+         {
+           if(std::abs(a[i][0])>10.) a[i][0]=0.;
+           if(std::abs(a[i][1])>10.) a[i][1]=0.;
+           if(std::abs(a[i][2])>10.) a[i][2]=0.;
+         }
  auto t6 = ai::time();
      std::cout <<"Acclel time = "<<ai::duration(t5,t6,"ms")<<" ms"<<std::endl;
       auto t7 = ai::time();
@@ -221,9 +251,10 @@ std::vector<std::vector<size_t> > nuls; //for particles in same box
 
        auto t8 = ai::time();
        std::cout <<"Direct time= "<<ai::duration(t7,t8,"ms")<<" ms"<<std::endl;
-       std::cout <<"Dir+PM accel"<<std::endl;
-       ai::printMatrix(a);
-
+       // std::cout <<"Dir+PM accel"<<std::endl;
+       // ai::printMatrix(a);
+       // std::cout<<"velocities "<<std::endl;
+       // ai::printMatrix(vel);
        // std::cout<<"Dir accel "<<std::endl;
        // ai::printMatrix(dir);
        // std::cout<<"Acceleration Dir + PM"<<std::endl;
@@ -231,7 +262,8 @@ std::vector<std::vector<size_t> > nuls; //for particles in same box
        // std::cout<<"  \nDir/ FFT "<< abs(((dir[0][0]-a[0][0])/a[0][0])*100)<<" %"<<std::endl;
        auto t10 = ai::time();
 
-        dt =  30*Get_Step(dir, mass);
+        dt = 1.* Get_Step(a, mass);
+        if (dt < 0.00001) dt = 0.00001;
         //std::cout << "dt = " << dt << std::endl;
         // time += dt;
         for (size_t i = 0; i < Particles.size(); ++i)
@@ -239,9 +271,11 @@ std::vector<std::vector<size_t> > nuls; //for particles in same box
         vel[i][0] += a[i][0] * dt;
         vel[i][1] += a[i][1] * dt;
         vel[i][2] += a[i][2] * dt;
-        }     // std::cout << "Vel\n";
+        }
+        // std::cout << "calc Vel\n";
+        //
+        // ai::printMatrix(vel);
 
-    // ai::printMatrix(vel);
         for (size_t i = 0; i < Particles.size(); ++i)
         {
         Particles[i][0] += vel[i][0] * dt;
@@ -258,7 +292,8 @@ std::vector<std::vector<size_t> > nuls; //for particles in same box
 
     // std::cout<<"Particles pos = "<<std::endl;
      // ai::printMatrix(Particles);
-
+     if(it % 1==0)
+     {
       char cbuf[512];
       std::string suff = "p.a3r";
 
@@ -269,10 +304,11 @@ std::vector<std::vector<size_t> > nuls; //for particles in same box
       //print results
 
       ai::saveA3R(filename, Particles);
+     }
       auto st = ai::time();
-      a=null2;
-      dir=null2;
-      vel=null2;
+      //a=null2;
+      //dir=null2;
+      //vel=null2;
       density=null4;
       box = nuls;
 
@@ -281,6 +317,7 @@ std::vector<std::vector<size_t> > nuls; //for particles in same box
       std::cout<<"Matrix time = "<<ai::duration(st, en ,"ms")<<" ms"<<std::endl;
   }
    auto finish = ai::time();
-   std::cout <<"Time caclulation = "<<ai::duration (start , finish, "ms")<<" ms"<<std::endl;
-   return 0;
+   std::cout <<"Time caclulation = "<<ai::duration (start , finish, "s")<<" s"<<std::endl;
+   return 1;
 }
+}
