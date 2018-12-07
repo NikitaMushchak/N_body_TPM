@@ -35,11 +35,11 @@ void  Genconfig(std::vector<std::vector<double> >& Particles, double number_part
 
 	}
 }
-void GenRing(std::vector<std::vector<double> >& Particles, std::vector<std::vector<double> >& vel, double number_particles, double L)
+void GenRing(std::vector<std::vector<double> >& Particles, double number_particles, double L)
 {
     srand (time (NULL));
     double R1 = L / 8.;
-    double R2 =  L / 4.;
+    double R2 = 0.25 * L;
     double Di = R2-R1;
     double center =0.5*L;
     double x;
@@ -49,14 +49,10 @@ void GenRing(std::vector<std::vector<double> >& Particles, std::vector<std::vect
 
             x = R1 + rand() % (int)Di;
                 //std::cout<<"x = "<<x<<std::endl;
-                    //
+                    ////
                     Particles[i][0] =x * cos(i) +center;
                     Particles[i][1] = x * sin(i)+center;
                     Particles[i][2] = center;
-
-                    vel[i][0] = 55. * cos(0.5*3.14159265359 - (double)i);
-                    vel[i][1] = -55. * sin( 0.5*3.14159265359 - (double)i);
-                    //vel[i][2] = 0.;//0.3 *cos(3.14159265359 - (double)i);
 
     }
 
@@ -71,7 +67,7 @@ void SetSun(std::vector<
  size_t dim)
  {
    size_t center = 0.5 * dim;
-   density[center][center][center][0] = 10000. * mass;
+   density[center][center][center][0] = 100. * mass;
  }
 
 
@@ -487,19 +483,19 @@ void CaclDensity(std::vector<
       // find number of boxes with multiple particles
 
             // x componet
-            	a[i][0]+= -0.5*H*(density[x + 1][y][z][0] - density[x - 1][y][z][0])*tx*ty*tz- 0.5*H*(density[x + 2][y][z][0] - density[x][y][z][0])*dx*ty*tz
+            	a[i][0] = -0.5*H*(density[x + 1][y][z][0] - density[x - 1][y][z][0])*tx*ty*tz- 0.5*H*(density[x + 2][y][z][0] - density[x][y][z][0])*dx*ty*tz
             		- 0.5*H*(density[x + 1][y + 1][z][0] - density[x - 1][y + 1][z][0])*tx*dy*tz - 0.5*H*(density[x + 2][y + 1][z][0] - density[x][y + 1][z][0])*dx*dy*tz
             		- 0.5*H*(density[x + 1][y][z + 1][0] - density[x - 1][y][z + 1][0])*tx*ty*dz - 0.5 *H*(density[x + 2][y][z + 1][0] - density[x][y][z + 1][0])*dx*ty*dz
             		- 0.5*H*(density[x + 1][y + 1][z + 1][0] - density[x - 1][y + 1][z + 1][0])*tx*dy*dz - 0.5*H*(density[x + 2][y + 1][z + 1][0] - density[x][y + 1][z + 1][0])*dx*dy*dz;
 
             	//y component
-            	a[i][1] += -0.5*H*(density[x][y + 1][z][0] - density[x][y - 1][z][0])*tx*ty*tz - 0.5*H*(density[x + 1][y+1][z][0] - density[x+1][y-1][z][0])*dx*ty*tz
+            	a[i][1] = -0.5*H*(density[x][y + 1][z][0] - density[x][y - 1][z][0])*tx*ty*tz - 0.5*H*(density[x + 1][y+1][z][0] - density[x+1][y-1][z][0])*dx*ty*tz
             		- 0.5*H*(density[x][y + 2][z][0] - density[x][y][z][0])*tx*dy*tz - 0.5*H*(density[x + 1][y + 2][z][0] - density[x+1][y][z][0])*dx*dy*tz
             		- 0.5*H*(density[x][y+1][z + 1][0] - density[x][y-1][z + 1][0])*tx*ty*dz - 0.5 *H*(density[x + 1][y+1][z + 1][0] - density[x+1][y-1][z + 1][0])*dx*ty*dz
             		- 0.5*H*(density[x][y + 2][z + 1][0] - density[x][y][z + 1][0])*tx*dy*dz - 0.5*H*(density[x + 1][y + 2][z + 1][0] - density[x+1][y][z + 1][0])*dx*dy*dz;
 
             	//z component
-            	a[i][2] += -0.5*H*(density[x][y][z + 1][0] - density[x][y][z - 1][0])*tx*ty*tz -0.5*H*(density[x + 1][y][z + 1][0] - density[x + 1][y][z - 1][0])*dx*ty*tz
+            	a[i][2] = -0.5*H*(density[x][y][z + 1][0] - density[x][y][z - 1][0])*tx*ty*tz -0.5*H*(density[x + 1][y][z + 1][0] - density[x + 1][y][z - 1][0])*dx*ty*tz
             		- 0.5*H*(density[x][y + 1][z+1][0] - density[x][y+1][z-1][0])*tx*dy*tz - 0.5*H*(density[x + 1][y + 1][z+1][0] - density[x + 1][y+1][z-1][0])*dx*dy*tz
             		- 0.5*H*(density[x][y][z + 2][0] - density[x][y][z][0])*tx*ty*dz - 0.5 *H*(density[x + 1][y][z + 2][0] - density[x + 1][y][z][0])*dx*ty*dz
             		- 0.5*H*(density[x][y + 1][z + 2][0] - density[x][y+1][z][0])*tx*dy*dz - 0.5*H*(density[x + 1][y + 1][z + 2][0] - density[x + 1][y+1][z][0])*dx*dy*dz;
@@ -577,11 +573,11 @@ for (size_t i =0 ; i< Particles.size() ; ++i)
 
             // as.push_back(std::vector<double>{ac[i][0], ac[i][1], ac[i][2]});
           //  as[i] = ac[i];
-            // std::cout<<"accel step"<<std::endl;
-            // ai::printMatrix(as);
+            std::cout<<"accel step"<<std::endl;
+            ai::printMatrix(as);
   }
-      // std::cout<<"a matrix"<<std::endl;
-      // ai::printMatrix(a);
+      std::cout<<"a matrix"<<std::endl;
+      ai::printMatrix(a);
       a = as;
       // for (size_t i = 0 ; i<a.size(); ++i)
       // {
@@ -607,10 +603,8 @@ double Signum(double  x)
  double dz;
  double distij;
  double magi;
- double nagi;
  double Rx , Ry, Rz;
  double gx, gy, gz;
- double a = 0.5;
  // std::cout<<"input accel"<<std::endl;
  // ai::printMatrix(dir);
   for(size_t i = 0 ; i<1; ++i)
@@ -624,8 +618,7 @@ double Signum(double  x)
 
        // std::cout<<"dx = "<<dx<<std::endl;
        distij = sqrt(dx*dx + dy*dy +dz*dz);
-       magi = (1.0*mass) / (distij*a*distij*a*distij*a);
-       nagi = (1.0 *mass)/ std::pow(distij * a, 7);
+       magi = (1.0*mass) /(distij*distij*distij);
        // std::cout<<"distij = "<<distij<<std::endl;
 
              ksix = 2.*std::abs(dx)/rsr;
@@ -651,15 +644,25 @@ double Signum(double  x)
                 48.*ksiz*ksiz*ksiz*ksiz*ksiz -
                 21.*ksiz*ksiz*ksiz*ksiz*ksiz*ksiz);
                 // std::cout<<"Rx = "<<Rx<<std::endl;
-
+                // gx = 1.- std::abs(R/(-magi*dx));
+                // gy = 1.- std::abs(R/(-magi*dy));
+                // gz = 1.- std::abs(R/(-magi*dz));
+                // gx = 1.- R/(-std::abs(magi*dx));
+                // gy = 1.- R/(-std::abs(magi*dy));
+                // gz = 1.- R/(-std::abs(magi*dz));
+                // gx = 1.- Rx/(magi*dx +Rx);
+                // gy = 1.- Ry/(magi*dy+Ry);
+                // gz = 1.- Rz/(magi*dz+Rz);
                 //std::cout<<"gx = "<<gx<<std::endl;
-                dir[i][0] += (-nagi*dx + magi*dx)/(a * a) - Signum(dx)*Rx;//direct force
-                dir[i][1] += (-nagi*dy + magi*dy)/(a * a) - Signum(dy)*Ry;
-                dir[i][2] += (-nagi*dz + magi*dz)/(a * a) - Signum(dz)*Rz;
+                dir[i][0] += magi*dx -Signum(dx)*Rx;//direct force
+                dir[i][1] += magi*dy -Signum(dy)*Ry;
+                dir[i][2] += magi*dz -Signum(dz)*Rz;
 
                 // std::cout<<"dir[i][0] = "<<dir[i][0]<<std::endl;
 
-
+                // dir[j][0] += magi*dx -Signum(dx)*Rx;//direct force
+                // dir[j][1] += magi*dy -Signum(dy)*Ry;
+                // dir[j][2] += magi*dz -Signum(dz)*Rz;
             }
             if(distij > 0.5*rsr && distij <= rsr)
             {
@@ -682,13 +685,21 @@ double Signum(double  x)
                 70.*ksiz*ksiz*ksiz*ksiz -
                 48.*ksiz*ksiz*ksiz*ksiz*ksiz +
                 7.*ksiz*ksiz*ksiz*ksiz*ksiz*ksiz);
-
+                // std::cout<<"Rx = "<<Rx<<std::endl;
+                // gx = 1.- std::abs(R/(-magi*dx));
+                // gy = 1.- std::abs(R/(-magi*dy));
+                // gz = 1.- std::abs(R/(-magi*dz));
+                // gx = 1.- Rx/(magi*dx +Rx);
+                // gy = 1.- Ry/(magi*dy+Ry);
+                // gz = 1.- Rz/(magi*dz+Rz);
                 //  std::cout<<"gx = "<<gx<<std::endl;
-                dir[i][0] += (-nagi*dx + magi*dx)/(a * a) - Signum(dx)*Rx; //direct force
-                dir[i][1] += (-nagi*dy + magi*dy)/(a * a) - Signum(dy)*Ry;
-                dir[i][2] += (-nagi*dx + magi*dz)/(a * a) - Signum(dz)*Rz;
+                dir[i][0] += magi*dx -Signum(dx)*Rx; //direct force
+                dir[i][1] += magi*dx -Signum(dy)*Ry;
+                dir[i][2] += magi*dx  -Signum(dz)*Rz;
                 // std::cout<<"dir[i][0] = "<<dir[i][0]<<std::endl;
-
+                // dir[j][0] += magi*dx -Signum(dx)*Rx;//direct force
+                // dir[j][1] += magi*dy -Signum(dy)*Ry;
+                // dir[j][2] += magi*dz -Signum(dz)*Rz;
             }
 
 
