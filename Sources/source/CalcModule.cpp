@@ -1,17 +1,16 @@
 #include "CaclModule.h"
 #include <vector>
-#include <time.h>
 //#include <algorithm>
 #include "Fourier_tools.hh"
-#include "ai.hh"
 #include "particle_struct.h"
 #include "box_struct.h"
 
 void ScalePos(std::vector<std::vector<double> >& Particles, double scale)
 {
     std::size_t size = Particles.size();
-
-	// std::cout << "diff = "<<max -min<<std::endl;
+    double max = ai::max(Particles);
+	// double min = ai::min(Particles);
+	std::cout << "diff = "<<max <<std::endl;
 	for (size_t i = 0; i < size; i++) {
         Particles[i][0]/=scale;
         Particles[i][1]/=scale;
@@ -19,45 +18,6 @@ void ScalePos(std::vector<std::vector<double> >& Particles, double scale)
     }
 }
 
-
-void  Genconfig(std::vector<std::vector<double> >& Particles, double number_particles, double L)
-{
-
-	srand (time(NULL));
-	double min  = 0.25*L;
-	double max = 0.75*L;
-	double range = max-min;
-	for(size_t i = 0 ; i<number_particles; ++i)
-	{
-		Particles[i][0] = rand() % (size_t)range + min;
-		Particles[i][1] = rand() % (size_t)range + min;
-		Particles[i][2] = rand() % (size_t)range + min;
-
-	}
-}
-void GenRing(std::vector<std::vector<double> >& Particles, double number_particles, double L)
-{
-    srand (time (NULL));
-    double R1 = L / 8.;
-    double R2 = 0.25 * L;
-    double Di = R2-R1;
-    double center =0.5*L;
-    double x;
-
-    for (size_t i = 0; i < number_particles ; ++i)
-    {
-
-            x = R1 + rand() % (int)Di;
-                //std::cout<<"x = "<<x<<std::endl;
-                    ////
-                    Particles[i][0] =x * cos(i) +center;
-                    Particles[i][1] = x * sin(i)+center;
-                    Particles[i][2] = center;
-
-    }
-
-
-}
 
 void SetSun(std::vector<
  std::vector <
@@ -67,103 +27,42 @@ void SetSun(std::vector<
  size_t dim)
  {
    size_t center = 0.5 * dim;
-   density[center][center][center][0] = 100. * mass;
+   density[center][center][center][0] = 1000. * mass;
  }
 
-
-void CaclDensity(std::vector<
-					std::vector<double> >& Particles ,
-				 std::vector<
-					std::vector <
-						std::vector<
-							std::vector<double> > > >& density,
-							// std::vector<std::vector<size_t> >&box,
-				 double mass,
-  			  	 double H,
-				 size_t dim,
-				 double L)
+void GenRing(std::vector<std::vector<double> >& Particles, std::vector<std::vector<double> >& vel, double number_particles, double L)
 {
-	//std::fill(density.begin(), density.end(), 0.);
-	//for ()
-	size_t x, y, z = 0;
-	double dx, dy, dz, tx, ty, tz;
-    // double h = L/(double)(dim-1);
-	double h=H;
-    mass/=(h*h*h);
-    // std::cout <<"mass scaled"<<mass<<std::endl;
+    srand (time (NULL) );
+    double R1 = L / 8.;
+    double R2 =  L / 4.;
+    double Di = R2-R1;
+    double center =0.5*L;
+    double x;
 
-	for (size_t i = 0; i < Particles.size(); ++i)
-	{
-		//calculating indexes
-		dx = Particles[i][0] - std::floor(Particles[i][0] / H);
-		dy = Particles[i][1] - std::floor(Particles[i][1] / H);
-		dz = Particles[i][2] - std::floor(Particles[i][2] / H);
-		tx = 1. - dx;
-		// tx = H - dx;
-		ty = 1. - dy;
-		// ty = H - dy;
-		tz = 1. - dz;
-		// tz = H - dz;
-		if (std::floor(Particles[i][0] / H) < dim &&
-			std::floor(Particles[i][1] / H)  < dim &&
-			std::floor(Particles[i][2] / H)  < dim) {
-			x = std::floor(Particles[i][0] / H);
-			y = std::floor(Particles[i][1] / H);
-			z = std::floor(Particles[i][2] / H);
-			// box[i][0] = x;
-			// box[i][1] = y;
-			// box[i][2] = z;
-			// box[i][3] = 0;
-			// std::cout<<"x = "<<x <<"   y = "<<y << "  z = "<<z<<std::endl;
+    for (size_t i = 0; i < number_particles ; ++i)
+    {
 
-			density[x][y][z][0] += mass * tx *ty*tz;
+            x = R1 + rand() % (int)Di;
+            // x = R1+2.;
+                //std::cout<<"x = "<<x<<std::endl;
+                    //
+                    Particles[i][0] =x * cos(i) +center;
+                    Particles[i][1] = x * sin(i)+center;
+                    Particles[i][2] = center;
 
-			if (y + 1 >= dim) { y = y % (dim - 1); density[x][y][z][0] += mass * tx *dy*tz; }
-			else { density[x][y + 1][z][0] += mass * tx *dy*tz; }
-			if (z + 1 >= dim) { z = z % (dim - 1); density[x][y][z][0] += mass * tx *ty*dz; }
-			else { density[x][y][z + 1][0] += mass * tx *ty*dz; }
-			if (y + 1 >= dim && z + 1 >= dim) { z = z % (dim - 1); y = y % (dim - 1); density[x][y][z][0] += mass * tx *dy*dz; }
-			else { density[x][y + 1][z + 1][0] += mass * tx *dy*dz; }
-			if (x + 1 >= dim) { x = x % (dim - 1); density[x][y][z][0] += mass * dx *ty*tz; }
-			else { density[x + 1][y][z][0] += mass * dx *ty*tz; }
-			if (x + 1 >= dim && y + 1 >= dim) { x = x % (dim - 1); y = y % (dim - 1); density[x][y][z][0] += mass * dx *dy*tz; }
-			else { density[x + 1][y + 1][z][0] += mass * dx *dy*tz; }
-			if (x + 1 >= dim && z + 1 >= dim) { x = x % (dim - 1); z = z % (dim - 1); density[x][y][z][0] += mass * dx *ty*dz; }
-			else { density[x + 1][y][z + 1][0] += mass * dx *ty*dz; }
-			if (x + 1 >= dim && y + 1 >= dim && z + 1 >= dim) { x = x % (dim - 1); y = y % (dim - 1); z = z % (dim - 1); density[x][y][z][0] += mass * dx * dy * dz; }
-			else { density[x + 1][y + 1][z + 1][0] += mass * dx * dy * dz; }
+                    vel[i][0] =  1.0*sqrt(1000./x) * cos(0.5*3.14159265359 - (double)i);
+                    vel[i][1] = -1.0*sqrt(1000./x) * sin(0.5* 3.14159265359 - (double)i);
+                    //vel[i][2] = 0.;//0.3 *cos(3.14159265359 - (double)i);
+    }
 
-		}
 
-	}
-	// size_t it =0;
-	// for (size_t i = 0 ; i<Particles.size(); ++i)
-	// {
-		// for (size_t j = 1 ; j <Particles.size(); ++j )
-		// {
-			// if(i!=j)
-			// if (box[i][0] == box[j][0] && box[i][1] == box[j][1] && box[i][2] == box[j][2])
-                  // if( box[j][3] == 0 && box[i][3]==0)
-                  // {
-                      // it++;
-                    // box[i][3] = box[j][3] = it;
-                  // }
-                  // else
-                  // {
-                         // box[i][3] = box[j][3] = it;
-                  // }
-
-                // // it++;
-        // }
-
-    // }
 }
-	void PuttoBox(std::vector<
+void PuttoBox(std::vector<
 					std::vector<double> >& Particles ,
 					std::vector<std::vector<size_t> >&box,
 					double H,
 				 size_t dim)
-	{
+{
 		H*=1; //cell size is  H
 		size_t x, y, z=0;
 
@@ -200,21 +99,76 @@ void CaclDensity(std::vector<
                     box[i][3] = box[j][3] = it;
                   }
 
-                // it++;
         }
 
     }
 }
+
+ void CaclDensity(std::vector<
+					std::vector<double> >& Particles ,
+				 std::vector<
+					std::vector <
+						std::vector<
+							std::vector<double> > > >& density,
+				 double mass,
+  			  	 double H,
+				 size_t dim)
+{
+	//std::fill(density.begin(), density.end(), 0.);
+	//for ()
+	size_t x, y, z = 0;
+	double dx, dy, dz, tx, ty, tz;
+    double h = 1./(double)(dim-1);
+    mass/=(h*h*h);
+    // std::cout <<"mass scaled"<<mass<<std::endl;
+
+	for (size_t i = 0; i < Particles.size(); ++i)
+	{
+		//calculating indexes
+		dx = Particles[i][0] - std::floor(Particles[i][0] / H);
+		dy = Particles[i][1] - std::floor(Particles[i][1] / H);
+		dz = Particles[i][2] - std::floor(Particles[i][2] / H);
+		tx = 1. - dx;
+		ty = 1. - dy;
+		tz = 1. - dz;
+		if (std::floor(Particles[i][0] / H) < dim &&
+			std::floor(Particles[i][1] / H)  < dim &&
+			std::floor(Particles[i][2] / H)  < dim) {
+			x = std::floor(Particles[i][0] / H);
+			y = std::floor(Particles[i][1] / H);
+			z = std::floor(Particles[i][2] / H);
+			//std::cout<<"x = "<<x <<"   y = "<<y << "  z = "<<z<<std::endl;
+
+			density[x][y][z][0] += mass * tx *ty*tz;
+
+			if (y + 1 >= dim) { y = y % (dim - 1); density[x][y][z][0] += mass * tx *dy*tz; }
+			else { density[x][y + 1][z][0] += mass * tx *dy*tz; }
+			if (z + 1 >= dim) { z = z % (dim - 1); density[x][y][z][0] += mass * tx *ty*dz; }
+			else { density[x][y][z + 1][0] += mass * tx *ty*dz; }
+			if (y + 1 >= dim && z + 1 >= dim) { z = z % (dim - 1); y = y % (dim - 1); density[x][y][z][0] += mass * tx *dy*dz; }
+			else { density[x][y + 1][z + 1][0] += mass * tx *dy*dz; }
+			if (x + 1 >= dim) { x = x % (dim - 1); density[x][y][z][0] += mass * dx *ty*tz; }
+			else { density[x + 1][y][z][0] += mass * dx *ty*tz; }
+			if (x + 1 >= dim && y + 1 >= dim) { x = x % (dim - 1); y = y % (dim - 1); density[x][y][z][0] += mass * dx *dy*tz; }
+			else { density[x + 1][y + 1][z][0] += mass * dx *dy*tz; }
+			if (x + 1 >= dim && z + 1 >= dim) { x = x % (dim - 1); z = z % (dim - 1); density[x][y][z][0] += mass * dx *ty*dz; }
+			else { density[x + 1][y][z + 1][0] += mass * dx *ty*dz; }
+			if (x + 1 >= dim && y + 1 >= dim && z + 1 >= dim) { x = x % (dim - 1); y = y % (dim - 1); z = z % (dim - 1); density[x][y][z][0] += mass * dx * dy * dz; }
+			else { density[x + 1][y + 1][z + 1][0] += mass * dx * dy * dz; }
+
+		}
+
+	}
+}
+
+
   void CalcPotential(std::vector<
 					std::vector<
 						std::vector<
-							std::vector<double> > > >& rho,
-							size_t dim,
-								double H,
-								double L)
+							std::vector<double>>>>& rho,
+							size_t dim )
 {
-	double h = L / double(dim - 1);
-	// double h=H; //mesh step
+	double h = 1. / double(dim - 1);
 
 	//calculate FFT for each layer
 	for (size_t i = 0; i < dim; ++i)
@@ -304,7 +258,7 @@ void CaclDensity(std::vector<
 		}
 
 	}*/
-
+		//std::cout << "FFT for layers ....DONE" << std::endl;
 
 		// solve equation in Fourier space
 
@@ -345,9 +299,9 @@ void CaclDensity(std::vector<
 				{
 
 					double q =  -rho[k][m][n][0];
-                    double b =  -rho[k][m][n][1];
-					rho[k][m][n][0] =  4.*pi*h*h*(q * denom0 + b * denom1) / (denom0 * denom0 + denom1 * denom1);
-					rho[k][m][n][1] =  4.*pi*h*h*(b * denom0 - q * denom1) / (denom0 * denom0 + denom1 * denom1);
+          double b =  -rho[k][m][n][1];
+					rho[k][m][n][0] =  4.*pi*h*h*h*(q * denom0 + b * denom1) / (denom0 * denom0 + denom1 * denom1);
+					rho[k][m][n][1] =  4.*pi*h*h*h*(b * denom0 - q * denom1) / (denom0 * denom0 + denom1 * denom1);
 
 				}
 				double b = Wn0;
@@ -450,61 +404,62 @@ void CaclDensity(std::vector<
 	//std::cout << "Solving ... DONE" << std::endl;
 }
 
+
+
+
+
+
   void GetAccelPM(std::vector<std::vector<double>>& Particles,
-						 std::vector<std::vector<std::vector<std::vector<double > > > >& density,
-                        std::vector<std::vector<size_t> > &box,
+						std::vector<std::vector<std::vector<std::vector<double >>>>& density,
 							std::vector<std::vector<double>>& a, double H)
 {
 
 	size_t dim = density.size();
-	// double h = 1./H;
+
 	size_t x, y, z = 0;
-  double mass = 1.0;
 	for (size_t i = 0; i < Particles.size(); ++i)
 	{
-        //calculating indexes of parent cell
+		//calculating indexes of parent cell
 		double dx = Particles[i][0] - std::floor((Particles[i][0]) / H);
 		double dy = Particles[i][1] - std::floor((Particles[i][1]) / H);
 		double dz = Particles[i][2] - std::floor((Particles[i][2]) / H);
 		double tx = 1. - dx;
-		// double tx = H - dx;
 		double ty = 1. - dy;
-		// double ty = H - dy;
 		double tz = 1. - dz;
-		// double tz = H - dz;
 		if (std::floor(Particles[i][0] / H) < dim &&
 			std::floor(Particles[i][1] / H) < dim &&
 			std::floor(Particles[i][2] / H) < dim) {
 			x = std::floor(Particles[i][0] / H);
 			y = std::floor(Particles[i][1] / H);
 			z = std::floor(Particles[i][2] / H);
-			// std::cout<<"x = "<<x <<"  y = "<<y <<"  z = "<<z <<std::endl;
+			//std::cout<<"x = "<<x <<"  y = "<<y <<"  z = "<<z <<std::endl;
 		}
-      // find number of boxes with multiple particles
 
             // x componet
-            	a[i][0] = -0.5*H*(density[x + 1][y][z][0] - density[x - 1][y][z][0])*tx*ty*tz- 0.5*H*(density[x + 2][y][z][0] - density[x][y][z][0])*dx*ty*tz
-            		- 0.5*H*(density[x + 1][y + 1][z][0] - density[x - 1][y + 1][z][0])*tx*dy*tz - 0.5*H*(density[x + 2][y + 1][z][0] - density[x][y + 1][z][0])*dx*dy*tz
-            		- 0.5*H*(density[x + 1][y][z + 1][0] - density[x - 1][y][z + 1][0])*tx*ty*dz - 0.5 *H*(density[x + 2][y][z + 1][0] - density[x][y][z + 1][0])*dx*ty*dz
-            		- 0.5*H*(density[x + 1][y + 1][z + 1][0] - density[x - 1][y + 1][z + 1][0])*tx*dy*dz - 0.5*H*(density[x + 2][y + 1][z + 1][0] - density[x][y + 1][z + 1][0])*dx*dy*dz;
-
+            	a[i][0] = -0.5*(density[x + 1][y][z][0] - density[x - 1][y][z][0])*tx*ty*tz- 0.5*(density[x + 2][y][z][0] - density[x][y][z][0])*dx*ty*tz
+            		- 0.5*(density[x + 1][y + 1][z][0] - density[x - 1][y + 1][z][0])*tx*dy*tz - 0.5*(density[x + 2][y + 1][z][0] - density[x][y + 1][z][0])*dx*dy*tz
+            		- 0.5*(density[x + 1][y][z + 1][0] - density[x - 1][y][z + 1][0])*tx*ty*dz - 0.5 *(density[x + 2][y][z + 1][0] - density[x][y][z + 1][0])*dx*ty*dz
+            		- 0.5*(density[x + 1][y + 1][z + 1][0] - density[x - 1][y + 1][z + 1][0])*tx*dy*dz - 0.5*(density[x + 2][y + 1][z + 1][0] - density[x][y + 1][z + 1][0])*dx*dy*dz;
+            	// std::cout << "g[i].x = " << g[i][0] << std::endl;
             	//y component
-            	a[i][1] = -0.5*H*(density[x][y + 1][z][0] - density[x][y - 1][z][0])*tx*ty*tz - 0.5*H*(density[x + 1][y+1][z][0] - density[x+1][y-1][z][0])*dx*ty*tz
-            		- 0.5*H*(density[x][y + 2][z][0] - density[x][y][z][0])*tx*dy*tz - 0.5*H*(density[x + 1][y + 2][z][0] - density[x+1][y][z][0])*dx*dy*tz
-            		- 0.5*H*(density[x][y+1][z + 1][0] - density[x][y-1][z + 1][0])*tx*ty*dz - 0.5 *H*(density[x + 1][y+1][z + 1][0] - density[x+1][y-1][z + 1][0])*dx*ty*dz
-            		- 0.5*H*(density[x][y + 2][z + 1][0] - density[x][y][z + 1][0])*tx*dy*dz - 0.5*H*(density[x + 1][y + 2][z + 1][0] - density[x+1][y][z + 1][0])*dx*dy*dz;
-
+            	a[i][1] = -0.5*(density[x][y + 1][z][0] - density[x][y - 1][z][0])*tx*ty*tz - 0.5*(density[x + 1][y+1][z][0] - density[x+1][y-1][z][0])*dx*ty*tz
+            		- 0.5*(density[x][y + 2][z][0] - density[x][y][z][0])*tx*dy*tz - 0.5*(density[x + 1][y + 2][z][0] - density[x+1][y][z][0])*dx*dy*tz
+            		- 0.5*(density[x][y+1][z + 1][0] - density[x][y-1][z + 1][0])*tx*ty*dz - 0.5 *(density[x + 1][y+1][z + 1][0] - density[x+1][y-1][z + 1][0])*dx*ty*dz
+            		- 0.5*(density[x][y + 2][z + 1][0] - density[x][y][z + 1][0])*tx*dy*dz - 0.5*(density[x + 1][y + 2][z + 1][0] - density[x+1][y][z + 1][0])*dx*dy*dz;
+            	// std::cout << "g[i].y = " << g[i][1] << std::endl;
             	//z component
-            	a[i][2] = -0.5*H*(density[x][y][z + 1][0] - density[x][y][z - 1][0])*tx*ty*tz -0.5*H*(density[x + 1][y][z + 1][0] - density[x + 1][y][z - 1][0])*dx*ty*tz
-            		- 0.5*H*(density[x][y + 1][z+1][0] - density[x][y+1][z-1][0])*tx*dy*tz - 0.5*H*(density[x + 1][y + 1][z+1][0] - density[x + 1][y+1][z-1][0])*dx*dy*tz
-            		- 0.5*H*(density[x][y][z + 2][0] - density[x][y][z][0])*tx*ty*dz - 0.5 *H*(density[x + 1][y][z + 2][0] - density[x + 1][y][z][0])*dx*ty*dz
-            		- 0.5*H*(density[x][y + 1][z + 2][0] - density[x][y+1][z][0])*tx*dy*dz - 0.5*H*(density[x + 1][y + 1][z + 2][0] - density[x + 1][y+1][z][0])*dx*dy*dz;
-
+            	a[i][2] = -0.5*(density[x][y][z + 1][0] - density[x][y][z - 1][0])*tx*ty*tz -0.5*(density[x + 1][y][z + 1][0] - density[x + 1][y][z - 1][0])*dx*ty*tz
+            		- 0.5*(density[x][y + 1][z+1][0] - density[x][y+1][z-1][0])*tx*dy*tz - 0.5*(density[x + 1][y + 1][z+1][0] - density[x + 1][y+1][z-1][0])*dx*dy*tz
+            		- 0.5*(density[x][y][z + 2][0] - density[x][y][z][0])*tx*ty*dz - 0.5 *(density[x + 1][y][z + 2][0] - density[x + 1][y][z][0])*dx*ty*dz
+            		- 0.5*(density[x][y + 1][z + 2][0] - density[x][y+1][z][0])*tx*dy*dz - 0.5*(density[x + 1][y + 1][z + 2][0] - density[x + 1][y+1][z][0])*dx*dy*dz;
+            	// std::cout << "g[i].z = " << g[i][2] << std::endl;
             //}
+	}
+
+	//std::cout << " DONE." << std::endl;
 
 }
 
-}
 
 void GetAccel(std::vector<std::vector<double>>& Particles,
            std::vector<std::vector<std::vector<std::vector<double > > > >& density,
@@ -542,8 +497,8 @@ for (size_t i =0 ; i< Particles.size() ; ++i)
                 if (i!=j){
                 if (box[i][3]!= 0 && box[i][3] == box[j][3]) // Записываем частицы в в i-ой ячейке
                 {
-                  par.push_back(std::vector<double>{Particles[j][0] , Particles[j][1] , Particles[j][2]});
-                  ac.push_back(std::vector<double>{a[j][0] , a[j][1] , a[j][2]});
+                  par.push_back(std::vector<double>{ Particles[j][0] , Particles[j][1] , Particles[j][2]});
+                  ac.push_back(std::vector<double>{ a[j][0] , a[j][1] , a[j][2]});
                   // ac.push_back(std::vector<double>{0. , 0. , 0.});
 
                 }
@@ -555,8 +510,8 @@ for (size_t i =0 ; i< Particles.size() ; ++i)
                   abs((int)box[i][2] - (int)box[j][2]) <= 3 )
                   {
                     //std::cout<<"in";
-                    par.push_back(std::vector<double>{Particles[j][0] , Particles[j][1] , Particles[j][2]} );
-                    ac.push_back(std::vector<double>{a[j][0] , a[j][1] , a[j][2]});
+                    par.push_back(std::vector<double>{ Particles[j][0] , Particles[j][1] , Particles[j][2]} );
+                    ac.push_back(std::vector<double>{ a[j][0] , a[j][1] , a[j][2]});
                     // ac.push_back(std::vector<double>{0. , 0. , 0.});
 
                   }
@@ -573,11 +528,11 @@ for (size_t i =0 ; i< Particles.size() ; ++i)
 
             // as.push_back(std::vector<double>{ac[i][0], ac[i][1], ac[i][2]});
           //  as[i] = ac[i];
-            std::cout<<"accel step"<<std::endl;
-            ai::printMatrix(as);
+            // std::cout<<"accel step"<<std::endl;
+            // ai::printMatrix(as);
   }
-      std::cout<<"a matrix"<<std::endl;
-      ai::printMatrix(a);
+      // std::cout<<"a matrix"<<std::endl;
+      // ai::printMatrix(a);
       a = as;
       // for (size_t i = 0 ; i<a.size(); ++i)
       // {
@@ -587,168 +542,188 @@ for (size_t i =0 ; i< Particles.size() ; ++i)
       // }
 }
 
+ std::vector<double> DirectPM(std::vector<std::vector<double> > & Particles, std::vector<std::vector<double> > & dir, double mass)
+	{
+	 double rsr = 3.0;
+	 double ksix ;
+	 double ksiy ;
+	 double ksiz ;
+	 double dx;
+	 double dy;
+	 double dz;
+	 double distij;
+	 double magi;
+	 double nagi;
+	 double Rx , Ry, Rz;
+	 double gx, gy, gz;
+	 double a = 0.5; //равновесное расстояние
+	 // std::cout<<"input accel"<<std::endl;
+	 // ai::printMatrix(dir);
+	  for(size_t i = 0 ; i<1; ++i)
+	  {
+		for(size_t j = i+1 ; j<Particles.size(); ++j)
+		{
+
+		   dx = Particles[i][0] - Particles[j][0];
+		   dy = Particles[i][1] - Particles[j][1];
+		   dz = Particles[i][2] - Particles[j][2];
+
+		   // std::cout<<"dx = "<<dx<<std::endl;
+		   distij = sqrt(dx*dx + dy*dy +dz*dz);
+		   magi = (1.0*mass * a * a) / (distij  * distij  *distij);
+		   nagi = (1.0 *mass* std::pow(a, 13))/ std::pow(distij , 14);
+		   // std::cout<<"distij = "<<distij<<std::endl;
+
+				 ksix = 2.*std::abs(dx)/rsr;
+				 ksiy = 2.*std::abs(dy)/rsr;
+				 ksiz = 2.*std::abs(dz)/rsr;
+				 // std::cout<<"ksix = "<<ksix<<std::endl;
+				if ( distij >0 && distij <= a)
+				{
+					Rx = (1./(35.* rsr*rsr))*(224.* ksix -
+					224.*ksix*ksix*ksix +
+					70.*ksix*ksix*ksix*ksix +
+					48.*ksix*ksix*ksix*ksix*ksix -
+					21.*ksix*ksix*ksix*ksix*ksix*ksix);
+					Ry = (1./(35.* rsr*rsr))*(224.* ksiy -
+					224.*ksiy*ksiy*ksiy +
+					70.*ksiy*ksiy*ksiy*ksiy +
+					48.*ksiy*ksiy*ksiy*ksiy*ksiy -
+					21.*ksiy*ksiy*ksiy*ksiy*ksiy*ksiy);
+					Rz = (1./(35.* rsr*rsr))*(224.* ksiz -
+					224.*ksiz*ksiz*ksiz +
+					70.*ksiz*ksiz*ksiz*ksiz +
+					48.*ksiz*ksiz*ksiz*ksiz*ksiz -
+					21.*ksiz*ksiz*ksiz*ksiz*ksiz*ksiz);
+					
+					std::cout<<" uncalc dir["<<i<<"][0] = "<<dir[i][0]<<std::endl;
+					//std::cout<<"gx = "<<gx<<std::endl;
+					dir[i][0] += (nagi*dx - dx*magi)/(a * a) -dir[i][0]- Signum(dx)*Rx;//direct force
+					dir[i][1] += (nagi*dy - magi*dy)/(a * a)- dir[i][1]- Signum(dy)*Ry;
+					dir[i][2] += (nagi*dz - magi*dz)/(a * a)- dir[i][2]- Signum(dz)*Rz;
+
+					std::cout<<"dir["<<i<<"][0] = "<<dir[i][0]<<std::endl;
+
+
+				}
+				
+				if ( distij > a && distij <= rsr/2.)
+				{
+
+					Rx = (1./(35.* rsr*rsr))*(224.* ksix -
+					224.*ksix*ksix*ksix +
+					70.*ksix*ksix*ksix*ksix +
+					48.*ksix*ksix*ksix*ksix*ksix -
+					21.*ksix*ksix*ksix*ksix*ksix*ksix);
+					Ry = (1./(35.* rsr*rsr))*(224.* ksiy -
+					224.*ksiy*ksiy*ksiy +
+					70.*ksiy*ksiy*ksiy*ksiy +
+					48.*ksiy*ksiy*ksiy*ksiy*ksiy -
+					21.*ksiy*ksiy*ksiy*ksiy*ksiy*ksiy);
+					Rz = (1./(35.* rsr*rsr))*(224.* ksiz -
+					224.*ksiz*ksiz*ksiz +
+					70.*ksiz*ksiz*ksiz*ksiz +
+					48.*ksiz*ksiz*ksiz*ksiz*ksiz -
+					21.*ksiz*ksiz*ksiz*ksiz*ksiz*ksiz);
+					// std::cout<<"Rx = "<<Rx<<std::endl;
+
+					//std::cout<<"gx = "<<gx<<std::endl;
+					dir[i][0] += dx*(nagi - magi)/(a * a) - Signum(dx)*Rx;//direct force
+					dir[i][1] += dy*(nagi - magi)/(a * a) - Signum(dy)*Ry;
+					dir[i][2] += dz*(nagi - magi)/(a * a) - Signum(dz)*Rz;
+
+					// std::cout<<"dir[i][0] = "<<dir[i][0]<<std::endl;
+
+
+				}
+				if(distij > 0.5*rsr && distij <= rsr)
+				{
+					Rx = (1./(35.* rsr*rsr))*(12./(ksix*ksix) - 224. + 896.*ksix -
+					840.*ksix*ksix +
+					224. *ksix*ksix*ksix +
+					70.*ksix*ksix*ksix*ksix -
+					48.*ksix*ksix*ksix*ksix*ksix +
+					7.*ksix*ksix*ksix*ksix*ksix*ksix);
+					Ry = (1./(35.* rsr*rsr))*(12./(ksiy*ksiy) - 224. + 896.*ksiy -
+					840.*ksiy*ksiy +
+					224. *ksiy*ksiy*ksiy +
+					70.*ksiy*ksiy*ksiy*ksiy -
+					48.*ksiy*ksiy*ksiy*ksiy*ksiy +
+					7.*ksiy*ksiy*ksiy*ksiy*ksiy*ksiy);
+
+					Rz = (1./(35.* rsr*rsr))*(12./(ksiz*ksiz) - 224. + 896.*ksiz -
+					840.*ksiz*ksiz +
+					224. *ksiz*ksiz*ksiz +
+					70.*ksiz*ksiz*ksiz*ksiz -
+					48.*ksiz*ksiz*ksiz*ksiz*ksiz +
+					7.*ksiz*ksiz*ksiz*ksiz*ksiz*ksiz);
+
+					//  std::cout<<"gx = "<<gx<<std::endl;
+					dir[i][0] += dx*(nagi - magi)/(a * a) - Signum(dx)*Rx; //direct force
+					dir[i][1] += dy*(nagi - magi)/(a * a) - Signum(dy)*Ry;
+					dir[i][2] += dz*(nagi - magi)/(a * a) - Signum(dz)*Rz;
+					// std::cout<<"dir[i][0] = "<<dir[i][0]<<std::endl;
+
+				}
+
+
+			// dir[i][0] +=  -magi*dx ;
+			// dir[i][1] +=  -magi*dy ;
+			// dir[i][2] +=  -magi*dz ;
+		   // double magj= (1.0*mass)/(distij*distij*distij);
+			// dir[j][0] -= magi*dx - a;
+			// dir[j][1] += magi*dy - b;
+			// dir[j][2] += magi*dz - c;
+			// std::cout<<"calculated accel"<<std::endl;
+			// ai::printMatrix(dir);
+
+		}
+
+	  }
+	  // std::cout<<"dir matrix"<<std::endl;
+	  // ai::printMatrix(dir);
+	  return std::vector<double>{dir[0][0], dir[0][1], dir[0][2]};
+	}
+
+
 double Signum(double  x)
 {
     return (x > 0) ? 1 : ((x < 0) ? -1 : 0);
 }
-//Сила дейсвующая на первую частицу со стороны окружающих частиц
- std::vector<double> DirectPM(std::vector<std::vector<double> > & Particles, std::vector<std::vector<double> > & dir, double mass)
+
+
+void Direct(std::vector<std::vector<double>> & Particles, std::vector<std::vector<double>> & dir, double mass)
 {
- double rsr = 3.0;
- double ksix ;
- double ksiy ;
- double ksiz ;
- double dx;
- double dy;
- double dz;
- double distij;
- double magi;
- double Rx , Ry, Rz;
- double gx, gy, gz;
- // std::cout<<"input accel"<<std::endl;
- // ai::printMatrix(dir);
-  for(size_t i = 0 ; i<1; ++i)
-  {
-    for(size_t j = i+1 ; j<Particles.size(); ++j)
-    {
-
-	     dx = Particles[i][0] - Particles[j][0];
-       dy = Particles[i][1] - Particles[j][1];
-       dz = Particles[i][2] - Particles[j][2];
-
-       // std::cout<<"dx = "<<dx<<std::endl;
-       distij = sqrt(dx*dx + dy*dy +dz*dz);
-       magi = (1.0*mass) /(distij*distij*distij);
-       // std::cout<<"distij = "<<distij<<std::endl;
-
-             ksix = 2.*std::abs(dx)/rsr;
-             ksiy = 2.*std::abs(dy)/rsr;
-             ksiz = 2.*std::abs(dz)/rsr;
-             // std::cout<<"ksix = "<<ksix<<std::endl;
-            if ( distij >0 && distij <= rsr/2.)
-            {
-
-                Rx = (1./(35.* rsr*rsr))*(224.* ksix -
-                224.*ksix*ksix*ksix +
-                70.*ksix*ksix*ksix*ksix +
-                48.*ksix*ksix*ksix*ksix*ksix -
-                21.*ksix*ksix*ksix*ksix*ksix*ksix);
-                Ry = (1./(35.* rsr*rsr))*(224.* ksiy -
-                224.*ksiy*ksiy*ksiy +
-                70.*ksiy*ksiy*ksiy*ksiy +
-                48.*ksiy*ksiy*ksiy*ksiy*ksiy -
-                21.*ksiy*ksiy*ksiy*ksiy*ksiy*ksiy);
-                Rz = (1./(35.* rsr*rsr))*(224.* ksiz -
-                224.*ksiz*ksiz*ksiz +
-                70.*ksiz*ksiz*ksiz*ksiz +
-                48.*ksiz*ksiz*ksiz*ksiz*ksiz -
-                21.*ksiz*ksiz*ksiz*ksiz*ksiz*ksiz);
-                // std::cout<<"Rx = "<<Rx<<std::endl;
-                // gx = 1.- std::abs(R/(-magi*dx));
-                // gy = 1.- std::abs(R/(-magi*dy));
-                // gz = 1.- std::abs(R/(-magi*dz));
-                // gx = 1.- R/(-std::abs(magi*dx));
-                // gy = 1.- R/(-std::abs(magi*dy));
-                // gz = 1.- R/(-std::abs(magi*dz));
-                // gx = 1.- Rx/(magi*dx +Rx);
-                // gy = 1.- Ry/(magi*dy+Ry);
-                // gz = 1.- Rz/(magi*dz+Rz);
-                //std::cout<<"gx = "<<gx<<std::endl;
-                dir[i][0] += magi*dx -Signum(dx)*Rx;//direct force
-                dir[i][1] += magi*dy -Signum(dy)*Ry;
-                dir[i][2] += magi*dz -Signum(dz)*Rz;
-
-                // std::cout<<"dir[i][0] = "<<dir[i][0]<<std::endl;
-
-                // dir[j][0] += magi*dx -Signum(dx)*Rx;//direct force
-                // dir[j][1] += magi*dy -Signum(dy)*Ry;
-                // dir[j][2] += magi*dz -Signum(dz)*Rz;
-            }
-            if(distij > 0.5*rsr && distij <= rsr)
-            {
-                Rx = (1./(35.* rsr*rsr))*(12./(ksix*ksix) - 224. + 896.*ksix -
-                840.*ksix*ksix +
-                224. *ksix*ksix*ksix +
-                70.*ksix*ksix*ksix*ksix -
-                48.*ksix*ksix*ksix*ksix*ksix +
-                7.*ksix*ksix*ksix*ksix*ksix*ksix);
-                Ry = (1./(35.* rsr*rsr))*(12./(ksiy*ksiy) - 224. + 896.*ksiy -
-                840.*ksiy*ksiy +
-                224. *ksiy*ksiy*ksiy +
-                70.*ksiy*ksiy*ksiy*ksiy -
-                48.*ksiy*ksiy*ksiy*ksiy*ksiy +
-                7.*ksiy*ksiy*ksiy*ksiy*ksiy*ksiy);
-
-                Rz = (1./(35.* rsr*rsr))*(12./(ksiz*ksiz) - 224. + 896.*ksiz -
-                840.*ksiz*ksiz +
-                224. *ksiz*ksiz*ksiz +
-                70.*ksiz*ksiz*ksiz*ksiz -
-                48.*ksiz*ksiz*ksiz*ksiz*ksiz +
-                7.*ksiz*ksiz*ksiz*ksiz*ksiz*ksiz);
-                // std::cout<<"Rx = "<<Rx<<std::endl;
-                // gx = 1.- std::abs(R/(-magi*dx));
-                // gy = 1.- std::abs(R/(-magi*dy));
-                // gz = 1.- std::abs(R/(-magi*dz));
-                // gx = 1.- Rx/(magi*dx +Rx);
-                // gy = 1.- Ry/(magi*dy+Ry);
-                // gz = 1.- Rz/(magi*dz+Rz);
-                //  std::cout<<"gx = "<<gx<<std::endl;
-                dir[i][0] += magi*dx -Signum(dx)*Rx; //direct force
-                dir[i][1] += magi*dx -Signum(dy)*Ry;
-                dir[i][2] += magi*dx  -Signum(dz)*Rz;
-                // std::cout<<"dir[i][0] = "<<dir[i][0]<<std::endl;
-                // dir[j][0] += magi*dx -Signum(dx)*Rx;//direct force
-                // dir[j][1] += magi*dy -Signum(dy)*Ry;
-                // dir[j][2] += magi*dz -Signum(dz)*Rz;
-            }
-
-
-        // dir[i][0] +=  -magi*dx ;
-        // dir[i][1] +=  -magi*dy ;
-        // dir[i][2] +=  -magi*dz ;
-       // double magj= (1.0*mass)/(distij*distij*distij);
-        // dir[j][0] -= magi*dx - a;
-        // dir[j][1] += magi*dy - b;
-        // dir[j][2] += magi*dz - c;
-        // std::cout<<"calculated accel"<<std::endl;
-        // ai::printMatrix(dir);
-
-    }
-
-  }
-  // std::cout<<"dir matrix"<<std::endl;
-  // ai::printMatrix(dir);
-  return std::vector<double>{dir[0][0], dir[0][1], dir[0][2]};
-}
-
-
-void Direct(std::vector<std::vector<double> > & Particles, std::vector<std::vector<double> > & dir, double mass)
-{
-    double dx;
-    double dy;
-    double dz;
-    double distij;
-    double magi;
+  // for (size_t i =0 ; i<Particles.size(); ++i )
+  // {
+  //   for (size_t j =0; j< Particles.size(); ++j)
+  //   {
+  //     if (i != j)
+  //     {
+  //       dir[i][0]+= 1. /((Particles[i][0]-Particles[j][0])*(Particles[i][0]-Particles[j][0])*(Particles[i][0]-Particles[j][0]));
+  //       dir[i][1]+= 1. /((Particles[i][1]-Particles[j][1])*(Particles[i][1]-Particles[j][1])*(Particles[i][1]-Particles[j][1]));
+  //       dir[i][2]+= 1. /((Particles[i][2]-Particles[j][2])*(Particles[i][2]-Particles[j][2])*(Particles[i][2]-Particles[j][2]));
+  //       // std::cout<<"dir"<< " i = "<<i<<" j = "<<j <<"   dir = "<<dir[i][0]<<std::endl;
+  //     }
+  //   }
+  // }
 
   for(size_t i =0 ; i<Particles.size(); ++i)
   {
     for(size_t j = i+1 ; j<Particles.size(); ++j)
     {
-        if (i!=j){
-		 dx = Particles[i][0] - Particles[j][0];
-         dy = Particles[i][1] - Particles[j][1];
-         dz = Particles[i][2] - Particles[j][2];
-         distij = sqrt(dx*dx + dy*dy +dz*dz);
-         magi = (1.0*mass) /(distij*distij*distij);
-
-        dir[i][0] -= magi*dx ;
-        dir[i][1] -= magi*dy ;
-        dir[i][2] -= magi*dz ;
-       // double magj = (1.0*mass)/(distij*distij*distij);
-        dir[j][0] += magi*dx ;
-        dir[j][1] += magi*dy ;
-        dir[j][2] += magi*dz ;
-		}
+        double dx = Particles[i][0] - Particles[j][0];
+        double dy = Particles[i][1] - Particles[j][1];
+        double dz = Particles[i][2] - Particles[j][2];
+        double distij = sqrt(dx*dx + dy*dy +dz*dz);
+        double magi = (1.0*mass) /(distij*distij*distij);
+        dir[i][0] -= magi*dx;
+        dir[i][1] -= magi*dy;
+        dir[i][2] -= magi*dz;
+        double magj = (1.0*mass)/(distij*distij*distij);
+        dir[j][0] += magi*dx;
+        dir[j][1] += magi*dy;
+        dir[j][2] += magi*dz;
     }
 
   }
