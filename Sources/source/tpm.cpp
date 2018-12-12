@@ -42,10 +42,13 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 
 	
 	for (size_t i = 0; i < number_particles ; ++i) {
-		std::vector<double> a = { (double) 31.1+0.5*i, 31. , 31. };
+		std::vector<double> a = { (double) 31.1+0.501*i, 31. , 31. };
 		Particles[i] = a;
 	}
-
+	
+	std::vector<std::vector<double> > PM;
+	
+	std::vector<std::vector<double> > Dir;
 
 	// std::cout << "non-Scaled pos"<<std::endl;
 	// ai::printMatrix(Particles);
@@ -163,30 +166,34 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 		
 		// ai::printMatrix(Particles);
 		//Добавление в центр сетки гравитирующенго тела
-		SetSun(density, mass, dim);
+		//SetSun(density, mass, dim);
 		 
 		 //CIC assigment
 		 auto t1 =ai::time();
-		 CaclDensity(Particles, density, mass, scale, dim);
+		 //CaclDensity(Particles, density, mass, scale, dim);
 		 auto t2=ai::time();
 		 std::cout<<"Calcdensity time = "<<ai::duration(t1, t2 , "ms")<<" ms"<<std::endl;
 		 //potetial field
 		 
 		 
 		 //Добавление частиц в ячейки
-		  PuttoBox(Particles , box , H , dim);
+		 // PuttoBox(Particles , box , H , dim);
+		 
 		 auto t3 = ai::time();
-		 CalcPotential(density, dim);
+		 
+		 //CalcPotential(density, dim);
+		 
 		 auto t4 =ai::time();
 		 std::cout<<"CalcPotential time = "<<ai::duration(t3,t4, "ms")<<" ms"<<std::endl;
 		 //Acceleration
 
 		 auto t5 = ai::time();
 		 //Расчет ускорений по сеточному методу
-		 GetAccelPM(Particles, density, a, scale);
 		 
+		 //GetAccelPM(Particles, density, a, scale);
 		 
-		 GetAccel(Particles, density, box, a, H); //рачет ускорений по методу PPPM
+		 Direct(Particles , a , mass);
+		 //GetAccel(Particles, density, box, a, H); //рачет ускорений по методу PPPM
 		 
 		 // for(size_t  i = 0 ; i < number_particles; ++i )
 		 // {

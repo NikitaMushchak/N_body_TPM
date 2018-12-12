@@ -409,56 +409,56 @@ void PuttoBox(std::vector<
 
 
 
-  void GetAccelPM(std::vector<std::vector<double>>& Particles,
+void GetAccelPM(std::vector<std::vector<double>>& Particles,
 						std::vector<std::vector<std::vector<std::vector<double >>>>& density,
 							std::vector<std::vector<double>>& a, double H)
-{
-
-	size_t dim = density.size();
-
-	size_t x, y, z = 0;
-	for (size_t i = 0; i < Particles.size(); ++i)
 	{
-		//calculating indexes of parent cell
-		double dx = Particles[i][0] - std::floor((Particles[i][0]) / H);
-		double dy = Particles[i][1] - std::floor((Particles[i][1]) / H);
-		double dz = Particles[i][2] - std::floor((Particles[i][2]) / H);
-		double tx = 1. - dx;
-		double ty = 1. - dy;
-		double tz = 1. - dz;
-		if (std::floor(Particles[i][0] / H) < dim &&
-			std::floor(Particles[i][1] / H) < dim &&
-			std::floor(Particles[i][2] / H) < dim) {
-			x = std::floor(Particles[i][0] / H);
-			y = std::floor(Particles[i][1] / H);
-			z = std::floor(Particles[i][2] / H);
-			//std::cout<<"x = "<<x <<"  y = "<<y <<"  z = "<<z <<std::endl;
-		}
 
-            // x componet
-            	a[i][0] = -0.5*(density[x + 1][y][z][0] - density[x - 1][y][z][0])*tx*ty*tz- 0.5*(density[x + 2][y][z][0] - density[x][y][z][0])*dx*ty*tz
-            		- 0.5*(density[x + 1][y + 1][z][0] - density[x - 1][y + 1][z][0])*tx*dy*tz - 0.5*(density[x + 2][y + 1][z][0] - density[x][y + 1][z][0])*dx*dy*tz
-            		- 0.5*(density[x + 1][y][z + 1][0] - density[x - 1][y][z + 1][0])*tx*ty*dz - 0.5 *(density[x + 2][y][z + 1][0] - density[x][y][z + 1][0])*dx*ty*dz
-            		- 0.5*(density[x + 1][y + 1][z + 1][0] - density[x - 1][y + 1][z + 1][0])*tx*dy*dz - 0.5*(density[x + 2][y + 1][z + 1][0] - density[x][y + 1][z + 1][0])*dx*dy*dz;
-            	// std::cout << "g[i].x = " << g[i][0] << std::endl;
-            	//y component
-            	a[i][1] = -0.5*(density[x][y + 1][z][0] - density[x][y - 1][z][0])*tx*ty*tz - 0.5*(density[x + 1][y+1][z][0] - density[x+1][y-1][z][0])*dx*ty*tz
-            		- 0.5*(density[x][y + 2][z][0] - density[x][y][z][0])*tx*dy*tz - 0.5*(density[x + 1][y + 2][z][0] - density[x+1][y][z][0])*dx*dy*tz
-            		- 0.5*(density[x][y+1][z + 1][0] - density[x][y-1][z + 1][0])*tx*ty*dz - 0.5 *(density[x + 1][y+1][z + 1][0] - density[x+1][y-1][z + 1][0])*dx*ty*dz
-            		- 0.5*(density[x][y + 2][z + 1][0] - density[x][y][z + 1][0])*tx*dy*dz - 0.5*(density[x + 1][y + 2][z + 1][0] - density[x+1][y][z + 1][0])*dx*dy*dz;
-            	// std::cout << "g[i].y = " << g[i][1] << std::endl;
-            	//z component
-            	a[i][2] = -0.5*(density[x][y][z + 1][0] - density[x][y][z - 1][0])*tx*ty*tz -0.5*(density[x + 1][y][z + 1][0] - density[x + 1][y][z - 1][0])*dx*ty*tz
-            		- 0.5*(density[x][y + 1][z+1][0] - density[x][y+1][z-1][0])*tx*dy*tz - 0.5*(density[x + 1][y + 1][z+1][0] - density[x + 1][y+1][z-1][0])*dx*dy*tz
-            		- 0.5*(density[x][y][z + 2][0] - density[x][y][z][0])*tx*ty*dz - 0.5 *(density[x + 1][y][z + 2][0] - density[x + 1][y][z][0])*dx*ty*dz
-            		- 0.5*(density[x][y + 1][z + 2][0] - density[x][y+1][z][0])*tx*dy*dz - 0.5*(density[x + 1][y + 1][z + 2][0] - density[x + 1][y+1][z][0])*dx*dy*dz;
-            	// std::cout << "g[i].z = " << g[i][2] << std::endl;
-            //}
+		size_t dim = density.size();
+
+		size_t x, y, z = 0;
+		for (size_t i = 0; i < Particles.size(); ++i)
+		{
+			//calculating indexes of parent cell
+			double dx = Particles[i][0] - std::floor((Particles[i][0]) / H);
+			double dy = Particles[i][1] - std::floor((Particles[i][1]) / H);
+			double dz = Particles[i][2] - std::floor((Particles[i][2]) / H);
+			double tx = 1. - dx;
+			double ty = 1. - dy;
+			double tz = 1. - dz;
+			if (std::floor(Particles[i][0] / H) < dim &&
+				std::floor(Particles[i][1] / H) < dim &&
+				std::floor(Particles[i][2] / H) < dim) {
+				x = std::floor(Particles[i][0] / H);
+				y = std::floor(Particles[i][1] / H);
+				z = std::floor(Particles[i][2] / H);
+				//std::cout<<"x = "<<x <<"  y = "<<y <<"  z = "<<z <<std::endl;
+			}
+
+				// x componet
+					a[i][0] = -0.5*(density[x + 1][y][z][0] - density[x - 1][y][z][0])*tx*ty*tz- 0.5*(density[x + 2][y][z][0] - density[x][y][z][0])*dx*ty*tz
+						- 0.5*(density[x + 1][y + 1][z][0] - density[x - 1][y + 1][z][0])*tx*dy*tz - 0.5*(density[x + 2][y + 1][z][0] - density[x][y + 1][z][0])*dx*dy*tz
+						- 0.5*(density[x + 1][y][z + 1][0] - density[x - 1][y][z + 1][0])*tx*ty*dz - 0.5 *(density[x + 2][y][z + 1][0] - density[x][y][z + 1][0])*dx*ty*dz
+						- 0.5*(density[x + 1][y + 1][z + 1][0] - density[x - 1][y + 1][z + 1][0])*tx*dy*dz - 0.5*(density[x + 2][y + 1][z + 1][0] - density[x][y + 1][z + 1][0])*dx*dy*dz;
+					// std::cout << "g[i].x = " << g[i][0] << std::endl;
+					//y component
+					a[i][1] = -0.5*(density[x][y + 1][z][0] - density[x][y - 1][z][0])*tx*ty*tz - 0.5*(density[x + 1][y+1][z][0] - density[x+1][y-1][z][0])*dx*ty*tz
+						- 0.5*(density[x][y + 2][z][0] - density[x][y][z][0])*tx*dy*tz - 0.5*(density[x + 1][y + 2][z][0] - density[x+1][y][z][0])*dx*dy*tz
+						- 0.5*(density[x][y+1][z + 1][0] - density[x][y-1][z + 1][0])*tx*ty*dz - 0.5 *(density[x + 1][y+1][z + 1][0] - density[x+1][y-1][z + 1][0])*dx*ty*dz
+						- 0.5*(density[x][y + 2][z + 1][0] - density[x][y][z + 1][0])*tx*dy*dz - 0.5*(density[x + 1][y + 2][z + 1][0] - density[x+1][y][z + 1][0])*dx*dy*dz;
+					// std::cout << "g[i].y = " << g[i][1] << std::endl;
+					//z component
+					a[i][2] = -0.5*(density[x][y][z + 1][0] - density[x][y][z - 1][0])*tx*ty*tz -0.5*(density[x + 1][y][z + 1][0] - density[x + 1][y][z - 1][0])*dx*ty*tz
+						- 0.5*(density[x][y + 1][z+1][0] - density[x][y+1][z-1][0])*tx*dy*tz - 0.5*(density[x + 1][y + 1][z+1][0] - density[x + 1][y+1][z-1][0])*dx*dy*tz
+						- 0.5*(density[x][y][z + 2][0] - density[x][y][z][0])*tx*ty*dz - 0.5 *(density[x + 1][y][z + 2][0] - density[x + 1][y][z][0])*dx*ty*dz
+						- 0.5*(density[x][y + 1][z + 2][0] - density[x][y+1][z][0])*tx*dy*dz - 0.5*(density[x + 1][y + 1][z + 2][0] - density[x + 1][y+1][z][0])*dx*dy*dz;
+					// std::cout << "g[i].z = " << g[i][2] << std::endl;
+				//}
+			}
+
+		//std::cout << " DONE." << std::endl;
+
 	}
-
-	//std::cout << " DONE." << std::endl;
-
-}
 
 
 void GetAccel(std::vector<std::vector<double>>& Particles,
@@ -596,13 +596,15 @@ for (size_t i =0 ; i< Particles.size() ; ++i)
 					48.*ksiz*ksiz*ksiz*ksiz*ksiz -
 					21.*ksiz*ksiz*ksiz*ksiz*ksiz*ksiz);
 					
-					std::cout<<" uncalc dir["<<i<<"][0] = "<<dir[i][0]<<std::endl;
+					// std::cout<<"PM accel dir["<<i<<"][0] = "<<dir[i][0]<<std::endl;
+					// std::cout<<"nagi*dx = "<<nagi*dx<<"  magi*dx = "<<magi*dx<<std::endl;
+					// std::cout<<"Rx = "<<Rx<<std::endl;
 					//std::cout<<"gx = "<<gx<<std::endl;
-					dir[i][0] += (nagi*dx - dx*magi)/(a * a) -dir[i][0]- Signum(dx)*Rx;//direct force
-					dir[i][1] += (nagi*dy - magi*dy)/(a * a)- dir[i][1]- Signum(dy)*Ry;
-					dir[i][2] += (nagi*dz - magi*dz)/(a * a)- dir[i][2]- Signum(dz)*Rz;
+					dir[i][0] += (nagi*dx - dx*magi)/(a * a) - Signum(dx)*Rx;//direct force
+					dir[i][1] += (nagi*dy - magi*dy)/(a * a)-  Signum(dy)*Ry;
+					dir[i][2] += (nagi*dz - magi*dz)/(a * a)-  Signum(dz)*Rz;
 
-					std::cout<<"dir["<<i<<"][0] = "<<dir[i][0]<<std::endl;
+					// std::cout<<"dir["<<i<<"][0] = "<<dir[i][0]<<std::endl;
 
 
 				}
@@ -694,37 +696,33 @@ double Signum(double  x)
 
 void Direct(std::vector<std::vector<double>> & Particles, std::vector<std::vector<double>> & dir, double mass)
 {
-  // for (size_t i =0 ; i<Particles.size(); ++i )
-  // {
-  //   for (size_t j =0; j< Particles.size(); ++j)
-  //   {
-  //     if (i != j)
-  //     {
-  //       dir[i][0]+= 1. /((Particles[i][0]-Particles[j][0])*(Particles[i][0]-Particles[j][0])*(Particles[i][0]-Particles[j][0]));
-  //       dir[i][1]+= 1. /((Particles[i][1]-Particles[j][1])*(Particles[i][1]-Particles[j][1])*(Particles[i][1]-Particles[j][1]));
-  //       dir[i][2]+= 1. /((Particles[i][2]-Particles[j][2])*(Particles[i][2]-Particles[j][2])*(Particles[i][2]-Particles[j][2]));
-  //       // std::cout<<"dir"<< " i = "<<i<<" j = "<<j <<"   dir = "<<dir[i][0]<<std::endl;
-  //     }
-  //   }
-  // }
+			double dx ;
+			double dy ;
+			double dz ;
+			double distij;
+			double magj, magi;
+			double a = 0.5;//равновесное расстояние
+			double close; // слагаемое, отвечающее за близкодействие
 
-  for(size_t i =0 ; i<Particles.size(); ++i)
-  {
-    for(size_t j = i+1 ; j<Particles.size(); ++j)
-    {
-        double dx = Particles[i][0] - Particles[j][0];
-        double dy = Particles[i][1] - Particles[j][1];
-        double dz = Particles[i][2] - Particles[j][2];
-        double distij = sqrt(dx*dx + dy*dy +dz*dz);
-        double magi = (1.0*mass) /(distij*distij*distij);
-        dir[i][0] -= magi*dx;
-        dir[i][1] -= magi*dy;
-        dir[i][2] -= magi*dz;
-        double magj = (1.0*mass)/(distij*distij*distij);
-        dir[j][0] += magi*dx;
-        dir[j][1] += magi*dy;
-        dir[j][2] += magi*dz;
-    }
-
-  }
+	  for(size_t i =0 ; i<Particles.size(); ++i)
+		for(size_t j = i+1 ; j<Particles.size(); ++j)
+		{
+			dx = Particles[i][0] - Particles[j][0];
+			dy = Particles[i][1] - Particles[j][1];
+			dz = Particles[i][2] - Particles[j][2];
+			distij = sqrt(dx*dx + dy*dy +dz*dz);
+			magi = (1.0*mass*a*a) /(distij*distij*distij);
+			close = (1. *mass *std::pow(a,13))/(std::pow(distij, 14));
+			// close =0.;
+			dir[i][0] -= -(close*dx - magi*dx)/(a*a);
+			dir[i][1] -= -(close*dy - magi*dy)/(a*a);
+			dir[i][2] -= -(close*dz - magi*dz)/(a*a);
+			magj = (1.0*mass*a*a)/(distij*distij*distij);
+			dir[j][0] += -(close*dx - magj*dx)/(a*a);
+			dir[j][1] += -(close*dy - magj*dy)/(a*a);
+			dir[j][2] += -(close* dz - magj*dz)/(a*a);
+			
+			std::cout<<"dirij = "<<dir[i][0] <<"    dirji =  "<<dir[j][0]<<std::endl;
+			
+		}
 }
