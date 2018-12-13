@@ -557,18 +557,18 @@ for (size_t i =0 ; i< Particles.size() ; ++i)
 	 double Rx , Ry, Rz;
 	 double gx, gy, gz;
 	 double a = 0.3; //равновесное расстояние
-	 // std::cout<<"input accel"<<std::endl;
+	 std::cout<<"DIRECT INNNNN !!!!!!"<<std::endl;
 	 // ai::printMatrix(dir);
 	  for(size_t i = 0 ; i<1; ++i)
 	  {
 		for(size_t j = i+1 ; j<Particles.size(); ++j)
 		{
-
+			std::cout<<"i = "<<i<<"   j = "<<j<<std::endl;
 		   dx = Particles[i][0] - Particles[j][0];
 		   dy = Particles[i][1] - Particles[j][1];
 		   dz = Particles[i][2] - Particles[j][2];
 
-		   // std::cout<<"dx = "<<dx<<std::endl;
+		   std::cout<<"dx = "<<dx<<std::endl;
 		   distij = sqrt(dx*dx + dy*dy +dz*dz);
 		   magi = (a*a) /(distij*distij*distij);
 		   nagi = (1. *std::pow(a,6))/(std::pow(distij, 7));
@@ -577,41 +577,11 @@ for (size_t i =0 ; i< Particles.size() ; ++i)
 				 ksix = 2.*std::abs(dx)/rsr;
 				 ksiy = 2.*std::abs(dy)/rsr;
 				 ksiz = 2.*std::abs(dz)/rsr;
-				 // std::cout<<"ksix = "<<ksix<<std::endl;
-				// if ( distij >0 && distij <= a)
-				// {
-				// 	Rx = (1./(35.* rsr*rsr))*(224.* ksix -
-				// 	224.*ksix*ksix*ksix +
-				// 	70.*ksix*ksix*ksix*ksix +
-				// 	48.*ksix*ksix*ksix*ksix*ksix -
-				// 	21.*ksix*ksix*ksix*ksix*ksix*ksix);
-				// 	Ry = (1./(35.* rsr*rsr))*(224.* ksiy -
-				// 	224.*ksiy*ksiy*ksiy +
-				// 	70.*ksiy*ksiy*ksiy*ksiy +
-				// 	48.*ksiy*ksiy*ksiy*ksiy*ksiy -
-				// 	21.*ksiy*ksiy*ksiy*ksiy*ksiy*ksiy);
-				// 	Rz = (1./(35.* rsr*rsr))*(224.* ksiz -
-				// 	224.*ksiz*ksiz*ksiz +
-				// 	70.*ksiz*ksiz*ksiz*ksiz +
-				// 	48.*ksiz*ksiz*ksiz*ksiz*ksiz -
-				// 	21.*ksiz*ksiz*ksiz*ksiz*ksiz*ksiz);
-                //
-				// 	// std::cout<<"PM accel dir["<<i<<"][0] = "<<dir[i][0]<<std::endl;
-				// 	// std::cout<<"nagi*dx = "<<nagi*dx<<"  magi*dx = "<<magi*dx<<std::endl;
-				// 	std::cout<<"Rx = "<<Rx<<std::endl;
-				// 	//std::cout<<"gx = "<<gx<<std::endl;
-				// 	dir[i][0] += (nagi*dx - dx*magi)/(a * a) - Signum(dx)*Rx;//direct force
-				// 	dir[i][1] += (nagi*dy - magi*dy)/(a * a) -  Signum(dy)*Ry;
-				// 	dir[i][2] += (nagi*dz - magi*dz)/(a * a) -  Signum(dz)*Rz;
-                //
-				// 	std::cout<<"dir["<<i<<"][0] = "<<dir[i][0]<<std::endl;
-                //
-                //
-				// }
-
-				if ( distij > 0 && distij <= rsr/2.)
+				 
+				if ( distij <= rsr*0.5)
 				{
 
+					std::cout<<" ! "<<std::endl;
 					Rx = (1./(35.* rsr*rsr))*(224.* ksix -
 					224.*ksix*ksix*ksix +
 					70.*ksix*ksix*ksix*ksix +
@@ -633,13 +603,15 @@ for (size_t i =0 ; i< Particles.size() ; ++i)
 					dir[i][0] += dx*(nagi - magi)/(a * a) - Signum(dx)*Rx;//direct force
 					dir[i][1] += dy*(nagi - magi)/(a * a) - Signum(dy)*Ry;
 					dir[i][2] += dz*(nagi - magi)/(a * a) - Signum(dz)*Rz;
-					std::cout<<"Rx = "<<Rx<<std::endl;
+					// std::cout<<"Rx = "<<Rx<<std::endl;
 					std::cout<<"dir[i][0] = "<<dir[i][0]<<std::endl;
 
 
 				}
 				if(distij > 0.5*rsr && distij <= rsr)
 				{
+					std::cout<<" ! 111111"<<std::endl;
+					
 					Rx = (1./(35.* rsr*rsr))*(12./(ksix*ksix) - 224. + 896.*ksix -
 					840.*ksix*ksix +
 					224. *ksix*ksix*ksix +
