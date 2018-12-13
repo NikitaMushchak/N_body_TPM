@@ -595,7 +595,7 @@ for (size_t i =0 ; i< Particles.size() ; ++i)
 					70.*ksiz*ksiz*ksiz*ksiz +
 					48.*ksiz*ksiz*ksiz*ksiz*ksiz -
 					21.*ksiz*ksiz*ksiz*ksiz*ksiz*ksiz);
-					
+
 					// std::cout<<"PM accel dir["<<i<<"][0] = "<<dir[i][0]<<std::endl;
 					// std::cout<<"nagi*dx = "<<nagi*dx<<"  magi*dx = "<<magi*dx<<std::endl;
 					// std::cout<<"Rx = "<<Rx<<std::endl;
@@ -608,7 +608,7 @@ for (size_t i =0 ; i< Particles.size() ; ++i)
 
 
 				}
-				
+
 				if ( distij > a && distij <= rsr/2.)
 				{
 
@@ -701,8 +701,9 @@ void Direct(std::vector<std::vector<double>> & Particles, std::vector<std::vecto
 			double dz ;
 			double distij;
 			double magj, magi;
-			double a = 0.5;//равновесное расстояние
+			double a = 0.3;//равновесное расстояние
 			double close; // слагаемое, отвечающее за близкодействие
+            double s = 1500;
 
 	  for(size_t i =0 ; i<Particles.size(); ++i)
 		for(size_t j = i+1 ; j<Particles.size(); ++j)
@@ -711,18 +712,28 @@ void Direct(std::vector<std::vector<double>> & Particles, std::vector<std::vecto
 			dy = Particles[i][1] - Particles[j][1];
 			dz = Particles[i][2] - Particles[j][2];
 			distij = sqrt(dx*dx + dy*dy +dz*dz);
-			magi = (1.0*mass*a*a) /(distij*distij*distij);
-			close = (1. *mass *std::pow(a,13))/(std::pow(distij, 14));
+			magi = (a*a) /(distij*distij*distij);
+			close = (1. *mass *std::pow(a,6))/(std::pow(distij, 7));
+            // close =std::exp(-2.0*a*s*(distij - a))/distij;;
 			// close =0.;
-			dir[i][0] -= -(close*dx - magi*dx)/(a*a);
-			dir[i][1] -= -(close*dy - magi*dy)/(a*a);
-			dir[i][2] -= -(close*dz - magi*dz)/(a*a);
+			dir[i][0] -= -mass*mass*(close*dx - magi*dx)/(a*a);
+			dir[i][1] -= -mass*mass*(close*dy - magi*dy)/(a*a);
+			dir[i][2] -= -mass*mass*(close*dz - magi*dz)/(a*a);
+            // dir[i][0] -=  (std::pow(a,13)/std::pow(dx,13) - Signum(dx)*(a*a)/(dx*dx))/(a*a);
+            // dir[i][1] -=  (std::pow(a,13)/std::pow(dy,13) - Signum(dy)*(a*a)/(dy*dy))/(a*a);
+            // dir[i][2] -=  (std::pow(a,13)/std::pow(dz,13) - Signum(dz)*(a*a)/(dz*dz))/(a*a);
 			magj = (1.0*mass*a*a)/(distij*distij*distij);
-			dir[j][0] += -(close*dx - magj*dx)/(a*a);
-			dir[j][1] += -(close*dy - magj*dy)/(a*a);
-			dir[j][2] += -(close* dz - magj*dz)/(a*a);
-			
-			std::cout<<"dirij = "<<dir[i][0] <<"    dirji =  "<<dir[j][0]<<std::endl;
-			
+			dir[j][0] += -mass*mass*(close*dx - magj*dx)/(a*a);
+			dir[j][1] += -mass*mass*(close*dy - magj*dy)/(a*a);
+			dir[j][2] += -mass*mass*(close* dz - magj*dz)/(a*a);
+            // dir[j][0] +=  (std::pow(a,13)/std::pow(dx,13) - Signum(dx)*(a*a)/(dx*dx))/(a*a);
+            // dir[j][1] +=  (std::pow(a,13)/std::pow(dy,13) - Signum(dy)*(a*a)/(dy*dy))/(a*a);
+            // dir[j][2] +=  (std::pow(a,13)/std::pow(dz,13) - Signum(dz)*(a*a)/(dz*dz))/(a*a);
+
+            std::cout<<"DIST ij = "<<distij<<std::endl;
+            std::cout<<"dirij x= "<<dir[i][0] <<"    dirji x=  "<<dir[j][0]<<std::endl;
+			std::cout<<"dirij y= "<<dir[i][1] <<"    dirji y=  "<<dir[j][1]<<std::endl;
+			std::cout<<"dirij z= "<<dir[i][2] <<"    dirji z=  "<<dir[j][2]<<std::endl;
+
 		}
 }

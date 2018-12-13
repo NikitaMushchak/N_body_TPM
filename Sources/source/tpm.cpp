@@ -35,19 +35,19 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 	Particles.resize(number_particles);
 
 	for(size_t i = 0 ; i< number_particles; ++i )
-	{	
+	{
 		Particles[i].resize(3);
 	}
 
 
-	
+
 	for (size_t i = 0; i < number_particles ; ++i) {
-		std::vector<double> a = { (double) 31.1+0.501*i, 31. , 31. };
+		std::vector<double> a = { (double) 31.1+0.4*i, 31. , 31. };
 		Particles[i] = a;
 	}
-	
+
 	std::vector<std::vector<double> > PM;
-	
+
 	std::vector<std::vector<double> > Dir;
 
 	// std::cout << "non-Scaled pos"<<std::endl;
@@ -80,8 +80,8 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 				}
 			}
 		}
-		
-		
+
+
 		std::vector<
 		 std::vector<
 		 std::vector<
@@ -96,7 +96,7 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 				}
 			}
 		}
-	 
+
 
 	std::vector<std::vector<size_t> > box; //for particles in same box
 
@@ -144,57 +144,57 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 		{
 		vel[i].resize(3);
 		}
-		
+
 		std::vector< std::vector<double > > null2 ;
 		null2.resize( Particles.size());
 		for (size_t i = 0 ; i<  Particles.size() ; ++i)
 		{
 			null2[i].resize(3);
-		}	
+		}
 	 /**/
-	 
+
 	 //Функция генерируюшая кольцо частиц
 	 //GenRing(Particles,  vel,  number_particles,  L);
-	 
-		
+
+
 	//integrator here
 	auto start = ai::time();
 	while (time <T1)
 		{
 		it++;
 		 // std::cout<<"Particles coords"<<std::endl;
-		
+
 		// ai::printMatrix(Particles);
 		//Добавление в центр сетки гравитирующенго тела
 		//SetSun(density, mass, dim);
-		 
+
 		 //CIC assigment
 		 auto t1 =ai::time();
 		 //CaclDensity(Particles, density, mass, scale, dim);
 		 auto t2=ai::time();
 		 std::cout<<"Calcdensity time = "<<ai::duration(t1, t2 , "ms")<<" ms"<<std::endl;
 		 //potetial field
-		 
-		 
+
+
 		 //Добавление частиц в ячейки
 		 // PuttoBox(Particles , box , H , dim);
-		 
+
 		 auto t3 = ai::time();
-		 
+
 		 //CalcPotential(density, dim);
-		 
+
 		 auto t4 =ai::time();
 		 std::cout<<"CalcPotential time = "<<ai::duration(t3,t4, "ms")<<" ms"<<std::endl;
 		 //Acceleration
 
 		 auto t5 = ai::time();
 		 //Расчет ускорений по сеточному методу
-		 
+
 		 //GetAccelPM(Particles, density, a, scale);
-		 
+
 		 Direct(Particles , a , mass);
 		 //GetAccel(Particles, density, box, a, H); //рачет ускорений по методу PPPM
-		 
+
 		 // for(size_t  i = 0 ; i < number_particles; ++i )
 		 // {
 			 // if (std::abs(a[i][0])>20.) a[i][0]=0.;
@@ -253,16 +253,16 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 
 			 //print results
 			 ai::saveA3R(filename, Particles);
-			 
+
 		 }
 		  auto st = ai::time();
-		 
+
 		  //a=null2;
 		  //dir=null2;
 		  //vel=null2;
 		  density=null4;
 		  box=nuls;
-		  
+
 		  auto en = ai::time();
 		std::cout<<"Matrix time = "<<ai::duration(st, en ,"ms")<<" ms"<<std::endl;
 
