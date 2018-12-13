@@ -42,7 +42,7 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 
 
 	for (size_t i = 0; i < number_particles ; ++i) {
-		std::vector<double> a = { (double) 31.1+0.4*i, 31. , 31. };
+		std::vector<double> a = { (double) 31.1+0.6*i, 31. , 31. };
 		Particles[i] = a;
 	}
 
@@ -192,7 +192,7 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 
 		 GetAccelPM(Particles, density, a, scale);
 
-		 //Direct(Particles , a , mass);
+		 // Direct(Particles , a , mass);
 		 GetAccel(Particles, density, box, a, H); //рачет ускорений по методу PPPM
 
 		 // for(size_t  i = 0 ; i < number_particles; ++i )
@@ -201,6 +201,7 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 			 // if (std::abs(a[i][1])>20.) a[i][1]=0.;
 			 // if (std::abs(a[i][2])>20.) a[i][2]=0.;
 		 // }
+		 Dir.push_back(std::vector<double>{Particles[1][0]-Particles[0][0] , a[0][0]});
 		 auto t6 = ai::time();
 		 std::cout <<"Acclel time = "<<ai::duration(t5,t6,"ms")<<" ms"<<std::endl;
 
@@ -270,5 +271,10 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 
 		auto finish = ai::time();
 		std::cout <<"Time caclulation = "<<ai::duration (start , finish, "ms")<<" ms"<<std::endl;
+
+		std::cout<<"Saving results ..."<<std::endl;
+		ai::saveMatrix("./pm", Dir);
+
+		std::cout<<"Done"<<std::endl;
 	return 0;
 	}

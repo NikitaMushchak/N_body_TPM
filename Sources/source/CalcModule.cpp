@@ -578,8 +578,40 @@ for (size_t i =0 ; i< Particles.size() ; ++i)
 				 ksiy = 2.*std::abs(dy)/rsr;
 				 ksiz = 2.*std::abs(dz)/rsr;
 				 // std::cout<<"ksix = "<<ksix<<std::endl;
-				if ( distij >0 && distij <= a)
+				// if ( distij >0 && distij <= a)
+				// {
+				// 	Rx = (1./(35.* rsr*rsr))*(224.* ksix -
+				// 	224.*ksix*ksix*ksix +
+				// 	70.*ksix*ksix*ksix*ksix +
+				// 	48.*ksix*ksix*ksix*ksix*ksix -
+				// 	21.*ksix*ksix*ksix*ksix*ksix*ksix);
+				// 	Ry = (1./(35.* rsr*rsr))*(224.* ksiy -
+				// 	224.*ksiy*ksiy*ksiy +
+				// 	70.*ksiy*ksiy*ksiy*ksiy +
+				// 	48.*ksiy*ksiy*ksiy*ksiy*ksiy -
+				// 	21.*ksiy*ksiy*ksiy*ksiy*ksiy*ksiy);
+				// 	Rz = (1./(35.* rsr*rsr))*(224.* ksiz -
+				// 	224.*ksiz*ksiz*ksiz +
+				// 	70.*ksiz*ksiz*ksiz*ksiz +
+				// 	48.*ksiz*ksiz*ksiz*ksiz*ksiz -
+				// 	21.*ksiz*ksiz*ksiz*ksiz*ksiz*ksiz);
+                //
+				// 	// std::cout<<"PM accel dir["<<i<<"][0] = "<<dir[i][0]<<std::endl;
+				// 	// std::cout<<"nagi*dx = "<<nagi*dx<<"  magi*dx = "<<magi*dx<<std::endl;
+				// 	std::cout<<"Rx = "<<Rx<<std::endl;
+				// 	//std::cout<<"gx = "<<gx<<std::endl;
+				// 	dir[i][0] += (nagi*dx - dx*magi)/(a * a) - Signum(dx)*Rx;//direct force
+				// 	dir[i][1] += (nagi*dy - magi*dy)/(a * a) -  Signum(dy)*Ry;
+				// 	dir[i][2] += (nagi*dz - magi*dz)/(a * a) -  Signum(dz)*Rz;
+                //
+				// 	std::cout<<"dir["<<i<<"][0] = "<<dir[i][0]<<std::endl;
+                //
+                //
+				// }
+
+				if ( distij > 0 && distij <= rsr/2.)
 				{
+
 					Rx = (1./(35.* rsr*rsr))*(224.* ksix -
 					224.*ksix*ksix*ksix +
 					70.*ksix*ksix*ksix*ksix +
@@ -595,44 +627,12 @@ for (size_t i =0 ; i< Particles.size() ; ++i)
 					70.*ksiz*ksiz*ksiz*ksiz +
 					48.*ksiz*ksiz*ksiz*ksiz*ksiz -
 					21.*ksiz*ksiz*ksiz*ksiz*ksiz*ksiz);
-
-					// std::cout<<"PM accel dir["<<i<<"][0] = "<<dir[i][0]<<std::endl;
-					// std::cout<<"nagi*dx = "<<nagi*dx<<"  magi*dx = "<<magi*dx<<std::endl;
 					std::cout<<"Rx = "<<Rx<<std::endl;
+                    std::cout<<" Pm dir[i][0] = "<<dir[i][0]<<std::endl;
 					//std::cout<<"gx = "<<gx<<std::endl;
-					dir[i][0] += (nagi*dx - dx*magi)/(a * a) + Signum(dx)*Rx;//direct force
-					dir[i][1] += (nagi*dy - magi*dy)/(a * a) +  Signum(dy)*Ry;
-					dir[i][2] += (nagi*dz - magi*dz)/(a * a) +  Signum(dz)*Rz;
-
-					std::cout<<"dir["<<i<<"][0] = "<<dir[i][0]<<std::endl;
-
-
-				}
-
-				if ( distij > a && distij <= rsr/2.)
-				{
-
-					Rx = (1./(35.* rsr*rsr))*(224.* ksix -
-					224.*ksix*ksix*ksix +
-					70.*ksix*ksix*ksix*ksix +
-					48.*ksix*ksix*ksix*ksix*ksix -
-					21.*ksix*ksix*ksix*ksix*ksix*ksix);
-					Ry = (1./(35.* rsr*rsr))*(224.* ksiy -
-					224.*ksiy*ksiy*ksiy +
-					70.*ksiy*ksiy*ksiy*ksiy +
-					48.*ksiy*ksiy*ksiy*ksiy*ksiy -
-					21.*ksiy*ksiy*ksiy*ksiy*ksiy*ksiy);
-					Rz = (1./(35.* rsr*rsr))*(224.* ksiz -
-					224.*ksiz*ksiz*ksiz +
-					70.*ksiz*ksiz*ksiz*ksiz +
-					48.*ksiz*ksiz*ksiz*ksiz*ksiz -
-					21.*ksiz*ksiz*ksiz*ksiz*ksiz*ksiz);
-					// std::cout<<"Rx = "<<Rx<<std::endl;
-
-					//std::cout<<"gx = "<<gx<<std::endl;
-					dir[i][0] += dx*(nagi - magi)/(a * a) + Signum(dx)*Rx;//direct force
-					dir[i][1] += dy*(nagi - magi)/(a * a) + Signum(dy)*Ry;
-					dir[i][2] += dz*(nagi - magi)/(a * a) + Signum(dz)*Rz;
+					dir[i][0] += dx*(nagi - magi)/(a * a) - Signum(dx)*Rx;//direct force
+					dir[i][1] += dy*(nagi - magi)/(a * a) - Signum(dy)*Ry;
+					dir[i][2] += dz*(nagi - magi)/(a * a) - Signum(dz)*Rz;
 					std::cout<<"Rx = "<<Rx<<std::endl;
 					std::cout<<"dir[i][0] = "<<dir[i][0]<<std::endl;
 
@@ -659,11 +659,12 @@ for (size_t i =0 ; i< Particles.size() ; ++i)
 					70.*ksiz*ksiz*ksiz*ksiz -
 					48.*ksiz*ksiz*ksiz*ksiz*ksiz +
 					7.*ksiz*ksiz*ksiz*ksiz*ksiz*ksiz);
+                    std::cout<<" PM dir[i][0] = "<<dir[i][0]<<std::endl;
 
 					//  std::cout<<"gx = "<<gx<<std::endl;
-					dir[i][0] += dx*(nagi - magi)/(a * a) + Signum(dx)*Rx; //direct force
-					dir[i][1] += dy*(nagi - magi)/(a * a) + Signum(dy)*Ry;
-					dir[i][2] += dz*(nagi - magi)/(a * a) + Signum(dz)*Rz;
+					dir[i][0] += dx*(nagi - magi)/(a * a) - Signum(dx)*Rx; //direct force
+					dir[i][1] += dy*(nagi - magi)/(a * a) - Signum(dy)*Ry;
+					dir[i][2] += dz*(nagi - magi)/(a * a) - Signum(dz)*Rz;
 					std::cout<<"Rx = "<<Rx<<std::endl;
 					std::cout<<"dir[i][0] = "<<dir[i][0]<<std::endl;
 
