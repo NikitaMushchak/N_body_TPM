@@ -19,10 +19,12 @@ void ScalePos(std::vector<std::vector<double>>& Particles, double scale);
 							std::vector<std::vector<std::vector<std::vector<double >>>>& density,
 								std::vector<std::vector<double>>& a,
 									double H);
-void GetAccel(std::vector<std::vector<double>>& Particles,
-           std::vector<std::vector<std::vector<std::vector<double > > > >& density,
-                      std::vector<std::vector<size_t> > &box,
-            std::vector<std::vector<double> >& a, double H);
+ 
+ void GetAccel(std::vector<std::vector<double>>& Particles,
+				std::vector<std::vector<double>>& a,
+				double H, 
+				double r, 
+				size_t dim);
 			
 			
 std::vector<double> DirectPM(std::vector<std::vector<double> > & Particles, std::vector<std::vector<double> > & dir, double mass);

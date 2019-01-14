@@ -409,9 +409,9 @@ void PuttoBox(std::vector<
 
 
 
-void GetAccelPM(std::vector<std::vector<double>>& Particles,
-						std::vector<std::vector<std::vector<std::vector<double >>>>& density,
-							std::vector<std::vector<double>>& a, double H)
+void GetAccelPM(std::vector<std::vector<double> >& Particles,
+						std::vector<std::vector<std::vector<std::vector<double > > > >& density,
+							std::vector<std::vector<double> >& a, double H)
 	{
 
 		size_t dim = density.size();
@@ -461,13 +461,15 @@ void GetAccelPM(std::vector<std::vector<double>>& Particles,
 	}
 
 
-void GetAccel(std::vector<std::vector<double>>& Particles,
-           std::vector<std::vector<std::vector<std::vector<double > > > >& density,
-                      std::vector<std::vector<size_t> > &box,
-            std::vector<std::vector<double>>& a, double H)
+void GetAccel(std::vector<std::vector<double> >& Particles,
+				std::vector<std::vector<double> >& a,
+				double H, 
+				double r, 
+				size_t dim)
 {
-  size_t dim = density.size();
+  
   // double h = 1./H;
+  // r - радиус применения расчета близкодействия
 std::vector<std::vector<double > > as;
 //as-матрица с посчитанными значениями ускорений
 as.resize(Particles.size());
@@ -479,56 +481,49 @@ for (size_t i =0 ; i< Particles.size() ; ++i)
   double mass = 1.0;
   for (size_t i = 0; i < Particles.size(); ++i)
   {
-        //calculating indexes of parent cell
-
-      //std::cout<<"x = "<<x <<"  y = "<<y <<"  z = "<<z <<std::endl;
-
-      // find number of boxes with multiple particles
-
-
-            std::vector <std::vector <double > > par;
+            std::vector < std::vector <double > > par;
             std::vector < std::vector <double > > ac;
-            //Записываем частицы, которые попадают в радиус в 2 ячейки
+            //Записываем частицы, которые попадают в радиус
             par.push_back(std::vector<double>{Particles[i][0] , Particles[i][1] , Particles[i][2]});
             ac.push_back(std::vector<double>{a[i][0] , a[i][1] , a[i][2]});
-            // ac.push_back(std::vector<double>{0. , 0. , 0.});
-            for (size_t j = 0 ; j<box.size(); ++j)
-            {
-                if (i!=j){
-                if (box[i][3]!= 0 && box[i][3] == box[j][3]) // Записываем частицы в в i-ой ячейке
-                {
-                  par.push_back(std::vector<double>{ Particles[j][0] , Particles[j][1] , Particles[j][2]});
-                  ac.push_back(std::vector<double>{ a[j][0] , a[j][1] , a[j][2]});
-                  // ac.push_back(std::vector<double>{0. , 0. , 0.});
+			//TODO Избавиться от box ов!!!
+            // for (size_t j = 0 ; j<box.size(); ++j)
+            // {
+                // if (i!=j){
+                // // if (box[i][3]!= 0 && box[i][3] == box[j][3]) // Записываем частицы в в i-ой ячейке
+                // // {
+                  // // par.push_back(std::vector<double>{ Particles[j][0] , Particles[j][1] , Particles[j][2]});
+                  // // ac.push_back(std::vector<double>{ a[j][0] , a[j][1] , a[j][2]});
+                  // // // ac.push_back(std::vector<double>{0. , 0. , 0.});
 
-                }
-                if (
-					(box[i][3]!=box[j][3] || box[i][3]==0 && box[i][3]==box[j][3])&&
-                  std::abs((int)box[i][0] - (int)box[j][0]) <= 3 &&
-                  std::abs((int)box[i][1] - (int)box[j][1]) <= 3 &&
-                  std::abs((int)box[i][2] - (int)box[j][2]) <= 3 )
-                  {
-                    //std::cout<<"in";
-                    par.push_back(std::vector<double>{ Particles[j][0] , Particles[j][1] , Particles[j][2]} );
-                    ac.push_back(std::vector<double>{ a[j][0] , a[j][1] , a[j][2]});
-                    // ac.push_back(std::vector<double>{0. , 0. , 0.});
-
-                  }
-
-                }
-
-              }
-            //  std::cout <<"Nearest particles coords"<<std::endl;
-            // ai::printMatrix(par);
-
-            // std::cout<<"their accel"<<std::endl;
-            // ai::printMatrix(ac);
+                // // }
+                // if (
+					// (box[i][3]!=box[j][3] || box[i][3]==0 && box[i][3]==box[j][3])&&
+                  // std::abs((int)box[i][0] - (int)box[j][0]) <= 3 &&
+                  // std::abs((int)box[i][1] - (int)box[j][1]) <= 3 &&
+                  // std::abs((int)box[i][2] - (int)box[j][2]) <= 3 )
+                  // {
+                    // //std::cout<<"in";
+                    // par.push_back(std::vector<double>{ Particles[j][0] , Particles[j][1] , Particles[j][2]} );
+                    // ac.push_back(std::vector<double>{ a[j][0] , a[j][1] , a[j][2]});
+                  // }
+                // }
+              // }
+			  for(std::size_t j = 0 ; j < Particles.size(); ++j)
+			  {
+				  if(i!=j)
+				  {
+					  if(r >= std::sqrt(
+					  std::pow(Particles[i][0]-Particles[j][0] , 2) +
+					  std::pow(Particles[i][1]-Particles[j][1] , 2) +
+					  std::pow(Particles[i][2]-Particles[j][2] , 2) )	)
+					  {
+						  par.push_back(std::vector<double>{ Particles[j][0] , Particles[j][1] , Particles[j][2]} );
+						  ac.push_back(std::vector<double>{ a[j][0] , a[j][1] , a[j][2] });
+					  }
+				  }
+			  }
             as[i] = DirectPM(par, ac , mass);
-
-            // as.push_back(std::vector<double>{ac[i][0], ac[i][1], ac[i][2]});
-          //  as[i] = ac[i];
-            // std::cout<<"accel step"<<std::endl;
-            // ai::printMatrix(as);
   }
       // std::cout<<"a matrix"<<std::endl;
       // ai::printMatrix(a);
@@ -582,9 +577,9 @@ for (size_t i =0 ; i< Particles.size() ; ++i)
 		   nagi = (1. *std::pow(a,6))/(std::pow(distij, 7));
 		   std::cout<<"distij = "<<distij<<std::endl;
 
-				 ksix = 2.*std::abs(dx)/rsr;
-				 ksiy = 2.*std::abs(dy)/rsr;
-				 ksiz = 2.*std::abs(dz)/rsr;
+				 ksix = 2.*distij/rsr;
+				 ksiy = 2.*distij/rsr;
+				 ksiz = 2.*distij/rsr;
 
 				if ( distij <= rsr*0.5)
 				{
@@ -594,23 +589,26 @@ for (size_t i =0 ; i< Particles.size() ; ++i)
 					224.*ksix*ksix*ksix +
 					70.*ksix*ksix*ksix*ksix +
 					48.*ksix*ksix*ksix*ksix*ksix -
-					21.*ksix*ksix*ksix*ksix*ksix*ksix);
+					21.*ksix*ksix*ksix*ksix*ksix*ksix)/ ksix;
+					
 					Ry = (1./(35.* rsr*rsr))*(224.* ksiy -
 					224.*ksiy*ksiy*ksiy +
 					70.*ksiy*ksiy*ksiy*ksiy +
 					48.*ksiy*ksiy*ksiy*ksiy*ksiy -
-					21.*ksiy*ksiy*ksiy*ksiy*ksiy*ksiy);
+					21.*ksiy*ksiy*ksiy*ksiy*ksiy*ksiy) / ksiy;
+					
 					Rz = (1./(35.* rsr*rsr))*(224.* ksiz -
 					224.*ksiz*ksiz*ksiz +
 					70.*ksiz*ksiz*ksiz*ksiz +
 					48.*ksiz*ksiz*ksiz*ksiz*ksiz -
-					21.*ksiz*ksiz*ksiz*ksiz*ksiz*ksiz);
+					21.*ksiz*ksiz*ksiz*ksiz*ksiz*ksiz) / ksiz;
+					
 					// std::cout<<"Rx = "<<Rx<<std::endl;
                     std::cout<<" Pm dir[i][0] = "<<dir[i][0]<<std::endl;
 					//std::cout<<"gx = "<<gx<<std::endl;
-					dir[i][0] += dx*(nagi - magi)/(a * a) + Signum(dx)*Rx;//direct force
-					dir[i][1] += dy*(nagi - magi)/(a * a) + Signum(dy)*Ry;
-					dir[i][2] += dz*(nagi - magi)/(a * a) + Signum(dz)*Rz;
+					dir[i][0] += dx*(nagi - magi)/(a * a) + dx*Rx;//direct force
+					dir[i][1] += dy*(nagi - magi)/(a * a) + dy*Ry;
+					dir[i][2] += dz*(nagi - magi)/(a * a) + dz*Rz;
 					 std::cout<<"Rx = "<<Rx<<std::endl;
 					 std::cout<<"dir[i][0] = "<<dir[i][0]<<std::endl;
 					 std::cout<<"dir[i][1] = "<<dir[i][1]<<std::endl;
@@ -627,26 +625,27 @@ for (size_t i =0 ; i< Particles.size() ; ++i)
 					224. *ksix*ksix*ksix +
 					70.*ksix*ksix*ksix*ksix -
 					48.*ksix*ksix*ksix*ksix*ksix +
-					7.*ksix*ksix*ksix*ksix*ksix*ksix);
+					7.*ksix*ksix*ksix*ksix*ksix*ksix) / ksix;
+					
 					Ry = ksiy < std::pow(10,-8)? 0. : (1./(35.* rsr*rsr))*(  12./(ksiy*ksiy) - 224. + 896.*ksiy -
 					840.*ksiy*ksiy +
 					224. *ksiy*ksiy*ksiy +
 					70.*ksiy*ksiy*ksiy*ksiy -
 					48.*ksiy*ksiy*ksiy*ksiy*ksiy +
-					7.*ksiy*ksiy*ksiy*ksiy*ksiy*ksiy);
+					7.*ksiy*ksiy*ksiy*ksiy*ksiy*ksiy) / ksiy;
 
 					Rz = ksiz < std::pow(10,-8) ? 0. : (1./(35.* rsr*rsr))*(12./(ksiz*ksiz) - 224. + 896.*ksiz -
 					840.*ksiz*ksiz +
 					224. *ksiz*ksiz*ksiz +
 					70.*ksiz*ksiz*ksiz*ksiz -
 					48.*ksiz*ksiz*ksiz*ksiz*ksiz +
-					7.*ksiz*ksiz*ksiz*ksiz*ksiz*ksiz);
+					7.*ksiz*ksiz*ksiz*ksiz*ksiz*ksiz) / ksiz;
                     std::cout<<" PM dir[i][0] = "<<dir[i][0]<<std::endl;
 
 					//  std::cout<<"gx = "<<gx<<std::endl;
-					dir[i][0] += dx*(nagi - magi)/(a * a) + Signum(dx)*Rx; //direct force
-					dir[i][1] += dy*(nagi - magi)/(a * a) + Signum(dy)*Ry;
-					dir[i][2] += dz*(nagi - magi)/(a * a) + Signum(dz)*Rz;
+					dir[i][0] += dx*(nagi - magi)/(a * a) + dx*Rx; //direct force
+					dir[i][1] += dy*(nagi - magi)/(a * a) + dy*Ry;
+					dir[i][2] += dz*(nagi - magi)/(a * a) + dz*Rz;
 					 std::cout<<"Rx = "<<Rx<<std::endl;
 					 std::cout<<"dir[i][0] = "<<dir[i][0]<<std::endl;
 					 std::cout<<"dir[i][1] = "<<dir[i][1]<<std::endl;

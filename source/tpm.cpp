@@ -42,7 +42,7 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 
 
 	 for (size_t i = 0; i < number_particles ; ++i) {
-	 	std::vector<double> a = { (double) 32.- 5.0/2. + 5.0*i, 32. , 32. };
+	 	std::vector<double> a = { (double) 32.- 3.1/2. + 3.1*i, 32. , 32. };
 	 	Particles[i] = a;
 	 }
 // 2 - 35% 3 - 38% 3.1 - 37% 
@@ -100,17 +100,12 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 		}
 
 
-	std::vector<std::vector<size_t> > box; //for particles in same box
-
-
-		  box.resize(number_particles);
-
-		  for (size_t i =0 ; i<number_particles; ++i)
-	 {
-
-			 box[i].resize(4);
-
-		   }
+	// std::vector<std::vector<size_t> > box; //for particles in same box
+		  // box.resize(number_particles);
+		  // for (size_t i =0 ; i<number_particles; ++i)
+	 // {
+			 // box[i].resize(4);
+		   // }
 
 	std::vector<std::vector<size_t> > nuls; //for particles in same box
 
@@ -158,7 +153,8 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 	 //Функция генерируюшая кольцо частиц
 	 //GenRing(Particles,  vel,  number_particles,  L);
 
-
+	double r = 3.0; //радиус близкодействия
+	// TODO вынести константу!!!!
 	//integrator here
 	auto start = ai::time();
 	while (time <T1)
@@ -172,14 +168,14 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 	
 		 //CIC assigment
 		 auto t1 =ai::time();
-		 CaclDensity(Particles, density, mass, scale, dim);
+		 CaclDensity(Particles, density, mass, scale, dim );
 		 auto t2=ai::time();
 		 std::cout<<"Calcdensity time = "<<ai::duration(t1, t2 , "ms")<<" ms"<<std::endl;
 		 //potetial field
 
 
 		 //Добавление частиц в ячейки
-		 PuttoBox(Particles , box , H , dim);
+		 //PuttoBox(Particles , box , H , dim);
 
 		 auto t3 = ai::time();
 
@@ -194,7 +190,7 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 		 GetAccelPM(Particles, density, a, scale);
 
 		 // Direct(Particles , a , mass);
-		 GetAccel(Particles, density, box, a, H); //рачет ускорений по методу PPPM
+		 GetAccel( Particles, a, H, r, dim);//рачет ускорений по методу PPPM
 
 		 /* for(size_t  i = 0 ; i < number_particles; ++i )
 		  {
@@ -228,7 +224,7 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 		 std::cout <<"Direct time= "<<ai::duration(t7,t8,"ms")<<" ms"<<std::endl;
 		 //std::cout<<"Dir accel "<<std::endl;
 		 //ai::printMatrix(dir);
-			sh.push_back(std::vector<double>{it , std::abs(1-(dir[0][0]/a[0][0]))*100});
+			sh.push_back(std::vector<double>{it , std::abs(Particles[0][0]-Particles[1][0]) , std::abs(1-(dir[0][0]/a[0][0]))*100});
 		 //std::cout<<"Acceleration"<<std::endl;
 		 //ai::printMatrix(a);
 		 std::cout<<"  \nDir / FFT  = "<< std::abs(1-(dir[0][0]/a[0][0]))*100 <<" %"<<std::endl;
@@ -278,7 +274,7 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 		  dir=null2;
 		  //vel=null2;
 		  density=null4;
-		  box=nuls;
+		 //box=nuls;
 
 		  auto en = ai::time();
 		std::cout<<"Matrix time = "<<ai::duration(st, en ,"ms")<<" ms"<<std::endl;
