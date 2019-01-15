@@ -41,16 +41,18 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 
 
 
-	 for (size_t i = 0; i < number_particles ; ++i) {
-	 	std::vector<double> a = { (double) 32.- 15.1/2. + 15.1*i, 32. , 32. };
-	 	Particles[i] = a;
-	 }
+	 // for (size_t i = 0; i < number_particles ; ++i) {
+	 // 	std::vector<double> a = { (double) 32.- 5.1/2. + 5.1*i, 32. , 32. };
+	 // 	Particles[i] = a;
+	 // }
 // 2 - 35% 3 - 38% 3.1 - 37%
 	std::vector<std::vector<double> > PM;
 
 	std::vector<std::vector<double> > Dir;
 
 	std::vector<std::vector<double> > sh;
+
+	std::vector<double> Sun = {L/2. , L/2. , L/2.};
 
 	// std::cout << "non-Scaled pos"<<std::endl;
 	// ai::printMatrix(Particles);
@@ -151,9 +153,10 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 	 /**/
 
 	 //Функция генерируюшая кольцо частиц
-	 //GenRing(Particles,  vel,  number_particles,  L);
+	 GenRing(Particles,  vel,  number_particles,  L);
 
 	double r = 3.0; //радиус близкодействия
+	double energy;
 	// TODO вынести константу!!!!
 	//integrator here
 	auto start = ai::time();
@@ -161,11 +164,15 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 		{
 		it++;
 		 // std::cout<<"Particles coords"<<std::endl;
-
+		 energy=0.;
 		// ai::printMatrix(Particles);
 		//Добавление в центр сетки гравитирующенго тела
 		//SetSun(density, mass, dim);
-
+		CaclDensitySun(Sun ,
+		                 density,
+		                 mass,
+		                H,
+		                 dim);
 		 //CIC assigment
 		 auto t1 =ai::time();
 		 CaclDensity(Particles, density, mass, scale, dim );
@@ -190,7 +197,7 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 		 GetAccelPM(Particles, density, a, scale);
 
 		 // Direct(Particles , a , mass);
-		 //GetAccel( Particles, a, H, r, dim);//рачет ускорений по методу PPPM
+		 GetAccel( Particles, a, H, r, dim);//рачет ускорений по методу PPPM
 
 		 /* for(size_t  i = 0 ; i < number_particles; ++i )
 		  {
@@ -201,10 +208,10 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 
 		 //расчет ускорений по прямому алгоритму
 		// DirectSun(Particles, a, mass, L);
-		 Direct(Particles, dir, mass);
+		 //Direct(Particles, dir, mass);
 
 		  PM.push_back( std::vector<double>{std::abs(Particles[0][0]-Particles[1][0]) , a[0][0]});
-		  Dir.push_back(std::vector<double>{std::abs(Particles[0][0]-Particles[1][0]) , dir[0][0]});
+		  //Dir.push_back(std::vector<double>{std::abs(Particles[0][0]-Particles[1][0]) , dir[0][0]});
 		  //Dir.push_back(std::vector<double>{Particles[0][0], Particles[0][1], Particles[0][2] , dir[0][0], dir[0][1], dir[0][2]});
 
 
@@ -224,7 +231,7 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 		 std::cout <<"Direct time= "<<ai::duration(t7,t8,"ms")<<" ms"<<std::endl;
 		 //std::cout<<"Dir accel "<<std::endl;
 		 //ai::printMatrix(dir);
-			sh.push_back(std::vector<double>{it , std::abs(Particles[0][0]-Particles[1][0]) ,dir[0][0]/a[0][0]  });
+
 		 //std::cout<<"Acceleration"<<std::endl;
 		 //ai::printMatrix(a);
 		 std::cout<<"  \nDir / FFT  = "<< std::abs(1-(dir[0][0]/a[0][0]))*100 <<" %"<<std::endl;
@@ -239,7 +246,10 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 			 vel[i][0] += a[i][0] * dt;
 			 vel[i][1] += a[i][1] * dt;
 			 vel[i][2] += a[i][2] * dt;
+
+			 energy += std::sqrt( vel[i][0]*vel[i][0] + vel[i][1]*vel[i][1] + vel[i][2]*vel[i][2] );
 		 }
+		 sh.push_back(std::vector<double>{it , std::abs(Particles[0][0]-Particles[1][0]) ,dir[0][0]/a[0][0] , energy});
 		 // std::cout << "Vel\n";
 		 // ai::printMatrix(vel);
 		 for (size_t i = 0; i < Particles.size(); ++i)

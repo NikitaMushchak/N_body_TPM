@@ -62,7 +62,7 @@ namespace ai {
 	) {
 		const std::size_t numberOfParticles = positions.size();
 
-		const int integerNumberOfParticles = (int)numberOfParticles;
+		const int integerNumberOfParticles = (int)numberOfParticles + 1;
 
 		std::ofstream a3r(filename, std::ios::binary | std::ios::out);
 
@@ -91,7 +91,7 @@ namespace ai {
 				+ ai::string(" instead of ") + ai::string(doubleSize)
 			);
 		}
-		
+
 		a3r.write("a3r\0", 4);
 		a3r.write((char*)&integerNumberOfParticles, intSize);
 		a3r.write((char*)&startByte, intSize);
@@ -112,13 +112,13 @@ namespace ai {
 		}
 		else {
 			if (3 == positions[0].size()) {
-				//float tx = 0;// (float)L / 2;
-				//float ty = 0;// (float)L / 2;
-				//float tz = 0;// (float)L / 2;
+				float tx = 0;// (float)L / 2;
+				float ty = 0;// (float)L / 2;
+				float tz = 0;// (float)L / 2;
 
-				//a3r.write((char*)&tx, floatSize);
-				//a3r.write((char*)&ty, floatSize);
-				//a3r.write((char*)&tz, floatSize);
+				a3r.write((char*)&tx, floatSize);
+				a3r.write((char*)&ty, floatSize);
+				a3r.write((char*)&tz, floatSize);
 
 				for (std::size_t i = 0; i < numberOfParticles; ++i) {
 					float x = (float)positions[i][0] - (float)L/2;
@@ -153,7 +153,7 @@ namespace ai {
 
 	/*/ **************************************************************** /*/
 
-	
+
 
 	/*/ **************************************************************** /*/
 
@@ -243,7 +243,7 @@ namespace ai {
 
 		return maximum;
 	}
-	
+
 	template<typename T >
 	T min (const std::vector<T> input)
 	{
@@ -254,13 +254,13 @@ namespace ai {
 		}
 		return minimum;
 	}
-	
-	
+
+
 	template <typename T>
 	T min( const std::vector <std::vector< double > > input )
 	{
 		T minimum = input[0][0];
-		
+
 		for (size_t i = 0 ; i<input.size() ; ++i)
 		{
 			for (size_t j =0 ; j < input[0].size(); ++j)
@@ -270,7 +270,7 @@ namespace ai {
 		}
 		return minimum;
 	}
-	
+
 	/*/
 	* функция, возвращающая максимальное значение в матрице
 	/*/
@@ -937,7 +937,7 @@ namespace ai {
 	}
 
 	///*/
-	// * функция 
+	// * функция
 	///*/
 	//inline std::vector<std::string> listFilesWithExtension(
 	//    const std::string path,
@@ -968,7 +968,7 @@ namespace ai {
 	///*/ **************************************************************** /*/
 	//
 	///*/
-	// * функция 
+	// * функция
 	///*/
 	//inline std::string execute(const std::string command){
 	//    std::array<char, 128> buffer;

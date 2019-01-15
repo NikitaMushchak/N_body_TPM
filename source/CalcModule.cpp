@@ -43,7 +43,7 @@ void GenRing(std::vector<std::vector<double> >& Particles, std::vector<std::vect
     {
 
             x = R1 + rand() % (int)Di;
-            x = R1+2.;
+            //x = R1+2.;
                 //std::cout<<"x = "<<x<<std::endl;
                     //
                     Particles[i][0] =x * cos(i) +center;
@@ -102,6 +102,64 @@ void PuttoBox(std::vector<
         }
 
     }
+}
+
+void CaclDensitySun(
+                   std::vector<double>  Sun ,
+                std::vector<
+                   std::vector <
+                       std::vector<
+                           std::vector<double> > > >& density,
+                double mass,
+                double H,
+                size_t dim)
+{
+   //std::fill(density.begin(), density.end(), 0.);
+   //for ()
+   size_t x, y, z = 0;
+   double dx, dy, dz, tx, ty, tz;
+   double h = 1./(double)(dim-1);
+   mass*=1000.;
+   mass/=(h*h*h);
+   // std::cout <<"mass scaled"<<mass<<std::endl;
+
+   // for (size_t i = 0; i < Particles.size(); ++i)
+   // {
+       //calculating indexes
+       dx = Sun[0] - std::floor(Sun[0] / H);
+       dy = Sun[1] - std::floor(Sun[1] / H);
+       dz = Sun[2] - std::floor(Sun[2] / H);
+       tx = 1. - dx;
+       ty = 1. - dy;
+       tz = 1. - dz;
+       if (std::floor(Sun[0] / H) < dim &&
+           std::floor(Sun[1] / H)  < dim &&
+           std::floor(Sun[2] / H)  < dim) {
+           x = std::floor(Sun[0] / H);
+           y = std::floor(Sun[1] / H);
+           z = std::floor(Sun[2] / H);
+           //std::cout<<"x = "<<x <<"   y = "<<y << "  z = "<<z<<std::endl;
+
+           density[x][y][z][0] += mass * tx *ty*tz;
+
+           if (y + 1 >= dim) { y = y % (dim - 1); density[x][y][z][0] += mass * tx *dy*tz; }
+           else { density[x][y + 1][z][0] += mass * tx *dy*tz; }
+           if (z + 1 >= dim) { z = z % (dim - 1); density[x][y][z][0] += mass * tx *ty*dz; }
+           else { density[x][y][z + 1][0] += mass * tx *ty*dz; }
+           if (y + 1 >= dim && z + 1 >= dim) { z = z % (dim - 1); y = y % (dim - 1); density[x][y][z][0] += mass * tx *dy*dz; }
+           else { density[x][y + 1][z + 1][0] += mass * tx *dy*dz; }
+           if (x + 1 >= dim) { x = x % (dim - 1); density[x][y][z][0] += mass * dx *ty*tz; }
+           else { density[x + 1][y][z][0] += mass * dx *ty*tz; }
+           if (x + 1 >= dim && y + 1 >= dim) { x = x % (dim - 1); y = y % (dim - 1); density[x][y][z][0] += mass * dx *dy*tz; }
+           else { density[x + 1][y + 1][z][0] += mass * dx *dy*tz; }
+           if (x + 1 >= dim && z + 1 >= dim) { x = x % (dim - 1); z = z % (dim - 1); density[x][y][z][0] += mass * dx *ty*dz; }
+           else { density[x + 1][y][z + 1][0] += mass * dx *ty*dz; }
+           if (x + 1 >= dim && y + 1 >= dim && z + 1 >= dim) { x = x % (dim - 1); y = y % (dim - 1); z = z % (dim - 1); density[x][y][z][0] += mass * dx * dy * dz; }
+           else { density[x + 1][y + 1][z + 1][0] += mass * dx * dy * dz; }
+
+       }
+
+   // }
 }
 
  void CaclDensity(std::vector<
@@ -300,11 +358,11 @@ void PuttoBox(std::vector<
 
 					double q =  -rho[k][m][n][0];
 					double b =  -rho[k][m][n][1];
-					rho[k][m][n][0] =  h*h*(q * denom0 + b * denom1) / ((denom0 * denom0 + denom1 * denom1));
-					rho[k][m][n][1] =  h*h*(b * denom0 - q * denom1) / ((denom0 * denom0 + denom1 * denom1));
+					rho[k][m][n][0] =  4.*pi*h*h*h*(q * denom0 + b * denom1) / ((denom0 * denom0 + denom1 * denom1));
+					rho[k][m][n][1] =  4.*pi*h*h*h*(b * denom0 - q * denom1) / ((denom0 * denom0 + denom1 * denom1));
 
-                    rho[k][m][n][0] = (rho[k][m][n][0] -1.) / (2.*pi);
-                    rho[k][m][n][1] = (rho[k][m][n][1] -1.) / (2.*pi);
+                    // rho[k][m][n][0] = (rho[k][m][n][0] -1.) / (2.*pi);
+                    // rho[k][m][n][1] = (rho[k][m][n][1] -1.) / (2.*pi);
 
 				}
 				double b = Wn0;
