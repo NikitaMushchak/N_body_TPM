@@ -15,14 +15,14 @@ inline double Min_num(double f, double m)
 }
  double Get_Step(std::vector<std::vector<double>> &a, double mass)
 {
-	double  u_max_a0_ratio = 50.;// maximum possible dv of particles
-	double f_max = 0.;
-	double a0 = 1.0;
-		double gamma0 = 1.;
+	double  u_max_a0_ratio = 10.;// maximum possible dv of particles
+	double f_max = 50.;
+	double a0 = 0.3;
+	double gamma0 = 1.;
 	double PI = 3.14159265358979;
 	double sqrt11 = 3.316624790355399849;
 	double dt_max_ratio = 0.01;
-	double t0 = 2 * PI / sqrt(gamma0 * mass / a0 / a0 / a0) /sqrt11;
+	double t0 = 2 * PI / sqrt(gamma0 * mass / a0 / a0 / a0) / sqrt11;
 	double dt_max = dt_max_ratio * t0;
 	 for (size_t i = 0; i < a.size(); i++)
 	 {

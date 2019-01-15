@@ -41,10 +41,10 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 
 
 
-	 // for (size_t i = 0; i < number_particles ; ++i) {
-	 // 	std::vector<double> a = { (double) 32.- 5.1/2. + 5.1*i, 32. , 32. };
-	 // 	Particles[i] = a;
-	 // }
+	 for (size_t i = 0; i < number_particles ; ++i) {
+	 	std::vector<double> a = { (double) 32.- 3./2. + 3.*i, 32. , 32. };
+	 	Particles[i] = a;
+	 }
 // 2 - 35% 3 - 38% 3.1 - 37%
 	std::vector<std::vector<double> > PM;
 
@@ -62,8 +62,8 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 
 	ScalePos(Particles,scale);
 
-	 std::cout << "Scaled pos"<<std::endl;
-	 ai::printMatrix(Particles);
+	 //std::cout << "Scaled pos"<<std::endl;
+	 //ai::printMatrix(Particles);
 	// const double T1 = 3.1;
 	  double dt=0;
 	  double time=0;
@@ -100,14 +100,6 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 				}
 			}
 		}
-
-
-	// std::vector<std::vector<size_t> > box; //for particles in same box
-		  // box.resize(number_particles);
-		  // for (size_t i =0 ; i<number_particles; ++i)
-	 // {
-			 // box[i].resize(4);
-		   // }
 
 	std::vector<std::vector<size_t> > nuls; //for particles in same box
 
@@ -153,7 +145,7 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 	 /**/
 
 	 //Функция генерируюшая кольцо частиц
-	 GenRing(Particles,  vel,  number_particles,  L);
+	 //GenRing(Particles,  vel,  number_particles,  L);
 
 	double r = 3.0; //радиус близкодействия
 	double energy;
@@ -163,16 +155,16 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 	while (time <T1)
 		{
 		it++;
-		 // std::cout<<"Particles coords"<<std::endl;
+		 
 		 energy=0.;
-		// ai::printMatrix(Particles);
+		
 		//Добавление в центр сетки гравитирующенго тела
-		//SetSun(density, mass, dim);
-		CaclDensitySun(Sun ,
-		                 density,
-		                 mass,
-		                H,
-		                 dim);
+		
+		// CaclDensitySun(Sun ,
+		                 // density,
+		                 // mass,
+		                // H,
+		                 // dim);
 		 //CIC assigment
 		 auto t1 =ai::time();
 		 CaclDensity(Particles, density, mass, scale, dim );
@@ -180,9 +172,6 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 		 std::cout<<"Calcdensity time = "<<ai::duration(t1, t2 , "ms")<<" ms"<<std::endl;
 		 //potetial field
 
-
-		 //Добавление частиц в ячейки
-		 //PuttoBox(Particles , box , H , dim);
 
 		 auto t3 = ai::time();
 
@@ -196,22 +185,17 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 		 //Расчет ускорений по сеточному методу
 		 GetAccelPM(Particles, density, a, scale);
 
-		 // Direct(Particles , a , mass);
+		  // Direct(Particles , a , mass);
 		 GetAccel( Particles, a, H, r, dim);//рачет ускорений по методу PPPM
 
-		 /* for(size_t  i = 0 ; i < number_particles; ++i )
-		  {
-			  if (std::abs(a[i][0])>20.) a[i][0]=0.;
-			  if (std::abs(a[i][1])>20.) a[i][1]=0.;
-			  if (std::abs(a[i][2])>20.) a[i][2]=0.;
-		  }*/
+		
 
 		 //расчет ускорений по прямому алгоритму
 		// DirectSun(Particles, a, mass, L);
-		 //Direct(Particles, dir, mass);
+		 Direct(Particles, dir, mass);
 
 		  PM.push_back( std::vector<double>{std::abs(Particles[0][0]-Particles[1][0]) , a[0][0]});
-		  //Dir.push_back(std::vector<double>{std::abs(Particles[0][0]-Particles[1][0]) , dir[0][0]});
+		  Dir.push_back(std::vector<double>{std::abs(Particles[0][0]-Particles[1][0]) , dir[0][0]});
 		  //Dir.push_back(std::vector<double>{Particles[0][0], Particles[0][1], Particles[0][2] , dir[0][0], dir[0][1], dir[0][2]});
 
 

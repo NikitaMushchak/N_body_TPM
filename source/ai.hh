@@ -62,7 +62,7 @@ namespace ai {
 	) {
 		const std::size_t numberOfParticles = positions.size();
 
-		const int integerNumberOfParticles = (int)numberOfParticles + 1;
+		const int integerNumberOfParticles = (int)numberOfParticles ;//+ 1;
 
 		std::ofstream a3r(filename, std::ios::binary | std::ios::out);
 
@@ -112,6 +112,7 @@ namespace ai {
 		}
 		else {
 			if (3 == positions[0].size()) {
+				/*
 				float tx = 0;// (float)L / 2;
 				float ty = 0;// (float)L / 2;
 				float tz = 0;// (float)L / 2;
@@ -119,7 +120,7 @@ namespace ai {
 				a3r.write((char*)&tx, floatSize);
 				a3r.write((char*)&ty, floatSize);
 				a3r.write((char*)&tz, floatSize);
-
+				/**/
 				for (std::size_t i = 0; i < numberOfParticles; ++i) {
 					float x = (float)positions[i][0] - (float)L/2;
 					float y = (float)positions[i][1] - (float)L/2;
