@@ -358,11 +358,11 @@ void CaclDensitySun(
 
 					double q =  -rho[k][m][n][0];
 					double b =  -rho[k][m][n][1];
-					rho[k][m][n][0] =  4.*pi*h*h*h*(q * denom0 + b * denom1) / ((denom0 * denom0 + denom1 * denom1));
-					rho[k][m][n][1] =  4.*pi*h*h*h*(b * denom0 - q * denom1) / ((denom0 * denom0 + denom1 * denom1));
+					rho[k][m][n][0] =  h*h*(q * denom0 + b * denom1) / ((denom0 * denom0 + denom1 * denom1));
+					rho[k][m][n][1] =  h*h*(b * denom0 - q * denom1) / ((denom0 * denom0 + denom1 * denom1));
 
-                    // rho[k][m][n][0] = (rho[k][m][n][0] -1.) / (2.*pi);
-                    // rho[k][m][n][1] = (rho[k][m][n][1] -1.) / (2.*pi);
+                    rho[k][m][n][0] = (rho[k][m][n][0] -1.) / (1.5*pi);
+                    rho[k][m][n][1] = (rho[k][m][n][1] -1.) / (1.5*pi);
 
 				}
 				double b = Wn0;
