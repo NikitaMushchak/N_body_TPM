@@ -33,7 +33,7 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 
 	std::vector<std::vector<double> > Particles;
 	Particles.resize(number_particles);
- 
+
 	for(size_t i = 0 ; i< number_particles; ++i )
 	{
 		Particles[i].resize(3);
@@ -42,14 +42,14 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 
 
 	 for (size_t i = 0; i < number_particles ; ++i) {
-	 	std::vector<double> a = { (double) 32.- 3.1/2. + 3.1*i, 32. , 32. };
+	 	std::vector<double> a = { (double) 32.- 15.1/2. + 15.1*i, 32. , 32. };
 	 	Particles[i] = a;
 	 }
-// 2 - 35% 3 - 38% 3.1 - 37% 
+// 2 - 35% 3 - 38% 3.1 - 37%
 	std::vector<std::vector<double> > PM;
 
 	std::vector<std::vector<double> > Dir;
-	
+
 	std::vector<std::vector<double> > sh;
 
 	// std::cout << "non-Scaled pos"<<std::endl;
@@ -165,7 +165,7 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 		// ai::printMatrix(Particles);
 		//Добавление в центр сетки гравитирующенго тела
 		//SetSun(density, mass, dim);
-	
+
 		 //CIC assigment
 		 auto t1 =ai::time();
 		 CaclDensity(Particles, density, mass, scale, dim );
@@ -190,7 +190,7 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 		 GetAccelPM(Particles, density, a, scale);
 
 		 // Direct(Particles , a , mass);
-		 GetAccel( Particles, a, H, r, dim);//рачет ускорений по методу PPPM
+		 //GetAccel( Particles, a, H, r, dim);//рачет ускорений по методу PPPM
 
 		 /* for(size_t  i = 0 ; i < number_particles; ++i )
 		  {
@@ -198,7 +198,7 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 			  if (std::abs(a[i][1])>20.) a[i][1]=0.;
 			  if (std::abs(a[i][2])>20.) a[i][2]=0.;
 		  }*/
-		 
+
 		 //расчет ускорений по прямому алгоритму
 		// DirectSun(Particles, a, mass, L);
 		 Direct(Particles, dir, mass);
@@ -206,12 +206,12 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 		  PM.push_back( std::vector<double>{std::abs(Particles[0][0]-Particles[1][0]) , a[0][0]});
 		  Dir.push_back(std::vector<double>{std::abs(Particles[0][0]-Particles[1][0]) , dir[0][0]});
 		  //Dir.push_back(std::vector<double>{Particles[0][0], Particles[0][1], Particles[0][2] , dir[0][0], dir[0][1], dir[0][2]});
-		  
-		  
+
+
 		 std::cout<<"PM accel"<<std::endl;
 		 ai::printMatrix(a);
-		 
-		 
+
+
 		 std::cout<<"Dir accel"<<std::endl;
 		 ai::printMatrix(dir);
 		 auto t6 = ai::time();
@@ -224,7 +224,7 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 		 std::cout <<"Direct time= "<<ai::duration(t7,t8,"ms")<<" ms"<<std::endl;
 		 //std::cout<<"Dir accel "<<std::endl;
 		 //ai::printMatrix(dir);
-			sh.push_back(std::vector<double>{it , std::abs(Particles[0][0]-Particles[1][0]) , std::abs(1-(dir[0][0]/a[0][0]))*100});
+			sh.push_back(std::vector<double>{it , std::abs(Particles[0][0]-Particles[1][0]) ,dir[0][0]/a[0][0]  });
 		 //std::cout<<"Acceleration"<<std::endl;
 		 //ai::printMatrix(a);
 		 std::cout<<"  \nDir / FFT  = "<< std::abs(1-(dir[0][0]/a[0][0]))*100 <<" %"<<std::endl;
@@ -290,7 +290,7 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 		ai::saveMatrix("./sh",sh);
 
 		std::cout<<"Done"<<std::endl;
-	
+
 		/*int iy;
 		std::cin >> iy;*/
 	return 0;

@@ -300,8 +300,11 @@ void PuttoBox(std::vector<
 
 					double q =  -rho[k][m][n][0];
 					double b =  -rho[k][m][n][1];
-					rho[k][m][n][0] =  4.*pi*h*h*h*(q * denom0 + b * denom1) / (denom0 * denom0 + denom1 * denom1);
-					rho[k][m][n][1] =  4.*pi*h*h*h*(b * denom0 - q * denom1) / (denom0 * denom0 + denom1 * denom1);
+					rho[k][m][n][0] =  h*h*(q * denom0 + b * denom1) / ((denom0 * denom0 + denom1 * denom1));
+					rho[k][m][n][1] =  h*h*(b * denom0 - q * denom1) / ((denom0 * denom0 + denom1 * denom1));
+
+                    rho[k][m][n][0] = (rho[k][m][n][0] -1.) / (2.*pi);
+                    rho[k][m][n][1] = (rho[k][m][n][1] -1.) / (2.*pi);
 
 				}
 				double b = Wn0;
@@ -463,11 +466,11 @@ void GetAccelPM(std::vector<std::vector<double> >& Particles,
 
 void GetAccel(std::vector<std::vector<double> >& Particles,
 				std::vector<std::vector<double> >& a,
-				double H, 
-				double r, 
+				double H,
+				double r,
 				size_t dim)
 {
-  
+
   // double h = 1./H;
   // r - радиус применения расчета близкодействия
 std::vector<std::vector<double > > as;
@@ -562,7 +565,7 @@ for (size_t i =0 ; i< Particles.size() ; ++i)
 		   dx = Particles[i][0] - Particles[j][0];
 		   dy = Particles[i][1] - Particles[j][1];
 		   dz = Particles[i][2] - Particles[j][2];
-		   
+
 		   std::cout << "Particles[i][0] = " << Particles[i][0] << "  Particles[j][0] = " << Particles[j][0] << std::endl;
 		   std::cout << "Particles[i][1] = " << Particles[i][1] << "  Particles[j][1] = " << Particles[j][1] << std::endl;
 		   std::cout << "Particles[i][2] = " << Particles[i][2] << "  Particles[j][2] = " << Particles[j][2] << std::endl;
@@ -572,7 +575,7 @@ for (size_t i =0 ; i< Particles.size() ; ++i)
 		   std::cout<<"dy = "<<dy<<std::endl;
 		   std::cout<<"dz = "<<dz<<std::endl;
 		   distij = sqrt(dx*dx + dy*dy +dz*dz);
-		   
+
 		   magi = (a*a) /(distij*distij*distij);
 		   nagi = (1. *std::pow(a,6))/(std::pow(distij, 7));
 		   std::cout<<"distij = "<<distij<<std::endl;
@@ -590,19 +593,19 @@ for (size_t i =0 ; i< Particles.size() ; ++i)
 					70.*ksix*ksix*ksix*ksix +
 					48.*ksix*ksix*ksix*ksix*ksix -
 					21.*ksix*ksix*ksix*ksix*ksix*ksix)/ ksix;
-					
+
 					Ry = (1./(35.* rsr*rsr))*(224.* ksiy -
 					224.*ksiy*ksiy*ksiy +
 					70.*ksiy*ksiy*ksiy*ksiy +
 					48.*ksiy*ksiy*ksiy*ksiy*ksiy -
 					21.*ksiy*ksiy*ksiy*ksiy*ksiy*ksiy) / ksiy;
-					
+
 					Rz = (1./(35.* rsr*rsr))*(224.* ksiz -
 					224.*ksiz*ksiz*ksiz +
 					70.*ksiz*ksiz*ksiz*ksiz +
 					48.*ksiz*ksiz*ksiz*ksiz*ksiz -
 					21.*ksiz*ksiz*ksiz*ksiz*ksiz*ksiz) / ksiz;
-					
+
 					// std::cout<<"Rx = "<<Rx<<std::endl;
                     std::cout<<" Pm dir[i][0] = "<<dir[i][0]<<std::endl;
 					//std::cout<<"gx = "<<gx<<std::endl;
@@ -626,7 +629,7 @@ for (size_t i =0 ; i< Particles.size() ; ++i)
 					70.*ksix*ksix*ksix*ksix -
 					48.*ksix*ksix*ksix*ksix*ksix +
 					7.*ksix*ksix*ksix*ksix*ksix*ksix) / ksix;
-					
+
 					Ry = ksiy < std::pow(10,-8)? 0. : (1./(35.* rsr*rsr))*(  12./(ksiy*ksiy) - 224. + 896.*ksiy -
 					840.*ksiy*ksiy +
 					224. *ksiy*ksiy*ksiy +
@@ -757,4 +760,3 @@ void DirectSun(std::vector<std::vector<double>> & Particles,
 
 		}
 }
-
