@@ -353,7 +353,7 @@ void CaclDensitySun(
 
 				denom0 -= (Wk0 + i_Wk0 + Wm0 + i_Wm0 + Wn0 + i_Wn0);
 				denom1 -= (Wk1 + i_Wk1 + Wm1 + i_Wm1 + Wn1 + i_Wn1);
-				if (denom0 !=0. )
+				if (denom0 != 0.)
 				{
 
 					double q =  -rho[k][m][n][0];
@@ -610,8 +610,9 @@ for (size_t i =0 ; i< Particles.size() ; ++i)
 	 double distij;
 	 double magi;
 	 double nagi;
-	 double Rx , Ry, Rz;
-	 double gx, gy, gz;
+	 double Rx ;//, Ry, Rz;
+     double Sh;//поправочный коэффициент
+	 //double gx, gy, gz;
 	 double a = 0.3; //равновесное расстояние
 	 // std::cout<<"DIRECT INNNNN !!!!!!"<<std::endl;
 	 // ai::printMatrix(dir);
@@ -624,23 +625,23 @@ for (size_t i =0 ; i< Particles.size() ; ++i)
 		   dy = Particles[i][1] - Particles[j][1];
 		   dz = Particles[i][2] - Particles[j][2];
 
-		   std::cout << "Particles[i][0] = " << Particles[i][0] << "  Particles[j][0] = " << Particles[j][0] << std::endl;
-		   std::cout << "Particles[i][1] = " << Particles[i][1] << "  Particles[j][1] = " << Particles[j][1] << std::endl;
-		   std::cout << "Particles[i][2] = " << Particles[i][2] << "  Particles[j][2] = " << Particles[j][2] << std::endl;
-
-
-		   std::cout<<"dx = "<<dx<<std::endl;
-		   std::cout<<"dy = "<<dy<<std::endl;
-		   std::cout<<"dz = "<<dz<<std::endl;
+		   // std::cout << "Particles[i][0] = " << Particles[i][0] << "  Particles[j][0] = " << Particles[j][0] << std::endl;
+		   // std::cout << "Particles[i][1] = " << Particles[i][1] << "  Particles[j][1] = " << Particles[j][1] << std::endl;
+		   // std::cout << "Particles[i][2] = " << Particles[i][2] << "  Particles[j][2] = " << Particles[j][2] << std::endl;
+           //
+           //
+		   // std::cout<<"dx = "<<dx<<std::endl;
+		   // std::cout<<"dy = "<<dy<<std::endl;
+		   // std::cout<<"dz = "<<dz<<std::endl;
 		   distij = sqrt(dx*dx + dy*dy +dz*dz);
 
 		   magi = (a*a) /(distij*distij*distij);
 		   nagi = (1. *std::pow(a,6))/(std::pow(distij, 7));
-		   std::cout<<"distij = "<<distij<<std::endl;
+		   // std::cout<<"distij = "<<distij<<std::endl;
 
 				 ksix = 2.*distij/rsr;
-				 ksiy = 2.*distij/rsr;
-				 ksiz = 2.*distij/rsr;
+				 // ksiy = 2.*distij/rsr;
+				 // ksiz = 2.*distij/rsr;
 
 				if ( distij <= rsr*0.5)
 				{
@@ -652,28 +653,28 @@ for (size_t i =0 ; i< Particles.size() ; ++i)
 					48.*ksix*ksix*ksix*ksix*ksix -
 					21.*ksix*ksix*ksix*ksix*ksix*ksix)/ ksix;
 
-					Ry = (1./(35.* rsr*rsr))*(224.* ksiy -
-					224.*ksiy*ksiy*ksiy +
-					70.*ksiy*ksiy*ksiy*ksiy +
-					48.*ksiy*ksiy*ksiy*ksiy*ksiy -
-					21.*ksiy*ksiy*ksiy*ksiy*ksiy*ksiy) / ksiy;
-
-					Rz = (1./(35.* rsr*rsr))*(224.* ksiz -
-					224.*ksiz*ksiz*ksiz +
-					70.*ksiz*ksiz*ksiz*ksiz +
-					48.*ksiz*ksiz*ksiz*ksiz*ksiz -
-					21.*ksiz*ksiz*ksiz*ksiz*ksiz*ksiz) / ksiz;
+					// Ry = (1./(35.* rsr*rsr))*(224.* ksiy -
+					// 224.*ksiy*ksiy*ksiy +
+					// 70.*ksiy*ksiy*ksiy*ksiy +
+					// 48.*ksiy*ksiy*ksiy*ksiy*ksiy -
+					// 21.*ksiy*ksiy*ksiy*ksiy*ksiy*ksiy) / ksiy;
+                    //
+					// Rz = (1./(35.* rsr*rsr))*(224.* ksiz -
+					// 224.*ksiz*ksiz*ksiz +
+					// 70.*ksiz*ksiz*ksiz*ksiz +
+					// 48.*ksiz*ksiz*ksiz*ksiz*ksiz -
+					// 21.*ksiz*ksiz*ksiz*ksiz*ksiz*ksiz) / ksiz;
 
 					// std::cout<<"Rx = "<<Rx<<std::endl;
-                    std::cout<<" Pm dir[i][0] = "<<dir[i][0]<<std::endl;
+                    // std::cout<<" Pm dir[i][0] = "<<dir[i][0]<<std::endl;
 					//std::cout<<"gx = "<<gx<<std::endl;
 					dir[i][0] += dx*(nagi - magi)/(a * a) + dx*Rx;//direct force
-					dir[i][1] += dy*(nagi - magi)/(a * a) + dy*Ry;
-					dir[i][2] += dz*(nagi - magi)/(a * a) + dz*Rz;
-					 std::cout<<"Rx = "<<Rx<<std::endl;
-					 std::cout<<"dir[i][0] = "<<dir[i][0]<<std::endl;
-					 std::cout<<"dir[i][1] = "<<dir[i][1]<<std::endl;
-					 std::cout<<"dir[i][2] = "<<dir[i][2]<<std::endl;
+					dir[i][1] += dy*(nagi - magi)/(a * a) + dy*Rx;
+					dir[i][2] += dz*(nagi - magi)/(a * a) + dz*Rx;
+					 // std::cout<<"Rx = "<<Rx<<std::endl;
+					 // std::cout<<"dir[i][0] = "<<dir[i][0]<<std::endl;
+					 // std::cout<<"dir[i][1] = "<<dir[i][1]<<std::endl;
+					 // std::cout<<"dir[i][2] = "<<dir[i][2]<<std::endl;
 
 
 				}
@@ -688,37 +689,52 @@ for (size_t i =0 ; i< Particles.size() ; ++i)
 					48.*ksix*ksix*ksix*ksix*ksix +
 					7.*ksix*ksix*ksix*ksix*ksix*ksix) / ksix;
 
-					Ry = ksiy < std::pow(10,-8)? 0. : (1./(35.* rsr*rsr))*(  12./(ksiy*ksiy) - 224. + 896.*ksiy -
-					840.*ksiy*ksiy +
-					224. *ksiy*ksiy*ksiy +
-					70.*ksiy*ksiy*ksiy*ksiy -
-					48.*ksiy*ksiy*ksiy*ksiy*ksiy +
-					7.*ksiy*ksiy*ksiy*ksiy*ksiy*ksiy) / ksiy;
-
-					Rz = ksiz < std::pow(10,-8) ? 0. : (1./(35.* rsr*rsr))*(12./(ksiz*ksiz) - 224. + 896.*ksiz -
-					840.*ksiz*ksiz +
-					224. *ksiz*ksiz*ksiz +
-					70.*ksiz*ksiz*ksiz*ksiz -
-					48.*ksiz*ksiz*ksiz*ksiz*ksiz +
-					7.*ksiz*ksiz*ksiz*ksiz*ksiz*ksiz) / ksiz;
-                    std::cout<<" PM dir[i][0] = "<<dir[i][0]<<std::endl;
+					// Ry = ksiy < std::pow(10,-8)? 0. : (1./(35.* rsr*rsr))*(  12./(ksiy*ksiy) - 224. + 896.*ksiy -
+					// 840.*ksiy*ksiy +
+					// 224. *ksiy*ksiy*ksiy +
+					// 70.*ksiy*ksiy*ksiy*ksiy -
+					// 48.*ksiy*ksiy*ksiy*ksiy*ksiy +
+					// 7.*ksiy*ksiy*ksiy*ksiy*ksiy*ksiy) / ksiy;
+                    //
+					// Rz = ksiz < std::pow(10,-8) ? 0. : (1./(35.* rsr*rsr))*(12./(ksiz*ksiz) - 224. + 896.*ksiz -
+					// 840.*ksiz*ksiz +
+					// 224. *ksiz*ksiz*ksiz +
+					// 70.*ksiz*ksiz*ksiz*ksiz -
+					// 48.*ksiz*ksiz*ksiz*ksiz*ksiz +
+					// 7.*ksiz*ksiz*ksiz*ksiz*ksiz*ksiz) / ksiz;
+                    // std::cout<<" PM dir[i][0] = "<<dir[i][0]<<std::endl;
 
 					//  std::cout<<"gx = "<<gx<<std::endl;
 					dir[i][0] += dx*(nagi - magi)/(a * a) + dx*Rx; //direct force
-					dir[i][1] += dy*(nagi - magi)/(a * a) + dy*Ry;
-					dir[i][2] += dz*(nagi - magi)/(a * a) + dz*Rz;
-					 std::cout<<"Rx = "<<Rx<<std::endl;
-					 std::cout<<"dir[i][0] = "<<dir[i][0]<<std::endl;
-					 std::cout<<"dir[i][1] = "<<dir[i][1]<<std::endl;
-					 std::cout<<"dir[i][2] = "<<dir[i][2]<<std::endl;
+					dir[i][1] += dy*(nagi - magi)/(a * a) + dy*Rx;
+					dir[i][2] += dz*(nagi - magi)/(a * a) + dz*Rx;
+					 // std::cout<<"Rx = "<<Rx<<std::endl;
+					 // std::cout<<"dir[i][0] = "<<dir[i][0]<<std::endl;
+					 // std::cout<<"dir[i][1] = "<<dir[i][1]<<std::endl;
+					 // std::cout<<"dir[i][2] = "<<dir[i][2]<<std::endl;
 
 				}
+                // if(distij < 2.)
+                // {
+                //     Sh = (0.0126404 + 0.256614*distij - 0.27833 * distij*distij + 0.187395 * distij*distij*distij
+                //       - 0.0605893 * distij*distij * distij*distij) / distij;
+                //       dir[i][0]+=Sh*dx;
+                //       dir[i][1]+=Sh*dy;
+                //       dir[i][2]+=Sh*dz;
+                // }
+                // if(distij <=3. && distij >=2)
+                // {
+                //     Sh = (-0.396664 + 0.260483*distij - 0.0452534 *distij*distij) / distij;
+                //       dir[i][0]+=Sh*dx;
+                //       dir[i][1]+=Sh*dy;
+                //       dir[i][2]+=Sh*dz;
+                // }
 		}
 
 	  }
 	  // std::cout<<"dir matrix"<<std::endl;
 	  // ai::printMatrix(dir);
-	  return std::vector<double>{dir[0][0], dir[0][1], dir[0][2]};
+	  return std::vector<double>{ dir[0][0], dir[0][1], dir[0][2] };
 	}
 
 
@@ -811,10 +827,10 @@ void DirectSun(std::vector<std::vector<double>> & Particles,
 			// dir[j][1] +=  (std::pow(a,13)/std::pow(dy,13) - Signum(dy)*(a*a)/(dy*dy))/(a*a);
 			// dir[j][2] +=  (std::pow(a,13)/std::pow(dz,13) - Signum(dz)*(a*a)/(dz*dz))/(a*a);
 
-			std::cout << "direct DIST ij = " << distij << std::endl;
-			std::cout << "direct dirij x= " << dir[i][0] << std::endl;//"    dirji x=  " << dir[j][0] << std::endl;
-			std::cout << "direct dirij y= " << dir[i][1] << std::endl;// "    dirji y=  " << dir[j][1] << std::endl;
-			std::cout << "direct dirij z= " << dir[i][2] << std::endl;// "    dirji z=  " << dir[j][2] << std::endl;
+			// std::cout << "direct DIST ij = " << distij << std::endl;
+			// std::cout << "direct dirij x= " << dir[i][0] << std::endl;//"    dirji x=  " << dir[j][0] << std::endl;
+			// std::cout << "direct dirij y= " << dir[i][1] << std::endl;// "    dirji y=  " << dir[j][1] << std::endl;
+			// std::cout << "direct dirij z= " << dir[i][2] << std::endl;// "    dirji z=  " << dir[j][2] << std::endl;
 
 		}
 }

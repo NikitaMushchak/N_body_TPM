@@ -42,11 +42,13 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 
 
 	 for (size_t i = 0; i < number_particles ; ++i) {
-	 	std::vector<double> a = { (double) 32.- 3./2. + 3.*i, 32. , 32. };
+	 	std::vector<double> a = { (double) 32.- 13./2. + 13.*i, 32. , 32. };
 	 	Particles[i] = a;
 	 }
 // 2 - 35% 3 - 38% 3.1 - 37%
 	std::vector<std::vector<double> > PM;
+
+	std::vector<std::vector<double> >  APM;
 
 	std::vector<std::vector<double> > Dir;
 
@@ -64,7 +66,6 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 
 	 //std::cout << "Scaled pos"<<std::endl;
 	 //ai::printMatrix(Particles);
-	// const double T1 = 3.1;
 	  double dt=0;
 	  double time=0;
 	 size_t it = 0 ;
@@ -101,17 +102,17 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 			}
 		}
 
-	std::vector<std::vector<size_t> > nuls; //for particles in same box
-
-
-		  nuls.resize(Particles.size());
-
-		  for (size_t i =0 ; i<Particles.size(); ++i)
-	 {
-
-			 nuls[i].resize(4);
-
-	 }
+	// std::vector<std::vector<size_t> > nuls; //for particles in same box
+	//
+	//
+	// 	  nuls.resize(Particles.size());
+	//
+	// 	  for (size_t i =0 ; i<Particles.size(); ++i)
+	//  {
+	//
+	// 		 nuls[i].resize(4);
+	//
+	//  }
 
 
 
@@ -119,21 +120,28 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 	a.resize(Particles.size());
 		for (size_t i = 0; i < Particles.size(); i++)
 		{
-		a[i].resize(3);
+			a[i].resize(3);
 		}
 
+
+		std::vector<std::vector<double> >apm;
+		apm.resize(Particles.size());
+		   for (size_t i = 0; i < Particles.size(); i++)
+		   {
+		   		apm[i].resize(3);
+		   }
 	  std::vector<std::vector<double> >dir;
 	 dir.resize(Particles.size());
 		 for (size_t i = 0; i < Particles.size(); i++)
 		 {
-		 dir[i].resize(3);
+		 	dir[i].resize(3);
 		 }
 
 	 std::vector<std::vector<double> > vel;
 	  vel.resize(Particles.size());
 		for (size_t i = 0; i < Particles.size(); i++)
 		{
-		vel[i].resize(3);
+			vel[i].resize(3);
 		}
 
 		std::vector< std::vector<double > > null2 ;
@@ -145,26 +153,26 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 	 /**/
 
 	 //Функция генерируюшая кольцо частиц
-	 //GenRing(Particles,  vel,  number_particles,  L);
+	 // GenRing(Particles,  vel,  number_particles,  L);
 
 	double r = 3.0; //радиус близкодействия
 	double energy;
 	// TODO вынести константу!!!!
 	//integrator here
 	auto start = ai::time();
-	while (time <T1)
+	while (time < T1)
 		{
 		it++;
-		 
+
 		 energy=0.;
-		
+
 		//Добавление в центр сетки гравитирующенго тела
-		
+
 		// CaclDensitySun(Sun ,
-		                 // density,
-		                 // mass,
-		                // H,
-		                 // dim);
+		//                  density,
+		//                  mass,
+		//                 H,
+		//                  dim);
 		 //CIC assigment
 		 auto t1 =ai::time();
 		 CaclDensity(Particles, density, mass, scale, dim );
@@ -184,27 +192,28 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 		 auto t5 = ai::time();
 		 //Расчет ускорений по сеточному методу
 		 GetAccelPM(Particles, density, a, scale);
-
+		 apm=a;
 		  // Direct(Particles , a , mass);
 		 GetAccel( Particles, a, H, r, dim);//рачет ускорений по методу PPPM
 
-		
+
 
 		 //расчет ускорений по прямому алгоритму
 		// DirectSun(Particles, a, mass, L);
 		 Direct(Particles, dir, mass);
 
 		  PM.push_back( std::vector<double>{std::abs(Particles[0][0]-Particles[1][0]) , a[0][0]});
+		  APM.push_back( std::vector<double>{std::abs(Particles[0][0]-Particles[1][0]) , apm[0][0]});
 		  Dir.push_back(std::vector<double>{std::abs(Particles[0][0]-Particles[1][0]) , dir[0][0]});
 		  //Dir.push_back(std::vector<double>{Particles[0][0], Particles[0][1], Particles[0][2] , dir[0][0], dir[0][1], dir[0][2]});
 
 
-		 std::cout<<"PM accel"<<std::endl;
-		 ai::printMatrix(a);
+		 //std::cout<<"PM accel"<<std::endl;
+		 //ai::printMatrix(a);
 
 
 		 std::cout<<"Dir accel"<<std::endl;
-		 ai::printMatrix(dir);
+		 //ai::printMatrix(dir);
 		 auto t6 = ai::time();
 		 std::cout <<"Acclel time = "<<ai::duration(t5,t6,"ms")<<" ms"<<std::endl;
 
@@ -222,7 +231,7 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 
 		 auto t10 = ai::time();
 		 dt =  1*Get_Step(a, mass);
-		 if (dt < 0.00001) dt=0.00001;
+		//dt=0.0001;
 		 //std::cout << "dt = " << dt << std::endl;
 		 // time += dt;
 		 for (size_t i = 0; i < Particles.size(); ++i)
@@ -231,7 +240,7 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 			 vel[i][1] += a[i][1] * dt;
 			 vel[i][2] += a[i][2] * dt;
 
-			 energy += std::sqrt( vel[i][0]*vel[i][0] + vel[i][1]*vel[i][1] + vel[i][2]*vel[i][2] );
+			 //energy += std::sqrt( vel[i][0]*vel[i][0] + vel[i][1]*vel[i][1] + vel[i][2]*vel[i][2] );
 		 }
 		 sh.push_back(std::vector<double>{it , std::abs(Particles[0][0]-Particles[1][0]) ,dir[0][0]/a[0][0] , energy});
 		 // std::cout << "Vel\n";
@@ -281,6 +290,7 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 		std::cout<<"Saving results ..."<<std::endl;
 		ai::saveMatrix("./dir", Dir);
 		ai::saveMatrix("./pm", PM);
+		ai::saveMatrix("./apm", APM);
 		ai::saveMatrix("./sh",sh);
 
 		std::cout<<"Done"<<std::endl;
