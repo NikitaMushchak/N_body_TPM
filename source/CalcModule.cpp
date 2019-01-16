@@ -714,21 +714,21 @@ for (size_t i =0 ; i< Particles.size() ; ++i)
 					 // std::cout<<"dir[i][2] = "<<dir[i][2]<<std::endl;
 
 				}
-                // if(distij < 2.)
-                // {
-                //     Sh = (0.0126404 + 0.256614*distij - 0.27833 * distij*distij + 0.187395 * distij*distij*distij
-                //       - 0.0605893 * distij*distij * distij*distij) / distij;
-                //       dir[i][0]+=Sh*dx;
-                //       dir[i][1]+=Sh*dy;
-                //       dir[i][2]+=Sh*dz;
-                // }
-                // if(distij <=3. && distij >=2)
-                // {
-                //     Sh = (-0.396664 + 0.260483*distij - 0.0452534 *distij*distij) / distij;
-                //       dir[i][0]+=Sh*dx;
-                //       dir[i][1]+=Sh*dy;
-                //       dir[i][2]+=Sh*dz;
-                // }
+                if(distij < 2.)
+                {
+                    Sh = (0.0122242 + 0.609459*distij - 0.432782 * distij*distij + 0.189694 * distij*distij*distij
+                      - 0.0610997 * distij*distij * distij*distij) / distij;
+                      dir[i][0]+=Sh*dx;
+                      dir[i][1]+=Sh*dy;
+                      dir[i][2]+=Sh*dz;
+                }
+                if(distij <=3. && distij >=2)
+                {
+                    Sh = (-0.137179 + 0.158876*distij - 0.0348711 *distij*distij) / distij;
+                      dir[i][0]+=Sh*dx;
+                      dir[i][1]+=Sh*dy;
+                      dir[i][2]+=Sh*dz;
+                }
 		}
 
 	  }

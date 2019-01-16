@@ -42,7 +42,7 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 
 
 	 for (size_t i = 0; i < number_particles ; ++i) {
-	 	std::vector<double> a = { (double) 32.- 13./2. + 13.*i, 32. , 32. };
+	 	std::vector<double> a = { (double) 32.- 5./2. + 5.*i, 32. , 32. };
 	 	Particles[i] = a;
 	 }
 // 2 - 35% 3 - 38% 3.1 - 37%
