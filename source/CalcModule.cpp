@@ -50,8 +50,8 @@ void GenRing(std::vector<std::vector<double> >& Particles, std::vector<std::vect
                     Particles[i][1] = x * sin(i)+center;
                     Particles[i][2] = center;
 
-                    vel[i][0] =  1.0*sqrt(1000./x) * cos(0.5*3.14159265359 - (double)i);
-                    vel[i][1] = -1.0*sqrt(1000./x) * sin(0.5* 3.14159265359 - (double)i);
+                    vel[i][0] =  1.5*sqrt(1000./x) * cos(0.5*3.14159265359 - (double)i);
+                    vel[i][1] = -1.5*sqrt(1000./x) * sin(0.5* 3.14159265359 - (double)i);
                     //vel[i][2] = 0.;//0.3 *cos(3.14159265359 - (double)i);
     }
 
@@ -118,9 +118,9 @@ void CaclDensitySun(
    //for ()
    size_t x, y, z = 0;
    double dx, dy, dz, tx, ty, tz;
-   double h = 1./(double)(dim-1);
+   // double h = 1./(double)(dim-1);
    mass*=1000.;
-   mass/=(h*h*h);
+   // mass/=(h*h*h);
    // std::cout <<"mass scaled"<<mass<<std::endl;
 
    // for (size_t i = 0; i < Particles.size(); ++i)
@@ -176,8 +176,8 @@ void CaclDensitySun(
 	//for ()
 	size_t x, y, z = 0;
 	double dx, dy, dz, tx, ty, tz;
-    double h = 1./(double)(dim-1);
-    mass/=(h*h*h);
+    // double h = 1./(double)(dim-1);
+    // mass/=(h*h*h);
     // std::cout <<"mass scaled"<<mass<<std::endl;
 
 	for (size_t i = 0; i < Particles.size(); ++i)
@@ -322,63 +322,78 @@ void CaclDensitySun(
 
 		double pi = 3.14159265358979;
 
-		//std::vector<double> W = { cos(2.0 * pi / double(dim)) , sin(2.0 * pi / double(dim)) };
+		// std::vector<double> W = { cos(2.0 * pi / double(dim)) , sin(2.0 * pi / double(dim)) };
 
-		double W0 = cos(2.0 * pi / double(dim));
-		double W1 = sin(2.0 * pi / double(dim));
-		//std::vector<double> Wm = { 1.0, 0. }, Wn = { 1.0, 0. }, Wk = { 1.0, 0. };
-		double Wm0 = 1.;
-		double Wm1 = 0.;
-		double Wn0 = 1.;
-		double Wn1 = 0.;
-		double Wk0 = 1.;
-		double Wk1 = 0.;
+		// double W0 = cos(2.0 * pi / double(dim));
+		// double W1 = sin(2.0 * pi / double(dim));
+		// //std::vector<double> Wm = { 1.0, 0. }, Wn = { 1.0, 0. }, Wk = { 1.0, 0. };
+		// double Wm0 = 1.;
+		// double Wm1 = 0.;
+		// double Wn0 = 1.;
+		// double Wn1 = 0.;
+		// double Wk0 = 1.;
+		// double Wk1 = 0.;
 
-		for (size_t k = 0; k < dim; k++) {
-			for (size_t m = 0; m < dim; m++) {
-				for (size_t n = 0; n < dim; n++) {
+		// for (size_t k = 0; k < dim; k++) {
+			// for (size_t m = 0; m < dim; m++) {
+				// for (size_t n = 0; n < dim; n++) {
 
-				double denom0 = 6.;
-				double denom1 = 0.;
-				//std::vector < double> i_Wk = { Wk0 / (Wk0 * Wk0 + Wk1 * Wk1), -(Wk1 / (Wk0 * Wk0 + Wk1 * Wk1)) };
-				double i_Wk0 = Wk0 / (Wk0 * Wk0 + Wk1 * Wk1);
-				double i_Wk1 = -(Wk1 / (Wk0 * Wk0 + Wk1 * Wk1));
-				//std::vector < double> i_Wm = { Wm0 / (Wm0 * Wm0 + Wm1 * Wm1), -(Wm1 / (Wm0 * Wm0 + Wm1 * Wm1)) };
-				double i_Wm0 = Wm0 / (Wm0 * Wm0 + Wm1 * Wm1);
-				double i_Wm1 = -(Wm1 / (Wm0 * Wm0 + Wm1 * Wm1));
-				//std::vector < double> i_Wn = { Wn0 / (Wn0 * Wn0 + Wn1 * Wn1), -(Wn1 / (Wn0 * Wn0 + Wn1 * Wn1)) };
-				double i_Wn0 = Wn0 / (Wn0 * Wn0 + Wn1 * Wn1);
-				double i_Wn1 = -(Wn1 / (Wn0 * Wn0 + Wn1 * Wn1));
+				// double denom0 = 6.;
+				// double denom1 = 0.;
+				// //std::vector < double> i_Wk = { Wk0 / (Wk0 * Wk0 + Wk1 * Wk1), -(Wk1 / (Wk0 * Wk0 + Wk1 * Wk1)) };
+				// double i_Wk0 = Wk0 / (Wk0 * Wk0 + Wk1 * Wk1);
+				// double i_Wk1 = -(Wk1 / (Wk0 * Wk0 + Wk1 * Wk1));
+				// //std::vector < double> i_Wm = { Wm0 / (Wm0 * Wm0 + Wm1 * Wm1), -(Wm1 / (Wm0 * Wm0 + Wm1 * Wm1)) };
+				// double i_Wm0 = Wm0 / (Wm0 * Wm0 + Wm1 * Wm1);
+				// double i_Wm1 = -(Wm1 / (Wm0 * Wm0 + Wm1 * Wm1));
+				// //std::vector < double> i_Wn = { Wn0 / (Wn0 * Wn0 + Wn1 * Wn1), -(Wn1 / (Wn0 * Wn0 + Wn1 * Wn1)) };
+				// double i_Wn0 = Wn0 / (Wn0 * Wn0 + Wn1 * Wn1);
+				// double i_Wn1 = -(Wn1 / (Wn0 * Wn0 + Wn1 * Wn1));
 
 
-				denom0 -= (Wk0 + i_Wk0 + Wm0 + i_Wm0 + Wn0 + i_Wn0);
-				denom1 -= (Wk1 + i_Wk1 + Wm1 + i_Wm1 + Wn1 + i_Wn1);
-				if (denom0 != 0.)
-				{
+				// denom0 -= (Wk0 + i_Wk0 + Wm0 + i_Wm0 + Wn0 + i_Wn0);
+				// denom1 -= (Wk1 + i_Wk1 + Wm1 + i_Wm1 + Wn1 + i_Wn1);
+				// if (denom0 != 0.)
+				// {
 
-					double q =  -rho[k][m][n][0];
-					double b =  -rho[k][m][n][1];
-					rho[k][m][n][0] =  h*h*(q * denom0 + b * denom1) / ((denom0 * denom0 + denom1 * denom1));
-					rho[k][m][n][1] =  h*h*(b * denom0 - q * denom1) / ((denom0 * denom0 + denom1 * denom1));
+					// double q =  -rho[k][m][n][0];
+					// double b =  -rho[k][m][n][1];
+					// rho[k][m][n][0] =  (q * denom0 + b * denom1) / ((denom0 * denom0 + denom1 * denom1));
+					// rho[k][m][n][1] =  (b * denom0 - q * denom1) / ((denom0 * denom0 + denom1 * denom1));
 
-                    rho[k][m][n][0] = (rho[k][m][n][0] -1.) / (1.5*pi);
-                    rho[k][m][n][1] = (rho[k][m][n][1] -1.) / (1.5*pi);
+                    // // rho[k][m][n][0] = (rho[k][m][n][0] -1.) / (1.5*pi);
+                    // // rho[k][m][n][1] = (rho[k][m][n][1] -1.) / (1.5*pi);
 
-				}
-				double b = Wn0;
-				Wn0 = Wn0 * W0 - Wn1 * W1;
-				Wn1 = Wn1 * W0 + b * W1;
-			}
-			double r = Wm0;
-			Wm0 = Wm0 * W0 - Wm1 * W1;
-			Wm1 = Wm1 * W0 + r * W1;
-		}
+				// }
+				// double b = Wn0;
+				// Wn0 = Wn0 * W0 - Wn1 * W1;
+				// Wn1 = Wn1 * W0 + b * W1;
+			// }
+			// double r = Wm0;
+			// Wm0 = Wm0 * W0 - Wm1 * W1;
+			// Wm1 = Wm1 * W0 + r * W1;
+		// }
 
-		double a = Wk0;
-		Wk0 = Wk0 * W0 - Wk1 * W1;
-		Wk1 = Wk1 * W0 + a * W1;
-	}
+		// double a = Wk0;
+		// Wk0 = Wk0 * W0 - Wk1 * W1;
+		// Wk1 = Wk1 * W0 + a * W1;
+	// }
 
+	
+	for (size_t k = 0; k < dim; k++) {
+     		for (size_t m = 0; m < dim; m++) {
+     			for (size_t n = 1; n < dim; n++) {
+                    rho[k][m][n][0] = -rho[k][m][n][0]/(4.0*(sin(pi*k/dim)*sin(pi*k/dim) +
+                    sin(pi*m/dim)*sin(pi*m/dim) +
+                    sin(pi*n/dim)*sin(pi*n/dim)));
+
+                    rho[k][m][n][1] = -rho[k][m][n][1]/(4.0*(sin(pi*k/dim)*sin(pi*k/dim) +
+                    sin(pi*m/dim)*sin(pi*m/dim) +
+                    sin(pi*n/dim)*sin(pi*n/dim)));
+
+                }
+            }
+    }
 		/*std::cout << "Potential in Fourier space" << std::endl;
 		for (size_t i = 0; i < dim; i++)
 		{
@@ -465,7 +480,173 @@ void CaclDensitySun(
 	//std::cout << "Solving ... DONE" << std::endl;
 }
 
+void CalcPotentialB(std::vector<
+					std::vector<
+						std::vector<
+							std::vector<double>>>>& rho,
+							size_t dim )
+{
+	double pi = 3.14159265358979;
+	double sinx , siny, sinz;
+	double fx ;
+	//calculate FFT for each layer
+	for (size_t i = 0; i < dim; ++i)
+	{
+		std::vector <
+			std::vector<double>> f; //for rows and colomns
+		f.resize(dim);
+		for (size_t l = 0; l < dim; l++)
+		{
+			f[l].resize(2);
+		}
+		//FFT rows of density
+		for (size_t j = 0; j < dim; ++j) {
+			for (size_t k = 0; k < dim; ++k) {
+				f[k][0] = rho[i][j][k][0];
+				f[k][1] = rho[i][j][k][1];
 
+			}
+			fft2(f);
+			for (size_t k = 0; k < dim; ++k) {
+				rho[i][j][k][0] = f[k][0];
+				rho[i][j][k][1] = f[k][1];
+
+			}
+		}
+	}
+
+	for (size_t i = 0; i < dim; ++i)
+	{
+		std::vector <
+			std::vector<double>> f; //for rows and colomns
+		f.resize(dim);
+		for (size_t l = 0; l < dim; l++)
+		{
+			f[l].resize(2);
+		}
+		//FFT coloumns of density
+		for (size_t k = 0; k < dim; ++k) {
+			for (size_t j = 0; j < dim; ++j) {
+				f[j][0] = rho[i][j][k][0];
+				f[j][1] = rho[i][j][k][1];
+
+			}
+			fft2(f);
+			for (size_t j = 0; j < dim; ++j) {
+				rho[i][j][k][0] = f[j][0];
+				rho[i][j][k][1] = f[j][1];
+			}
+		}
+
+	}
+
+	//FFT in 3rd dimention
+	for (size_t k = 0; k < dim; ++k) {
+		std::vector <
+			std::vector<double>> f;
+		f.resize(dim);
+		for (size_t l = 0; l < dim; l++)
+		{
+			f[l].resize(2);
+		}
+
+		for (size_t j = 0; j < dim; j++){
+			for (size_t i = 0; i< dim; i++){
+				f[i][0] = rho[i][j][k][0];
+				f[i][1] = rho[i][j][k][1];
+				//f[j][1] = rho[j][k][1];
+			}
+			fft2(f);
+			
+			sinz = 4.*sin(k * pi/dim)*sin(k*pi/dim);
+			siny = 4.*sin(j * pi/dim)*sin(j*pi/dim);
+			
+			for (size_t i = 0; i < dim; i++) {
+				
+				sinx = 4.*sin(i * pi/dim)*sin(i*pi/dim);
+				rho[i][j][k][0] = f[i][0];
+				rho[i][j][k][1] = f[i][1];
+				//rho[j][k][1] = f[j][1];
+				fx = std::fabs(sinx + siny + sinz) < std::pow(10 , -8) ? std::pow(10 , -8) : sinx + siny + sinz;
+				
+				rho[i][j][k][0] /= -fx ;//* (4188.818841*pi);
+				rho[i][j][k][1] /= -fx ;//* (4188.818841*pi);
+			}
+		}
+	}
+	//std::cout << "Solve Poisson eq. in Fourier space" << std::endl;
+		for (size_t i = 0; i < dim; i++)
+		{
+			std::vector<std::vector<double>> f;
+			f.resize(dim);
+			for (size_t y = 0; y < dim; y++)
+			{
+				f[y].resize(2);
+			}
+			// inverse FFT rows of rho
+			for (size_t j = 0; j < dim; j++) {
+				for (size_t k = 0; k < dim; k++) {
+					f[k][0] = rho[i][j][k][0];
+					f[k][1] = rho[i][j][k][1];
+				}
+				ifft2(f);
+				for (size_t k = 0; k < dim; k++)
+				{
+					rho[i][j][k][0] = f[k][0];
+					rho[i][j][k][1] = f[k][1];
+				}
+			}
+		}
+		for (size_t i = 0; i < dim; i++)
+		{
+			std::vector<std::vector<double>> f;
+			f.resize(dim);
+			for (size_t y = 0; y < dim; y++)
+			{
+				f[y].resize(2);
+			}
+		// inverse FFT columns of rho
+		for (size_t k = 0; k < dim; k++) {
+			for (size_t j = 0; j < dim; j++)
+			{
+				f[j][0] = rho[i][j][k][0];
+				f[j][1] = rho[i][j][k][1];
+			}
+			ifft2(f);
+			for (size_t j = 0; j < dim; j++)
+			{
+				rho[i][j][k][0] = f[j][0];
+				rho[i][j][k][1] = f[j][1];
+			}
+		}
+	}
+
+		//IFFT in 3rd dimention
+
+		for (size_t k = 0; k < dim; ++k) {
+			std::vector<std::vector<double>> f;
+			f.resize(dim);
+			for (size_t y = 0; y < dim; y++)
+			{
+				f[y].resize(2);
+			}
+
+			for (size_t j = 0; j < dim; j++) {
+				for (size_t i = 0; i< dim; i++)
+				{
+					f[i][0] = rho[i][j][k][0];
+					f[i][1] = rho[i][j][k][1];
+					//f[j][1] = rho[j][k][1];
+				}
+				ifft2(f);
+				for (size_t i = 0; i < dim; i++) {
+					rho[i][j][k][0] = f[i][0];
+					rho[i][j][k][1] = f[i][1];
+					//rho[j][k][1] = f[j][1];
+				}
+			}
+		}
+}
 
 
 
@@ -714,21 +895,21 @@ for (size_t i =0 ; i< Particles.size() ; ++i)
 					 // std::cout<<"dir[i][2] = "<<dir[i][2]<<std::endl;
 
 				}
-                if(distij < 2.)
-                {
-                    Sh = (0.0122242 + 0.609459*distij - 0.432782 * distij*distij + 0.189694 * distij*distij*distij
-                      - 0.0610997 * distij*distij * distij*distij) / distij;
-                      dir[i][0]+=Sh*dx;
-                      dir[i][1]+=Sh*dy;
-                      dir[i][2]+=Sh*dz;
-                }
-                if(distij <=3. && distij >=2)
-                {
-                    Sh = (-0.137179 + 0.158876*distij - 0.0348711 *distij*distij) / distij;
-                      dir[i][0]+=Sh*dx;
-                      dir[i][1]+=Sh*dy;
-                      dir[i][2]+=Sh*dz;
-                }
+                // if(distij < 2.)
+                // {
+                    // Sh = (0.0122242 + 0.609459*distij - 0.432782 * distij*distij + 0.189694 * distij*distij*distij
+                      // - 0.0610997 * distij*distij * distij*distij) / distij;
+                      // dir[i][0]+=Sh*dx;
+                      // dir[i][1]+=Sh*dy;
+                      // dir[i][2]+=Sh*dz;
+                // }
+                // if(distij <=3. && distij >=2)
+                // {
+                    // Sh = (-0.137179 + 0.158876*distij - 0.0348711 *distij*distij) / distij;
+                      // dir[i][0]+=Sh*dx;
+                      // dir[i][1]+=Sh*dy;
+                      // dir[i][2]+=Sh*dz;
+                // }
 		}
 
 	  }

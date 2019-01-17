@@ -19,10 +19,18 @@ void ScalePos(std::vector<std::vector<double>>& Particles, double scale);
                   size_t dim);
 
   void CalcPotential(std::vector<
-					std::vector<
+					  std::vector<
 						std::vector<
 							std::vector<double>>>>& rho,
 				   size_t dim);
+				   
+ void CalcPotentialB(std::vector<
+					  std::vector<
+						std::vector<
+							std::vector<double> > > >& rho,
+							size_t dim );
+							
+							
  void GetAccelPM(std::vector<std::vector<double>>& Particles,
 							std::vector<std::vector<std::vector<std::vector<double >>>>& density,
 								std::vector<std::vector<double>>& a,
