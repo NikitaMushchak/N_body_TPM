@@ -33,29 +33,33 @@ void SetSun(std::vector<
 
 void GenRing(std::vector<std::vector<double> >& Particles, std::vector<std::vector<double> >& vel, double number_particles, double L)
 {
-    srand (time (NULL) );
+    std::random_device random_device;
+    std::mt19937 generator(random_device());
     double R1 = L / 2.;
     double R2 =  L / 1.;
     double Di = R2-R1;
+    double z, rh ;
+    double h = 0.1* R2;
     double center =0.5*L;
     double x;
 
     for (size_t i = 0; i < number_particles ; ++i)
     {
-
-            x = R1 + rand() % (int)Di;
-			if(x >= R2) x=R2;
-
-			if(x <= R1) x=R1;
+            std::uniform_real_distribution<> dis(R1,R2);
+            x = dis(generator);
+            rh = h * std::sqrt(1 - x*x/(R2*R2));
+            std::uniform_real_distribution<> dis1(-rh,rh);
+            //std::cout<<"rh "<<rh<<std::endl;
+            z = dis1(generator);
             //x = R1+2.;
                 //std::cout<<"x = "<<x<<std::endl;
                     //
-                    Particles[i][0] =x * cos(i) +center;
-                    Particles[i][1] = x * sin(i)+center;
-                    Particles[i][2] = center;
+                    Particles[i][0] = x * cos(i) +center;
+                    Particles[i][1] = x * sin(i) +center;
+                    Particles[i][2] = z + center;
 
-                    vel[i][0] =  1.*sqrt((10.*number_particles)/x) * cos(0.5*3.14159265359 - (double)i);
-                    vel[i][1] = -1.*sqrt((10.*number_particles)/x) * sin(0.5* 3.14159265359 - (double)i);
+                    vel[i][0] =  1.*sqrt((10.*number_particles)/std::sqrt(x*x + z*z)) * cos(0.5*3.14159265359 - (double)i);
+                    vel[i][1] = -1.*sqrt((10.*number_particles)/std::sqrt(x*x + z*z)) * sin(0.5* 3.14159265359 - (double)i);
                     //vel[i][2] = 0.;//0.3 *cos(3.14159265359 - (double)i);
     }
 
@@ -133,18 +137,18 @@ void Geninit(std::vector<std::vector<double> >& Particles,
             x = dis(generator);
             rh = h * std::sqrt(1 - x*x/(R2*R2));
             std::uniform_real_distribution<> dis1(-rh,rh);
-            std::cout<<"rh "<<rh<<std::endl;
+            //std::cout<<"rh "<<rh<<std::endl;
             z = dis1(generator);
-            std::cout<<"z = "<<z<<std::endl;
+            //std::cout<<"z = "<<z<<std::endl;
 			ws =
-			std::sqrt((3.*pi*number_particles)/(4.* std::pow(x , 3))) +
-				 std::sqrt( (10.*number_particles)/(std::pow(x , 3)));
-				//ws= 0.6*ws;
+			//std::sqrt((3.*pi*number_particles)/(4.* std::pow(x , 3))) +
+				 std::sqrt( (10.*number_particles) / (std::pow(std::sqrt(x*x + z*z) , 3) ) );
+				ws= 0.6*ws;
             //x = R1+2.;
-                 std::cout<<"x = "<<x<<std::endl;
+                 //std::cout<<"x = "<<x<<std::endl;
                 // std::cout<<"ws = "<<ws<<std::endl;
                     //
-                    Particles[i][0] =x * cos(i) +center;
+                    Particles[i][0] = x * cos(i) +center;
                     Particles[i][1] = x * sin(i)+center;
                     Particles[i][2] = z + center;
 
@@ -152,7 +156,7 @@ void Geninit(std::vector<std::vector<double> >& Particles,
                     // vel[i][1] = -ws *x* sin(0.5* pi - (double)i);
                     //vel[i][2] = 0.;//0.3 *cos(3.14159265359 - (double)i);
 
-					vel[i][0] = - ws*x*sin(i);
+					vel[i][0] = -ws*x*sin(i);
 					vel[i][1] = ws*x*cos(i);
 					// std::cout<<"vel x= "<<vel[i][0]<<std::endl;
 					// std::cout<<"vel y= "<<vel[i][1]<<std::endl;
@@ -212,6 +216,7 @@ void CaclDensitySun(
                    std::vector <
                        std::vector<
                            std::vector<double> > > >& density,
+                size_t number_particles,
                 double mass,
                 double H,
                 size_t dim)
@@ -221,7 +226,7 @@ void CaclDensitySun(
    size_t x, y, z = 0;
    double dx, dy, dz, tx, ty, tz;
    double h = 1./(double)(dim-1);
-   //mass*=100.;
+   mass*=10.*number_particles;
    mass/=(h*h*h);
    // std::cout <<"mass scaled"<<mass<<std::endl;
 
@@ -317,7 +322,6 @@ void CaclDensitySun(
 			else { density[x + 1][y + 1][z + 1][0] += mass * dx * dy * dz; }
 
 		}
-
 	}
 }
 

@@ -153,9 +153,23 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 	 /**/
 
 	 //Функция генерируюшая кольцо частиц
-	 Geninit(Particles,  vel,  number_particles,  L);
+	 GenRing(Particles,  vel,  number_particles,  L);
 	//GenEllipsoid( Particles, vel, number_particles,  L);
+	std::vector<std::vector<double> > init;
+	init.resize(number_particles);
+	for(size_t i = 0 ; i< number_particles; ++i)
+	{
+		init[i].resize(6);
 
+		init[i][0] = Particles[i][0];
+		init[i][1] = Particles[i][1];
+		init[i][2] = Particles[i][2];
+		init[i][3] = vel[i][0];
+		init[i][4] = vel[i][1];
+		init[i][5] = vel[i][2];
+	}
+
+	ai::saveMatrix("!init_configuration", init);
 	// std::cout<<"particles:"<<std::endl;
 	// ai::printMatrix(Particles);
 	double r = 3.0; //радиус близкодействия
