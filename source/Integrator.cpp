@@ -13,7 +13,7 @@ inline double Min_num(double f, double m)
 {
 	return (f < m) ? f : m ;
 }
- double Get_Step(std::vector<std::vector<double>> &a, double mass)
+ double Get_Step(std::vector<std::vector<double> > &a, double mass)
 {
 	double  u_max_a0_ratio = 10.;// maximum possible dv of particles
 	double f_max = 50.;

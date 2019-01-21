@@ -58,7 +58,7 @@ namespace ai {
 		const std::string filename,
 		 std::vector< std::vector<T> > positions,
 		double L,
-		const double radius = 1
+		const double radius = 0.8
 	) {
 		const std::size_t numberOfParticles = positions.size();
 
@@ -113,18 +113,22 @@ namespace ai {
 		else {
 			if (3 == positions[0].size()) {
 				/*
-				float tx = 0;// (float)L / 2;
-				float ty = 0;// (float)L / 2;
-				float tz = 0;// (float)L / 2;
+				double tx = 0;// (float)L / 2;
+				double ty = 0;// (float)L / 2;
+				double tz = 0;// (float)L / 2;
 
-				a3r.write((char*)&tx, floatSize);
-				a3r.write((char*)&ty, floatSize);
-				a3r.write((char*)&tz, floatSize);
+				a3r.write((char*)&tx, doubleSize);
+				a3r.write((char*)&ty, doubleSize);
+				a3r.write((char*)&tz, doubleSize);
 				/**/
 				for (std::size_t i = 0; i < numberOfParticles; ++i) {
-					float x = (float)positions[i][0] - (float)L/2;
-					float y = (float)positions[i][1] - (float)L/2;
-					float z = (float)positions[i][2] - (float)L/2;
+					float x = (float)positions[i][0] - (float)L/2.;
+					float y = (float)positions[i][1] - (float)L/2.;
+					float z = (float)positions[i][2] - (float)L/2.;
+
+					//x*=2.;
+					//y*=2.;
+					//z*=2.;
 
 					a3r.write((char*)&x, floatSize);
 					a3r.write((char*)&y, floatSize);
