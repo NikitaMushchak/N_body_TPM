@@ -35,8 +35,8 @@ void GenRing(std::vector<std::vector<double> >& Particles, std::vector<std::vect
 {
     std::random_device random_device;
     std::mt19937 generator(random_device());
-    double R1 = L / 2.;
-    double R2 =  L / 1.;
+    double R1 = L / 16.;
+    double R2 =  L / 6.;
     double Di = R2-R1;
     double z, rh ;
     double h = 0.1* R2;
@@ -47,6 +47,7 @@ void GenRing(std::vector<std::vector<double> >& Particles, std::vector<std::vect
     {
             std::uniform_real_distribution<> dis(R1,R2);
             x = dis(generator);
+			
             rh = h * std::sqrt(1 - x*x/(R2*R2));
             std::uniform_real_distribution<> dis1(-rh,rh);
             //std::cout<<"rh "<<rh<<std::endl;
@@ -58,8 +59,11 @@ void GenRing(std::vector<std::vector<double> >& Particles, std::vector<std::vect
                     Particles[i][1] = x * sin(i) +center;
                     Particles[i][2] = z + center;
 
-                    vel[i][0] =  1.*sqrt((10.*number_particles)/std::sqrt(x*x + z*z)) * cos(0.5*3.14159265359 - (double)i);
-                    vel[i][1] = -1.*sqrt((10.*number_particles)/std::sqrt(x*x + z*z)) * sin(0.5* 3.14159265359 - (double)i);
+                    vel[i][0] =  0.17*sqrt((10.*number_particles)/std::sqrt(x*x + z*z)) * cos(0.5*3.14159265359 - (double)i);
+                    vel[i][1] = -0.17*sqrt((10.*number_particles)/std::sqrt(x*x + z*z)) * sin(0.5* 3.14159265359 - (double)i);
+
+
+                    //std::cout<<"vel[i][0] "<<vel[i][0]<<  "  "<<"vel[i][1] "<<vel[i][1]<<std::endl;
                     //vel[i][2] = 0.;//0.3 *cos(3.14159265359 - (double)i);
     }
 
@@ -304,22 +308,22 @@ void CaclDensitySun(
 			z = std::floor(Particles[i][2] / H);
 			//std::cout<<"x = "<<x <<"   y = "<<y << "  z = "<<z<<std::endl;
 
-			density[x][y][z][0] += mass * tx *ty*tz;
+			density[x][y][z][0] = mass * tx *ty*tz;
 
-			if (y + 1 >= dim) { y = y % (dim - 1); density[x][y][z][0] += mass * tx *dy*tz; }
-			else { density[x][y + 1][z][0] += mass * tx *dy*tz; }
-			if (z + 1 >= dim) { z = z % (dim - 1); density[x][y][z][0] += mass * tx *ty*dz; }
-			else { density[x][y][z + 1][0] += mass * tx *ty*dz; }
-			if (y + 1 >= dim && z + 1 >= dim) { z = z % (dim - 1); y = y % (dim - 1); density[x][y][z][0] += mass * tx *dy*dz; }
-			else { density[x][y + 1][z + 1][0] += mass * tx *dy*dz; }
-			if (x + 1 >= dim) { x = x % (dim - 1); density[x][y][z][0] += mass * dx *ty*tz; }
-			else { density[x + 1][y][z][0] += mass * dx *ty*tz; }
-			if (x + 1 >= dim && y + 1 >= dim) { x = x % (dim - 1); y = y % (dim - 1); density[x][y][z][0] += mass * dx *dy*tz; }
-			else { density[x + 1][y + 1][z][0] += mass * dx *dy*tz; }
-			if (x + 1 >= dim && z + 1 >= dim) { x = x % (dim - 1); z = z % (dim - 1); density[x][y][z][0] += mass * dx *ty*dz; }
-			else { density[x + 1][y][z + 1][0] += mass * dx *ty*dz; }
-			if (x + 1 >= dim && y + 1 >= dim && z + 1 >= dim) { x = x % (dim - 1); y = y % (dim - 1); z = z % (dim - 1); density[x][y][z][0] += mass * dx * dy * dz; }
-			else { density[x + 1][y + 1][z + 1][0] += mass * dx * dy * dz; }
+			if (y + 1 >= dim) { y = y % (dim - 1); density[x][y][z][0] = mass * tx *dy*tz; }
+			else { density[x][y + 1][z][0] = mass * tx *dy*tz; }
+			if (z + 1 >= dim) { z = z % (dim - 1); density[x][y][z][0] = mass * tx *ty*dz; }
+			else { density[x][y][z + 1][0] = mass * tx *ty*dz; }
+			if (y + 1 >= dim && z + 1 >= dim) { z = z % (dim - 1); y = y % (dim - 1); density[x][y][z][0] = mass * tx *dy*dz; }
+			else { density[x][y + 1][z + 1][0] = mass * tx *dy*dz; }
+			if (x + 1 >= dim) { x = x % (dim - 1); density[x][y][z][0] = mass * dx *ty*tz; }
+			else { density[x + 1][y][z][0] = mass * dx *ty*tz; }
+			if (x + 1 >= dim && y + 1 >= dim) { x = x % (dim - 1); y = y % (dim - 1); density[x][y][z][0] = mass * dx *dy*tz; }
+			else { density[x + 1][y + 1][z][0] = mass * dx *dy*tz; }
+			if (x + 1 >= dim && z + 1 >= dim) { x = x % (dim - 1); z = z % (dim - 1); density[x][y][z][0] = mass * dx *ty*dz; }
+			else { density[x + 1][y][z + 1][0] = mass * dx *ty*dz; }
+			if (x + 1 >= dim && y + 1 >= dim && z + 1 >= dim) { x = x % (dim - 1); y = y % (dim - 1); z = z % (dim - 1); density[x][y][z][0] = mass * dx * dy * dz; }
+			else { density[x + 1][y + 1][z + 1][0] = mass * dx * dy * dz; }
 
 		}
 	}
@@ -557,7 +561,174 @@ void CaclDensitySun(
 	//std::cout << "Solving ... DONE" << std::endl;
 }
 
+void CalcPotentialB(std::vector<
+					std::vector<
+						std::vector<
+							std::vector<double> > > >& rho,
+							size_t dim )
+{
+	double pi = 3.14159265358979;
+	double h = 1. / double(dim-1);
+	double sinx , siny, sinz;
+	double fx ;
+	//calculate FFT for each layer
+	for (size_t i = 0; i < dim; ++i)
+	{
+		std::vector <
+			std::vector<double>> f; //for rows and colomns
+		f.resize(dim);
+		for (size_t l = 0; l < dim; l++)
+		{
+			f[l].resize(2);
+		}
+		//FFT rows of density
+		for (size_t j = 0; j < dim; ++j) {
+			for (size_t k = 0; k < dim; ++k) {
+				f[k][0] = rho[i][j][k][0];
+				f[k][1] = rho[i][j][k][1];
 
+			}
+			fft2(f);
+			for (size_t k = 0; k < dim; ++k) {
+				rho[i][j][k][0] = f[k][0];
+				rho[i][j][k][1] = f[k][1];
+
+			}
+		}
+	}
+
+	for (size_t i = 0; i < dim; ++i)
+	{
+		std::vector <
+			std::vector<double>> f; //for rows and colomns
+		f.resize(dim);
+		for (size_t l = 0; l < dim; l++)
+		{
+			f[l].resize(2);
+		}
+		//FFT coloumns of density
+		for (size_t k = 0; k < dim; ++k) {
+			for (size_t j = 0; j < dim; ++j) {
+				f[j][0] = rho[i][j][k][0];
+				f[j][1] = rho[i][j][k][1];
+
+			}
+			fft2(f);
+			for (size_t j = 0; j < dim; ++j) {
+				rho[i][j][k][0] = f[j][0];
+				rho[i][j][k][1] = f[j][1];
+			}
+		}
+
+	}
+
+	//FFT in 3rd dimention
+	for (size_t k = 0; k < dim; ++k) {
+		std::vector <
+			std::vector<double>> f;
+		f.resize(dim);
+		for (size_t l = 0; l < dim; l++)
+		{
+			f[l].resize(2);
+		}
+
+		for (size_t j = 0; j < dim; j++){
+			for (size_t i = 0; i< dim; i++){
+				f[i][0] = rho[i][j][k][0];
+				f[i][1] = rho[i][j][k][1];
+				//f[j][1] = rho[j][k][1];
+			}
+			fft2(f);
+
+			sinz = 4.*sin(k * pi/dim)*sin(k*pi/dim);
+			siny = 4.*sin(j * pi/dim)*sin(j*pi/dim);
+
+			for (size_t i = 0; i < dim; i++) {
+
+				sinx = 4.*sin(i * pi/dim)*sin(i*pi/dim);
+				rho[i][j][k][0] = f[i][0];
+				rho[i][j][k][1] = f[i][1];
+				//rho[j][k][1] = f[j][1];
+				fx = std::fabs(sinx + siny + sinz) < std::pow(10 , -8) ? std::pow(10 , -8) : sinx + siny + sinz;
+
+				rho[i][j][k][0] /= -fx/(4.*pi*h*h*h) ;//* (4188.818841*pi);
+				rho[i][j][k][1] /= -fx/(4.*pi*h*h*h) ;//* (4188.818841*pi);
+			}
+		}
+	}
+	//std::cout << "Solve Poisson eq. in Fourier space" << std::endl;
+		for (size_t i = 0; i < dim; i++)
+		{
+			std::vector<std::vector<double>> f;
+			f.resize(dim);
+			for (size_t y = 0; y < dim; y++)
+			{
+				f[y].resize(2);
+			}
+			// inverse FFT rows of rho
+			for (size_t j = 0; j < dim; j++) {
+				for (size_t k = 0; k < dim; k++) {
+					f[k][0] = rho[i][j][k][0];
+					f[k][1] = rho[i][j][k][1];
+				}
+				ifft2(f);
+				for (size_t k = 0; k < dim; k++)
+				{
+					rho[i][j][k][0] = f[k][0];
+					rho[i][j][k][1] = f[k][1];
+				}
+			}
+		}
+		for (size_t i = 0; i < dim; i++)
+		{
+			std::vector<std::vector<double>> f;
+			f.resize(dim);
+			for (size_t y = 0; y < dim; y++)
+			{
+				f[y].resize(2);
+			}
+		// inverse FFT columns of rho
+		for (size_t k = 0; k < dim; k++) {
+			for (size_t j = 0; j < dim; j++)
+			{
+				f[j][0] = rho[i][j][k][0];
+				f[j][1] = rho[i][j][k][1];
+			}
+			ifft2(f);
+			for (size_t j = 0; j < dim; j++)
+			{
+				rho[i][j][k][0] = f[j][0];
+				rho[i][j][k][1] = f[j][1];
+			}
+		}
+	}
+
+		//IFFT in 3rd dimention
+
+		for (size_t k = 0; k < dim; ++k) {
+			std::vector<std::vector<double>> f;
+			f.resize(dim);
+			for (size_t y = 0; y < dim; y++)
+			{
+				f[y].resize(2);
+			}
+
+			for (size_t j = 0; j < dim; j++) {
+				for (size_t i = 0; i< dim; i++)
+				{
+					f[i][0] = rho[i][j][k][0];
+					f[i][1] = rho[i][j][k][1];
+					//f[j][1] = rho[j][k][1];
+				}
+				ifft2(f);
+				for (size_t i = 0; i < dim; i++) {
+					rho[i][j][k][0] = f[i][0];
+					rho[i][j][k][1] = f[i][1];
+					//rho[j][k][1] = f[j][1];
+				}
+			}
+		}
+}
 
 
 
@@ -727,21 +898,21 @@ for (size_t i =0 ; i< Particles.size() ; ++i)
                					 // std::cout<<"dir[i][2] = "<<dir[i][2]<<std::endl;
 
                				}
-                            // if(distij < 2.)
-                            //    {
-                            //        Sh = (0.0122242 + 0.609459*distij - 0.432782 * distij*distij + 0.189694 * distij*distij*distij
-                            //          - 0.0610997 * distij*distij * distij*distij) / distij;
-                            //          as[i][0] +=  Sh*dx;
-                            //          as[i][1] +=  Sh*dy;
-                            //          as[i][2] +=  Sh*dz;
-                            //    }
-                            // if(distij <=3. && distij >=2)
-                            //    {
-                            //        Sh = (-0.137179 + 0.158876*distij - 0.0348711 *distij*distij) / distij;
-                            //        as[i][0] +=  Sh*dx;
-                            //        as[i][1] +=  Sh*dy;
-                            //        as[i][2] +=  Sh*dz;
-                            //    }
+                            if(distij < 2.)
+                               {
+                                   Sh = (0.0122242 + 0.609459*distij - 0.432782 * distij*distij + 0.189694 * distij*distij*distij
+                                     - 0.0610997 * distij*distij * distij*distij) / distij;
+                                     as[i][0] +=  Sh*dx;
+                                     as[i][1] +=  Sh*dy;
+                                     as[i][2] +=  Sh*dz;
+                               }
+                            if(distij <=3. && distij >=2)
+                               {
+                                   Sh = (-0.137179 + 0.158876*distij - 0.0348711 *distij*distij) / distij;
+                                   as[i][0] +=  Sh*dx;
+                                   as[i][1] +=  Sh*dy;
+                                   as[i][2] +=  Sh*dz;
+                               }
 					  }
 				  }
             }

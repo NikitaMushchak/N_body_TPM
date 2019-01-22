@@ -42,7 +42,7 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 
 
 	 // for (size_t i = 0; i < number_particles ; ++i) {
-	 	// std::vector<double> a = { (double) 32.- 0.5/2. +0.5*i, 32. , 32. };
+	 	// std::vector<double> a = { (double) 32.- 2./2. +2.*i, 32. , 32. };
 	 	// Particles[i] = a;
 	 // }
 // 2 - 35% 3 - 38% 3.1 - 37%
@@ -71,36 +71,36 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 	 size_t it = 0 ;
 
 
-	 // std::vector<
-		 // std::vector<
-		 // std::vector<
-		 // std::vector<double> > > > density;
-		 // density.resize(dim);
-		// for (size_t i = 0; i < dim; ++i) {
-			// density[i].resize(dim);
-			// for (size_t j = 0; j < dim; ++j) {
-				// density[i][j].resize(dim);
-				// for (size_t k = 0; k < dim; ++k) {
-					// density[i][j][k].resize(2);
-				// }
-			// }
-		// }
+	 std::vector<
+		 std::vector<
+		 std::vector<
+		 std::vector<double> > > > density;
+		 density.resize(dim);
+		for (size_t i = 0; i < dim; ++i) {
+			density[i].resize(dim);
+			for (size_t j = 0; j < dim; ++j) {
+				density[i][j].resize(dim);
+				for (size_t k = 0; k < dim; ++k) {
+					density[i][j][k].resize(2);
+				}
+			}
+		}
 
 
-		// std::vector<
-		 // std::vector<
-		 // std::vector<
-		 // std::vector<double> > > > null4;
-		 // null4.resize(dim);
-		// for (size_t i = 0; i < dim; ++i) {
-			// null4[i].resize(dim);
-			// for (size_t j = 0; j < dim; ++j) {
-				// null4[i][j].resize(dim);
-				// for (size_t k = 0; k < dim; ++k) {
-					// null4[i][j][k].resize(2);
-				// }
-			// }
-		// }
+		std::vector<
+		 std::vector<
+		 std::vector<
+		 std::vector<double> > > > null4;
+		 null4.resize(dim);
+		for (size_t i = 0; i < dim; ++i) {
+			null4[i].resize(dim);
+			for (size_t j = 0; j < dim; ++j) {
+				null4[i][j].resize(dim);
+				for (size_t k = 0; k < dim; ++k) {
+					null4[i][j][k].resize(2);
+				}
+			}
+		}
 
 	// std::vector<std::vector<size_t> > nuls; //for particles in same box
 	//
@@ -153,27 +153,40 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 	 /**/
 
 	 //Функция генерируюшая кольцо частиц
-	 GenRing(Particles,  vel,  number_particles,  L);
+	GenRing(Particles,  vel,  number_particles,  L);
 	//GenEllipsoid( Particles, vel, number_particles,  L);
-	std::vector<std::vector<double> > init;
-	init.resize(number_particles);
-	for(size_t i = 0 ; i< number_particles; ++i)
-	{
-		init[i].resize(6);
 
-		init[i][0] = Particles[i][0];
-		init[i][1] = Particles[i][1];
-		init[i][2] = Particles[i][2];
-		init[i][3] = vel[i][0];
-		init[i][4] = vel[i][1];
-		init[i][5] = vel[i][2];
-	}
 
-	ai::saveMatrix("!init_configuration", init);
-	// std::cout<<"particles:"<<std::endl;
+
+	// std::vector<std::vector<double> > init;
+	// init.resize(number_particles);
+	// for(size_t i = 0 ; i< number_particles; ++i)
+	// {
+	// 	init[i].resize(6);
+	// }
+
+
+	// ai::parseFileInMatrix("!init_configuration.txt",' ',init);
+	// // std::cout<<"init "<<std::endl;
+	// // ai::printMatrix(init);
+		 // for(size_t i =0 ; i < init.size() ; i++){
+
+			 // Particles[i][0] =init[i][0];
+			 // Particles[i][1]=init[i][1];
+			 // Particles[i][2]=init[i][2];
+			  // vel[i][0]=init[i][3];
+			  // vel[i][1]=init[i][4];
+			  // vel[i][2]=init[i][5];
+		  // }
+	//ai::saveMatrix("!init_configuration", init);
+	 std::cout<<"particles: size "<< Particles.size()<<std::endl;
+	 std::cout<<"vel size "<< vel.size()<<std::endl;
 	// ai::printMatrix(Particles);
+
+	// std::cout<<"vel "<<std::endl;
+	// ai::printMatrix(vel);
 	double r = 3.0; //радиус близкодействия
-	double energy;
+	//double energy;
 	// TODO вынести константу!!!!
 	//integrator here
 	auto start = ai::time();
@@ -181,11 +194,7 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 		{
 		it++;
 
-		  a=null2;
-		  //dir=null2;
-		  //vel=null2;
-		  //density=null4;
-		 //energy=0.;
+		  
 
 		//Добавление в центр сетки гравитирующенго тела
 
@@ -196,7 +205,7 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 		//                  dim);
 		 //CIC assigment
 		 auto t1 =ai::time();
-		 //CaclDensity(Particles, density, mass, scale, dim );
+		 CaclDensity(Particles, density, mass, scale, dim );
 		 auto t2=ai::time();
 		 std::cout<<"Calcdensity time = "<<ai::duration(t1, t2 , "ms")<<" ms"<<std::endl;
 		 //potetial field
@@ -204,7 +213,7 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 
 		 auto t3 = ai::time();
 
-		 //CalcPotential(density, dim);
+		 CalcPotentialB(density, dim);
 
 		 auto t4 =ai::time();
 		 std::cout<<"CalcPotential time = "<<ai::duration(t3,t4, "ms")<<" ms"<<std::endl;
@@ -212,15 +221,15 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 
 		 auto t5 = ai::time();
 		 //Расчет ускорений по сеточному методу
-		 //GetAccelPM(Particles, density, a, scale);
+		 GetAccelPM(Particles, density, a, scale);
 		 // apm=a;
-		  Direct(Particles, a, mass);
-		 //GetAccel( Particles, a, H, r, dim);//рачет ускорений по методу PPPM
+		 // Direct(Particles, a, mass);
+		 GetAccel( Particles, a, H, r, dim);//рачет ускорений по методу PPPM
 
 
 
 		 //расчет ускорений по прямому алгоритму
-		DirectSun(Particles, Sun, a, mass, L);
+		//DirectSun(Particles, Sun, a, mass, L);
 		  //Direct(Particles, dir, mass);
 
 		  // PM.push_back( std::vector<double>{std::abs(Particles[0][0]-Particles[1][0]) , a[0][0]});
@@ -242,7 +251,7 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 
 		 //Direct(Particles, dir, mass);
 		 auto t8 = ai::time();
-		 std::cout <<"Direct time= "<<ai::duration(t7,t8,"ms")<<" ms"<<std::endl;
+		 //std::cout <<"Direct time= "<<ai::duration(t7,t8,"ms")<<" ms"<<std::endl;
 		 //std::cout<<"Dir accel "<<std::endl;
 		 //ai::printMatrix(dir);
 
@@ -252,7 +261,7 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 
 		 auto t10 = ai::time();
 		 //dt =  1*Get_Step(a, mass);
-		 dt=0.0001;
+		 dt=0.001;
 
 		 //std::cout << "dt = " << dt << std::endl;
 		 // time += dt;
@@ -282,7 +291,7 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 		 std::cout << "Step_PM # = " << it <<"      dt = "<<dt<<"   time = "<<time  <<std::endl;
 		 // std::cout<<"Particles pos = "<<std::endl;
 		 // ai::printMatrix(Particles);
-		 if (it % 100 == 0 || it==1)
+		 if (it % 10 == 0 || it==1)
 		 {
 			 char cbuf[512];
 			 std::string suff = "p.a3r";
@@ -293,7 +302,11 @@ int TPM(const double H, const double L , const double dim,const double number_pa
 			 ai::saveA3R(filename, Particles , L);
 
 		 }
-
+			a = null2;
+		  //dir=null2;
+		  //vel=null2;
+		  density = null4;
+		 //energy=0.;
 
 		}
 
